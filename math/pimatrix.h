@@ -8,22 +8,29 @@
 #ifndef PIMATRIX_H
 #define	PIMATRIX_H
 
+#include <boost/numeric/ublas/matrix.hpp>
+
 namespace math
 {
 
 /*
  * Platform-independent vector
  */
-template<class T>
 class pimatrix
 {
 public:
+    
+    pimatrix()
+    {
+        
+    }
+    
     pimatrix(int m, int n)
     {
         
     }
     
-    pimatrix(pimatrix& other)
+    pimatrix(const pimatrix& other)
     {
         
     }
