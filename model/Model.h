@@ -18,13 +18,18 @@ namespace model
 class Model
 {
 protected:
-    std::vector<Node> m_nodes;
-    std::vector<Edge> m_edges;
+    std::vector<Node*> m_nodes;
+    std::vector<Edge*> m_edges;
     
-public:
+protected:
     Model();
     Model(const Model& orig);
     virtual ~Model();
+    
+public:
+    virtual math::pimatrix Forward() = 0;
+    virtual void Backward() = 0;
+    virtual void Train() = 0;
     
 private:
 

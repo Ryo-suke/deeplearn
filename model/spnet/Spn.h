@@ -20,9 +20,9 @@ public:
     Spn(const Spn& orig);
     virtual ~Spn();
     
-    math::pimatrix Forward(bool train);
-    void Backward();
-    void Train();
+    math::pimatrix Forward(){}
+    void Backward(){}
+    void Train(){}
     
 private:
 

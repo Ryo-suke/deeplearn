@@ -19,8 +19,8 @@ class Edge
 {
 
 private:
-    math::pimatrix<float> m_weight;
-    Node* m_node1, m_node2;
+    math::pimatrix m_weight;
+    Node *m_node1, *m_node2;
     bool m_bDirected;
     
 public:

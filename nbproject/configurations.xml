@@ -5,9 +5,11 @@
                    displayName="Header Files"
                    projectFiles="true">
       <itemPath>model/Edge.h</itemPath>
+      <itemPath>model/InputNode.h</itemPath>
       <itemPath>model/Model.h</itemPath>
       <itemPath>model/Node.h</itemPath>
-      <itemPath>math/pivector.h</itemPath>
+      <itemPath>model/spnet/Spn.h</itemPath>
+      <itemPath>math/pimatrix.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
@@ -17,8 +19,10 @@
                    displayName="Source Files"
                    projectFiles="true">
       <itemPath>model/Edge.cpp</itemPath>
+      <itemPath>model/InputNode.cpp</itemPath>
       <itemPath>model/Model.cpp</itemPath>
       <itemPath>model/Node.cpp</itemPath>
+      <itemPath>model/spnet/Spn.cpp</itemPath>
       <itemPath>main.cpp</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"
@@ -45,6 +49,7 @@
           <incDir>
             <pElem>math</pElem>
             <pElem>model</pElem>
+            <pElem>dependencies/boost_1_54_0</pElem>
           </incDir>
         </ccTool>
       </compileType>
@@ -63,6 +68,8 @@
           <incDir>
             <pElem>math</pElem>
             <pElem>model</pElem>
+            <pElem>model/spnet</pElem>
+            <pElem>dependencies/boost_1_54_0</pElem>
           </incDir>
         </ccTool>
         <fortranCompilerTool>

@@ -22,13 +22,15 @@ protected:
      * node_size: the number of units in this node
      * batch_size: size of the training batch
      */
-    math::pimatrix<float> m_activations;
-    math::pimatrix<float> m_bias;
-    
-public:
+    math::pimatrix m_activations;
+    math::pimatrix m_bias;
+
     Node();
     Node(const Node& orig);
     virtual ~Node();
+    
+public:
+    virtual math::pimatrix* Forward() = 0;
     
 private:
 

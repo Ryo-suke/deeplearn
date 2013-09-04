@@ -36,7 +36,9 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 OBJECTFILES= \
 	${OBJECTDIR}/model/Node.o \
 	${OBJECTDIR}/main.o \
+	${OBJECTDIR}/model/InputNode.o \
 	${OBJECTDIR}/model/Model.o \
+	${OBJECTDIR}/model/spnet/Spn.o \
 	${OBJECTDIR}/model/Edge.o
 
 
@@ -67,22 +69,32 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/deeplearn: ${OBJECTFILES}
 ${OBJECTDIR}/model/Node.o: model/Node.cpp 
 	${MKDIR} -p ${OBJECTDIR}/model
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Imath -Imodel -MMD -MP -MF $@.d -o ${OBJECTDIR}/model/Node.o model/Node.cpp
+	$(COMPILE.cc) -O2 -Imath -Imodel -Imodel/spnet -Idependencies/boost_1_54_0 -MMD -MP -MF $@.d -o ${OBJECTDIR}/model/Node.o model/Node.cpp
 
 ${OBJECTDIR}/main.o: main.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Imath -Imodel -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
+	$(COMPILE.cc) -O2 -Imath -Imodel -Imodel/spnet -Idependencies/boost_1_54_0 -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
+
+${OBJECTDIR}/model/InputNode.o: model/InputNode.cpp 
+	${MKDIR} -p ${OBJECTDIR}/model
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -Imath -Imodel -Imodel/spnet -Idependencies/boost_1_54_0 -MMD -MP -MF $@.d -o ${OBJECTDIR}/model/InputNode.o model/InputNode.cpp
 
 ${OBJECTDIR}/model/Model.o: model/Model.cpp 
 	${MKDIR} -p ${OBJECTDIR}/model
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Imath -Imodel -MMD -MP -MF $@.d -o ${OBJECTDIR}/model/Model.o model/Model.cpp
+	$(COMPILE.cc) -O2 -Imath -Imodel -Imodel/spnet -Idependencies/boost_1_54_0 -MMD -MP -MF $@.d -o ${OBJECTDIR}/model/Model.o model/Model.cpp
+
+${OBJECTDIR}/model/spnet/Spn.o: model/spnet/Spn.cpp 
+	${MKDIR} -p ${OBJECTDIR}/model/spnet
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -Imath -Imodel -Imodel/spnet -Idependencies/boost_1_54_0 -MMD -MP -MF $@.d -o ${OBJECTDIR}/model/spnet/Spn.o model/spnet/Spn.cpp
 
 ${OBJECTDIR}/model/Edge.o: model/Edge.cpp 
 	${MKDIR} -p ${OBJECTDIR}/model
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -Imath -Imodel -MMD -MP -MF $@.d -o ${OBJECTDIR}/model/Edge.o model/Edge.cpp
+	$(COMPILE.cc) -O2 -Imath -Imodel -Imodel/spnet -Idependencies/boost_1_54_0 -MMD -MP -MF $@.d -o ${OBJECTDIR}/model/Edge.o model/Edge.cpp
 
 # Subprojects
 .build-subprojects:
