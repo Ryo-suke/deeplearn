@@ -21,8 +21,14 @@ protected:
     std::vector<Node*> m_nodes;
     std::vector<Edge*> m_edges;
     
+    /*
+     * The list of nodes after topological sorting
+     */
+    std::vector<Node*> m_nodeList;
+    
 protected:
     Model();
+    Model(std::vector<Node*> &nodes, std::vector<Edge*> &edges);
     Model(const Model& orig);
     virtual ~Model();
     
@@ -30,6 +36,11 @@ public:
     virtual math::pimatrix Forward() = 0;
     virtual void Backward() = 0;
     virtual void Train() = 0;
+    
+    /*
+     * Run a topological sort on nodes, detect loop if there is any.
+     */
+    virtual bool SortNodes();
     
 private:
 

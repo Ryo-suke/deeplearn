@@ -10,7 +10,8 @@
 namespace model
 {
 
-InputNode::InputNode()
+InputNode::InputNode(NodeData& nodeData)
+: Node(nodeData)
 {
 }
 

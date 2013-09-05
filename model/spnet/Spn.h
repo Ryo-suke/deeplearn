@@ -9,14 +9,22 @@
 #define	SPN_H
 
 #include <Model.h>
+#include <deeplearn.pb.h>
 
 namespace model
 {
 
 class Spn : public Model
 {
+    // views on the cannonical list of nodes
+    std::vector<Node*> m_inputNodes, m_hiddenNodes, m_queryNodes;
+    
 public:
-    Spn();
+    Spn(std::vector<Node*>& nodes
+            , std::vector<Edge*>& edges
+            , std::vector<Node*>& inputNodes
+            , std::vector<Node*>& hiddenNodes
+            , std::vector<Node*>& queryNodes);
     Spn(const Spn& orig);
     virtual ~Spn();
     
@@ -24,8 +32,11 @@ public:
     void Backward(){}
     void Train(){}
     
-private:
-
+    static Spn* FromProto(const ModelData& modelData);
+    
+    template <typename T>
+    static void deleteList(const std::vector<T*>& vList);
+    
 };
 
 }

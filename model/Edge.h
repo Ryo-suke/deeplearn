@@ -11,9 +11,10 @@
 #include <pimatrix.h>
 #include <Node.h>
 
-
 namespace model
 {
+
+class Node;
 
 class Edge
 {
@@ -24,9 +25,10 @@ private:
     bool m_bDirected;
     
 public:
-    Edge();
+    Edge(Node *node1, Node* node2, bool directed);
     Edge(const Edge& orig);
     virtual ~Edge();
+    
 private:
 
 };

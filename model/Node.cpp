@@ -6,12 +6,17 @@
  */
 
 #include "Node.h"
+#include "InputNode.h"
 
 namespace model
 {
 
 Node::Node()
+{   }
+
+Node::Node(NodeData& nodeData)
 {
+    m_nodeData = nodeData;      // deep copy
 }
 
 Node::Node(const Node& orig)
@@ -21,5 +26,7 @@ Node::Node(const Node& orig)
 Node::~Node()
 {
 }
+
+
 
 }
