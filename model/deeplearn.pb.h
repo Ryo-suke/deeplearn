@@ -37,6 +37,10 @@ void protobuf_ShutdownFile_deeplearn_2eproto();
 class NodeData;
 class SpnData;
 class ModelData;
+class Operation;
+class Operation_StopCondition;
+class DatasetInfo;
+class DatasetInfo_Data;
 
 enum NodeData_NodeType {
   NodeData_NodeType_INPUT = 0,
@@ -78,6 +82,68 @@ inline bool ModelData_ModelType_Parse(
     const ::std::string& name, ModelData_ModelType* value) {
   return ::google::protobuf::internal::ParseNamedEnum<ModelData_ModelType>(
     ModelData_ModelType_descriptor(), name, value);
+}
+enum Operation_Optimizer {
+  Operation_Optimizer_GRADIENT_DESCENT = 0,
+  Operation_Optimizer_HARD_GRADIENT_DESCENT = 1,
+  Operation_Optimizer_EM = 2,
+  Operation_Optimizer_HARD_EM = 3,
+  Operation_Optimizer_CD = 4,
+  Operation_Optimizer_PCD = 5
+};
+bool Operation_Optimizer_IsValid(int value);
+const Operation_Optimizer Operation_Optimizer_Optimizer_MIN = Operation_Optimizer_GRADIENT_DESCENT;
+const Operation_Optimizer Operation_Optimizer_Optimizer_MAX = Operation_Optimizer_PCD;
+const int Operation_Optimizer_Optimizer_ARRAYSIZE = Operation_Optimizer_Optimizer_MAX + 1;
+
+const ::google::protobuf::EnumDescriptor* Operation_Optimizer_descriptor();
+inline const ::std::string& Operation_Optimizer_Name(Operation_Optimizer value) {
+  return ::google::protobuf::internal::NameOfEnum(
+    Operation_Optimizer_descriptor(), value);
+}
+inline bool Operation_Optimizer_Parse(
+    const ::std::string& name, Operation_Optimizer* value) {
+  return ::google::protobuf::internal::ParseNamedEnum<Operation_Optimizer>(
+    Operation_Optimizer_descriptor(), name, value);
+}
+enum Operation_OperationType {
+  Operation_OperationType_TRAIN = 0,
+  Operation_OperationType_TEST = 1
+};
+bool Operation_OperationType_IsValid(int value);
+const Operation_OperationType Operation_OperationType_OperationType_MIN = Operation_OperationType_TRAIN;
+const Operation_OperationType Operation_OperationType_OperationType_MAX = Operation_OperationType_TEST;
+const int Operation_OperationType_OperationType_ARRAYSIZE = Operation_OperationType_OperationType_MAX + 1;
+
+const ::google::protobuf::EnumDescriptor* Operation_OperationType_descriptor();
+inline const ::std::string& Operation_OperationType_Name(Operation_OperationType value) {
+  return ::google::protobuf::internal::NameOfEnum(
+    Operation_OperationType_descriptor(), value);
+}
+inline bool Operation_OperationType_Parse(
+    const ::std::string& name, Operation_OperationType* value) {
+  return ::google::protobuf::internal::ParseNamedEnum<Operation_OperationType>(
+    Operation_OperationType_descriptor(), name, value);
+}
+enum DatasetInfo_Data_DataType {
+  DatasetInfo_Data_DataType_TRAIN_SET = 0,
+  DatasetInfo_Data_DataType_EVAL_SET = 1,
+  DatasetInfo_Data_DataType_TEST_SET = 2
+};
+bool DatasetInfo_Data_DataType_IsValid(int value);
+const DatasetInfo_Data_DataType DatasetInfo_Data_DataType_DataType_MIN = DatasetInfo_Data_DataType_TRAIN_SET;
+const DatasetInfo_Data_DataType DatasetInfo_Data_DataType_DataType_MAX = DatasetInfo_Data_DataType_TEST_SET;
+const int DatasetInfo_Data_DataType_DataType_ARRAYSIZE = DatasetInfo_Data_DataType_DataType_MAX + 1;
+
+const ::google::protobuf::EnumDescriptor* DatasetInfo_Data_DataType_descriptor();
+inline const ::std::string& DatasetInfo_Data_DataType_Name(DatasetInfo_Data_DataType value) {
+  return ::google::protobuf::internal::NameOfEnum(
+    DatasetInfo_Data_DataType_descriptor(), value);
+}
+inline bool DatasetInfo_Data_DataType_Parse(
+    const ::std::string& name, DatasetInfo_Data_DataType* value) {
+  return ::google::protobuf::internal::ParseNamedEnum<DatasetInfo_Data_DataType>(
+    DatasetInfo_Data_DataType_descriptor(), name, value);
 }
 // ===================================================================
 
@@ -472,6 +538,637 @@ class ModelData : public ::google::protobuf::Message {
 
   void InitAsDefaultInstance();
   static ModelData* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class Operation_StopCondition : public ::google::protobuf::Message {
+ public:
+  Operation_StopCondition();
+  virtual ~Operation_StopCondition();
+
+  Operation_StopCondition(const Operation_StopCondition& from);
+
+  inline Operation_StopCondition& operator=(const Operation_StopCondition& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const Operation_StopCondition& default_instance();
+
+  void Swap(Operation_StopCondition* other);
+
+  // implements Message ----------------------------------------------
+
+  Operation_StopCondition* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const Operation_StopCondition& from);
+  void MergeFrom(const Operation_StopCondition& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional bool all_processed = 1 [default = true];
+  inline bool has_all_processed() const;
+  inline void clear_all_processed();
+  static const int kAllProcessedFieldNumber = 1;
+  inline bool all_processed() const;
+  inline void set_all_processed(bool value);
+
+  // optional int32 steps = 2 [default = 10000];
+  inline bool has_steps() const;
+  inline void clear_steps();
+  static const int kStepsFieldNumber = 2;
+  inline ::google::protobuf::int32 steps() const;
+  inline void set_steps(::google::protobuf::int32 value);
+
+  // @@protoc_insertion_point(class_scope:model.Operation.StopCondition)
+ private:
+  inline void set_has_all_processed();
+  inline void clear_has_all_processed();
+  inline void set_has_steps();
+  inline void clear_has_steps();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  bool all_processed_;
+  ::google::protobuf::int32 steps_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
+
+  friend void  protobuf_AddDesc_deeplearn_2eproto();
+  friend void protobuf_AssignDesc_deeplearn_2eproto();
+  friend void protobuf_ShutdownFile_deeplearn_2eproto();
+
+  void InitAsDefaultInstance();
+  static Operation_StopCondition* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class Operation : public ::google::protobuf::Message {
+ public:
+  Operation();
+  virtual ~Operation();
+
+  Operation(const Operation& from);
+
+  inline Operation& operator=(const Operation& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const Operation& default_instance();
+
+  void Swap(Operation* other);
+
+  // implements Message ----------------------------------------------
+
+  Operation* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const Operation& from);
+  void MergeFrom(const Operation& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  typedef Operation_StopCondition StopCondition;
+
+  typedef Operation_Optimizer Optimizer;
+  static const Optimizer GRADIENT_DESCENT = Operation_Optimizer_GRADIENT_DESCENT;
+  static const Optimizer HARD_GRADIENT_DESCENT = Operation_Optimizer_HARD_GRADIENT_DESCENT;
+  static const Optimizer EM = Operation_Optimizer_EM;
+  static const Optimizer HARD_EM = Operation_Optimizer_HARD_EM;
+  static const Optimizer CD = Operation_Optimizer_CD;
+  static const Optimizer PCD = Operation_Optimizer_PCD;
+  static inline bool Optimizer_IsValid(int value) {
+    return Operation_Optimizer_IsValid(value);
+  }
+  static const Optimizer Optimizer_MIN =
+    Operation_Optimizer_Optimizer_MIN;
+  static const Optimizer Optimizer_MAX =
+    Operation_Optimizer_Optimizer_MAX;
+  static const int Optimizer_ARRAYSIZE =
+    Operation_Optimizer_Optimizer_ARRAYSIZE;
+  static inline const ::google::protobuf::EnumDescriptor*
+  Optimizer_descriptor() {
+    return Operation_Optimizer_descriptor();
+  }
+  static inline const ::std::string& Optimizer_Name(Optimizer value) {
+    return Operation_Optimizer_Name(value);
+  }
+  static inline bool Optimizer_Parse(const ::std::string& name,
+      Optimizer* value) {
+    return Operation_Optimizer_Parse(name, value);
+  }
+
+  typedef Operation_OperationType OperationType;
+  static const OperationType TRAIN = Operation_OperationType_TRAIN;
+  static const OperationType TEST = Operation_OperationType_TEST;
+  static inline bool OperationType_IsValid(int value) {
+    return Operation_OperationType_IsValid(value);
+  }
+  static const OperationType OperationType_MIN =
+    Operation_OperationType_OperationType_MIN;
+  static const OperationType OperationType_MAX =
+    Operation_OperationType_OperationType_MAX;
+  static const int OperationType_ARRAYSIZE =
+    Operation_OperationType_OperationType_ARRAYSIZE;
+  static inline const ::google::protobuf::EnumDescriptor*
+  OperationType_descriptor() {
+    return Operation_OperationType_descriptor();
+  }
+  static inline const ::std::string& OperationType_Name(OperationType value) {
+    return Operation_OperationType_Name(value);
+  }
+  static inline bool OperationType_Parse(const ::std::string& name,
+      OperationType* value) {
+    return Operation_OperationType_Parse(name, value);
+  }
+
+  // accessors -------------------------------------------------------
+
+  // required string name = 1 [default = "operation"];
+  inline bool has_name() const;
+  inline void clear_name();
+  static const int kNameFieldNumber = 1;
+  inline const ::std::string& name() const;
+  inline void set_name(const ::std::string& value);
+  inline void set_name(const char* value);
+  inline void set_name(const char* value, size_t size);
+  inline ::std::string* mutable_name();
+  inline ::std::string* release_name();
+  inline void set_allocated_name(::std::string* name);
+
+  // required .model.Operation.Optimizer optimizer = 2 [default = GRADIENT_DESCENT];
+  inline bool has_optimizer() const;
+  inline void clear_optimizer();
+  static const int kOptimizerFieldNumber = 2;
+  inline ::model::Operation_Optimizer optimizer() const;
+  inline void set_optimizer(::model::Operation_Optimizer value);
+
+  // optional .model.Operation.StopCondition stop_condition = 3;
+  inline bool has_stop_condition() const;
+  inline void clear_stop_condition();
+  static const int kStopConditionFieldNumber = 3;
+  inline const ::model::Operation_StopCondition& stop_condition() const;
+  inline ::model::Operation_StopCondition* mutable_stop_condition();
+  inline ::model::Operation_StopCondition* release_stop_condition();
+  inline void set_allocated_stop_condition(::model::Operation_StopCondition* stop_condition);
+
+  // optional .model.Operation.OperationType operation_type = 4 [default = TRAIN];
+  inline bool has_operation_type() const;
+  inline void clear_operation_type();
+  static const int kOperationTypeFieldNumber = 4;
+  inline ::model::Operation_OperationType operation_type() const;
+  inline void set_operation_type(::model::Operation_OperationType value);
+
+  // optional int32 batch_size = 5 [default = 100];
+  inline bool has_batch_size() const;
+  inline void clear_batch_size();
+  static const int kBatchSizeFieldNumber = 5;
+  inline ::google::protobuf::int32 batch_size() const;
+  inline void set_batch_size(::google::protobuf::int32 value);
+
+  // optional string data_proto = 6;
+  inline bool has_data_proto() const;
+  inline void clear_data_proto();
+  static const int kDataProtoFieldNumber = 6;
+  inline const ::std::string& data_proto() const;
+  inline void set_data_proto(const ::std::string& value);
+  inline void set_data_proto(const char* value);
+  inline void set_data_proto(const char* value, size_t size);
+  inline ::std::string* mutable_data_proto();
+  inline ::std::string* release_data_proto();
+  inline void set_allocated_data_proto(::std::string* data_proto);
+
+  // optional int32 eval_after = 7 [default = 500];
+  inline bool has_eval_after() const;
+  inline void clear_eval_after();
+  static const int kEvalAfterFieldNumber = 7;
+  inline ::google::protobuf::int32 eval_after() const;
+  inline void set_eval_after(::google::protobuf::int32 value);
+
+  // optional int32 checkpoint_after = 8 [default = 1000];
+  inline bool has_checkpoint_after() const;
+  inline void clear_checkpoint_after();
+  static const int kCheckpointAfterFieldNumber = 8;
+  inline ::google::protobuf::int32 checkpoint_after() const;
+  inline void set_checkpoint_after(::google::protobuf::int32 value);
+
+  // optional string checkpoint_directory = 9;
+  inline bool has_checkpoint_directory() const;
+  inline void clear_checkpoint_directory();
+  static const int kCheckpointDirectoryFieldNumber = 9;
+  inline const ::std::string& checkpoint_directory() const;
+  inline void set_checkpoint_directory(const ::std::string& value);
+  inline void set_checkpoint_directory(const char* value);
+  inline void set_checkpoint_directory(const char* value, size_t size);
+  inline ::std::string* mutable_checkpoint_directory();
+  inline ::std::string* release_checkpoint_directory();
+  inline void set_allocated_checkpoint_directory(::std::string* checkpoint_directory);
+
+  // optional bool randomize = 10 [default = false];
+  inline bool has_randomize() const;
+  inline void clear_randomize();
+  static const int kRandomizeFieldNumber = 10;
+  inline bool randomize() const;
+  inline void set_randomize(bool value);
+
+  // @@protoc_insertion_point(class_scope:model.Operation)
+ private:
+  inline void set_has_name();
+  inline void clear_has_name();
+  inline void set_has_optimizer();
+  inline void clear_has_optimizer();
+  inline void set_has_stop_condition();
+  inline void clear_has_stop_condition();
+  inline void set_has_operation_type();
+  inline void clear_has_operation_type();
+  inline void set_has_batch_size();
+  inline void clear_has_batch_size();
+  inline void set_has_data_proto();
+  inline void clear_has_data_proto();
+  inline void set_has_eval_after();
+  inline void clear_has_eval_after();
+  inline void set_has_checkpoint_after();
+  inline void clear_has_checkpoint_after();
+  inline void set_has_checkpoint_directory();
+  inline void clear_has_checkpoint_directory();
+  inline void set_has_randomize();
+  inline void clear_has_randomize();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::std::string* name_;
+  static ::std::string* _default_name_;
+  ::model::Operation_StopCondition* stop_condition_;
+  int optimizer_;
+  int operation_type_;
+  ::std::string* data_proto_;
+  ::google::protobuf::int32 batch_size_;
+  ::google::protobuf::int32 eval_after_;
+  ::std::string* checkpoint_directory_;
+  ::google::protobuf::int32 checkpoint_after_;
+  bool randomize_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(10 + 31) / 32];
+
+  friend void  protobuf_AddDesc_deeplearn_2eproto();
+  friend void protobuf_AssignDesc_deeplearn_2eproto();
+  friend void protobuf_ShutdownFile_deeplearn_2eproto();
+
+  void InitAsDefaultInstance();
+  static Operation* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class DatasetInfo_Data : public ::google::protobuf::Message {
+ public:
+  DatasetInfo_Data();
+  virtual ~DatasetInfo_Data();
+
+  DatasetInfo_Data(const DatasetInfo_Data& from);
+
+  inline DatasetInfo_Data& operator=(const DatasetInfo_Data& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const DatasetInfo_Data& default_instance();
+
+  void Swap(DatasetInfo_Data* other);
+
+  // implements Message ----------------------------------------------
+
+  DatasetInfo_Data* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const DatasetInfo_Data& from);
+  void MergeFrom(const DatasetInfo_Data& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  typedef DatasetInfo_Data_DataType DataType;
+  static const DataType TRAIN_SET = DatasetInfo_Data_DataType_TRAIN_SET;
+  static const DataType EVAL_SET = DatasetInfo_Data_DataType_EVAL_SET;
+  static const DataType TEST_SET = DatasetInfo_Data_DataType_TEST_SET;
+  static inline bool DataType_IsValid(int value) {
+    return DatasetInfo_Data_DataType_IsValid(value);
+  }
+  static const DataType DataType_MIN =
+    DatasetInfo_Data_DataType_DataType_MIN;
+  static const DataType DataType_MAX =
+    DatasetInfo_Data_DataType_DataType_MAX;
+  static const int DataType_ARRAYSIZE =
+    DatasetInfo_Data_DataType_DataType_ARRAYSIZE;
+  static inline const ::google::protobuf::EnumDescriptor*
+  DataType_descriptor() {
+    return DatasetInfo_Data_DataType_descriptor();
+  }
+  static inline const ::std::string& DataType_Name(DataType value) {
+    return DatasetInfo_Data_DataType_Name(value);
+  }
+  static inline bool DataType_Parse(const ::std::string& name,
+      DataType* value) {
+    return DatasetInfo_Data_DataType_Parse(name, value);
+  }
+
+  // accessors -------------------------------------------------------
+
+  // required .model.DatasetInfo.Data.DataType type = 1;
+  inline bool has_type() const;
+  inline void clear_type();
+  static const int kTypeFieldNumber = 1;
+  inline ::model::DatasetInfo_Data_DataType type() const;
+  inline void set_type(::model::DatasetInfo_Data_DataType value);
+
+  // required string file_pattern = 2;
+  inline bool has_file_pattern() const;
+  inline void clear_file_pattern();
+  static const int kFilePatternFieldNumber = 2;
+  inline const ::std::string& file_pattern() const;
+  inline void set_file_pattern(const ::std::string& value);
+  inline void set_file_pattern(const char* value);
+  inline void set_file_pattern(const char* value, size_t size);
+  inline ::std::string* mutable_file_pattern();
+  inline ::std::string* release_file_pattern();
+  inline void set_allocated_file_pattern(::std::string* file_pattern);
+
+  // required int32 size = 3;
+  inline bool has_size() const;
+  inline void clear_size();
+  static const int kSizeFieldNumber = 3;
+  inline ::google::protobuf::int32 size() const;
+  inline void set_size(::google::protobuf::int32 value);
+
+  // required int32 dimensions = 4;
+  inline bool has_dimensions() const;
+  inline void clear_dimensions();
+  static const int kDimensionsFieldNumber = 4;
+  inline ::google::protobuf::int32 dimensions() const;
+  inline void set_dimensions(::google::protobuf::int32 value);
+
+  // @@protoc_insertion_point(class_scope:model.DatasetInfo.Data)
+ private:
+  inline void set_has_type();
+  inline void clear_has_type();
+  inline void set_has_file_pattern();
+  inline void clear_has_file_pattern();
+  inline void set_has_size();
+  inline void clear_has_size();
+  inline void set_has_dimensions();
+  inline void clear_has_dimensions();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::std::string* file_pattern_;
+  int type_;
+  ::google::protobuf::int32 size_;
+  ::google::protobuf::int32 dimensions_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(4 + 31) / 32];
+
+  friend void  protobuf_AddDesc_deeplearn_2eproto();
+  friend void protobuf_AssignDesc_deeplearn_2eproto();
+  friend void protobuf_ShutdownFile_deeplearn_2eproto();
+
+  void InitAsDefaultInstance();
+  static DatasetInfo_Data* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class DatasetInfo : public ::google::protobuf::Message {
+ public:
+  DatasetInfo();
+  virtual ~DatasetInfo();
+
+  DatasetInfo(const DatasetInfo& from);
+
+  inline DatasetInfo& operator=(const DatasetInfo& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const DatasetInfo& default_instance();
+
+  void Swap(DatasetInfo* other);
+
+  // implements Message ----------------------------------------------
+
+  DatasetInfo* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const DatasetInfo& from);
+  void MergeFrom(const DatasetInfo& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  typedef DatasetInfo_Data Data;
+
+  // accessors -------------------------------------------------------
+
+  // required string name = 1;
+  inline bool has_name() const;
+  inline void clear_name();
+  static const int kNameFieldNumber = 1;
+  inline const ::std::string& name() const;
+  inline void set_name(const ::std::string& value);
+  inline void set_name(const char* value);
+  inline void set_name(const char* value, size_t size);
+  inline ::std::string* mutable_name();
+  inline ::std::string* release_name();
+  inline void set_allocated_name(::std::string* name);
+
+  // repeated .model.DatasetInfo.Data data = 2;
+  inline int data_size() const;
+  inline void clear_data();
+  static const int kDataFieldNumber = 2;
+  inline const ::model::DatasetInfo_Data& data(int index) const;
+  inline ::model::DatasetInfo_Data* mutable_data(int index);
+  inline ::model::DatasetInfo_Data* add_data();
+  inline const ::google::protobuf::RepeatedPtrField< ::model::DatasetInfo_Data >&
+      data() const;
+  inline ::google::protobuf::RepeatedPtrField< ::model::DatasetInfo_Data >*
+      mutable_data();
+
+  // optional string data_handler = 3 [default = "deeplearn"];
+  inline bool has_data_handler() const;
+  inline void clear_data_handler();
+  static const int kDataHandlerFieldNumber = 3;
+  inline const ::std::string& data_handler() const;
+  inline void set_data_handler(const ::std::string& value);
+  inline void set_data_handler(const char* value);
+  inline void set_data_handler(const char* value, size_t size);
+  inline ::std::string* mutable_data_handler();
+  inline ::std::string* release_data_handler();
+  inline void set_allocated_data_handler(::std::string* data_handler);
+
+  // optional float main_memory = 4 [default = 2];
+  inline bool has_main_memory() const;
+  inline void clear_main_memory();
+  static const int kMainMemoryFieldNumber = 4;
+  inline float main_memory() const;
+  inline void set_main_memory(float value);
+
+  // optional float gpu_memory = 5 [default = 1.5];
+  inline bool has_gpu_memory() const;
+  inline void clear_gpu_memory();
+  static const int kGpuMemoryFieldNumber = 5;
+  inline float gpu_memory() const;
+  inline void set_gpu_memory(float value);
+
+  // optional string path_prefix = 6 [default = ""];
+  inline bool has_path_prefix() const;
+  inline void clear_path_prefix();
+  static const int kPathPrefixFieldNumber = 6;
+  inline const ::std::string& path_prefix() const;
+  inline void set_path_prefix(const ::std::string& value);
+  inline void set_path_prefix(const char* value);
+  inline void set_path_prefix(const char* value, size_t size);
+  inline ::std::string* mutable_path_prefix();
+  inline ::std::string* release_path_prefix();
+  inline void set_allocated_path_prefix(::std::string* path_prefix);
+
+  // @@protoc_insertion_point(class_scope:model.DatasetInfo)
+ private:
+  inline void set_has_name();
+  inline void clear_has_name();
+  inline void set_has_data_handler();
+  inline void clear_has_data_handler();
+  inline void set_has_main_memory();
+  inline void clear_has_main_memory();
+  inline void set_has_gpu_memory();
+  inline void clear_has_gpu_memory();
+  inline void set_has_path_prefix();
+  inline void clear_has_path_prefix();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::std::string* name_;
+  ::google::protobuf::RepeatedPtrField< ::model::DatasetInfo_Data > data_;
+  ::std::string* data_handler_;
+  static ::std::string* _default_data_handler_;
+  float main_memory_;
+  float gpu_memory_;
+  ::std::string* path_prefix_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(6 + 31) / 32];
+
+  friend void  protobuf_AddDesc_deeplearn_2eproto();
+  friend void protobuf_AssignDesc_deeplearn_2eproto();
+  friend void protobuf_ShutdownFile_deeplearn_2eproto();
+
+  void InitAsDefaultInstance();
+  static DatasetInfo* default_instance_;
 };
 // ===================================================================
 
@@ -966,6 +1663,864 @@ inline void ModelData::set_allocated_spn_data(::model::SpnData* spn_data) {
   }
 }
 
+// -------------------------------------------------------------------
+
+// Operation_StopCondition
+
+// optional bool all_processed = 1 [default = true];
+inline bool Operation_StopCondition::has_all_processed() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void Operation_StopCondition::set_has_all_processed() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void Operation_StopCondition::clear_has_all_processed() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void Operation_StopCondition::clear_all_processed() {
+  all_processed_ = true;
+  clear_has_all_processed();
+}
+inline bool Operation_StopCondition::all_processed() const {
+  return all_processed_;
+}
+inline void Operation_StopCondition::set_all_processed(bool value) {
+  set_has_all_processed();
+  all_processed_ = value;
+}
+
+// optional int32 steps = 2 [default = 10000];
+inline bool Operation_StopCondition::has_steps() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void Operation_StopCondition::set_has_steps() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void Operation_StopCondition::clear_has_steps() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void Operation_StopCondition::clear_steps() {
+  steps_ = 10000;
+  clear_has_steps();
+}
+inline ::google::protobuf::int32 Operation_StopCondition::steps() const {
+  return steps_;
+}
+inline void Operation_StopCondition::set_steps(::google::protobuf::int32 value) {
+  set_has_steps();
+  steps_ = value;
+}
+
+// -------------------------------------------------------------------
+
+// Operation
+
+// required string name = 1 [default = "operation"];
+inline bool Operation::has_name() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void Operation::set_has_name() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void Operation::clear_has_name() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void Operation::clear_name() {
+  if (name_ != _default_name_) {
+    name_->assign(*_default_name_);
+  }
+  clear_has_name();
+}
+inline const ::std::string& Operation::name() const {
+  return *name_;
+}
+inline void Operation::set_name(const ::std::string& value) {
+  set_has_name();
+  if (name_ == _default_name_) {
+    name_ = new ::std::string;
+  }
+  name_->assign(value);
+}
+inline void Operation::set_name(const char* value) {
+  set_has_name();
+  if (name_ == _default_name_) {
+    name_ = new ::std::string;
+  }
+  name_->assign(value);
+}
+inline void Operation::set_name(const char* value, size_t size) {
+  set_has_name();
+  if (name_ == _default_name_) {
+    name_ = new ::std::string;
+  }
+  name_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* Operation::mutable_name() {
+  set_has_name();
+  if (name_ == _default_name_) {
+    name_ = new ::std::string(*_default_name_);
+  }
+  return name_;
+}
+inline ::std::string* Operation::release_name() {
+  clear_has_name();
+  if (name_ == _default_name_) {
+    return NULL;
+  } else {
+    ::std::string* temp = name_;
+    name_ = const_cast< ::std::string*>(_default_name_);
+    return temp;
+  }
+}
+inline void Operation::set_allocated_name(::std::string* name) {
+  if (name_ != _default_name_) {
+    delete name_;
+  }
+  if (name) {
+    set_has_name();
+    name_ = name;
+  } else {
+    clear_has_name();
+    name_ = const_cast< ::std::string*>(_default_name_);
+  }
+}
+
+// required .model.Operation.Optimizer optimizer = 2 [default = GRADIENT_DESCENT];
+inline bool Operation::has_optimizer() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void Operation::set_has_optimizer() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void Operation::clear_has_optimizer() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void Operation::clear_optimizer() {
+  optimizer_ = 0;
+  clear_has_optimizer();
+}
+inline ::model::Operation_Optimizer Operation::optimizer() const {
+  return static_cast< ::model::Operation_Optimizer >(optimizer_);
+}
+inline void Operation::set_optimizer(::model::Operation_Optimizer value) {
+  assert(::model::Operation_Optimizer_IsValid(value));
+  set_has_optimizer();
+  optimizer_ = value;
+}
+
+// optional .model.Operation.StopCondition stop_condition = 3;
+inline bool Operation::has_stop_condition() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void Operation::set_has_stop_condition() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void Operation::clear_has_stop_condition() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void Operation::clear_stop_condition() {
+  if (stop_condition_ != NULL) stop_condition_->::model::Operation_StopCondition::Clear();
+  clear_has_stop_condition();
+}
+inline const ::model::Operation_StopCondition& Operation::stop_condition() const {
+  return stop_condition_ != NULL ? *stop_condition_ : *default_instance_->stop_condition_;
+}
+inline ::model::Operation_StopCondition* Operation::mutable_stop_condition() {
+  set_has_stop_condition();
+  if (stop_condition_ == NULL) stop_condition_ = new ::model::Operation_StopCondition;
+  return stop_condition_;
+}
+inline ::model::Operation_StopCondition* Operation::release_stop_condition() {
+  clear_has_stop_condition();
+  ::model::Operation_StopCondition* temp = stop_condition_;
+  stop_condition_ = NULL;
+  return temp;
+}
+inline void Operation::set_allocated_stop_condition(::model::Operation_StopCondition* stop_condition) {
+  delete stop_condition_;
+  stop_condition_ = stop_condition;
+  if (stop_condition) {
+    set_has_stop_condition();
+  } else {
+    clear_has_stop_condition();
+  }
+}
+
+// optional .model.Operation.OperationType operation_type = 4 [default = TRAIN];
+inline bool Operation::has_operation_type() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void Operation::set_has_operation_type() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void Operation::clear_has_operation_type() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void Operation::clear_operation_type() {
+  operation_type_ = 0;
+  clear_has_operation_type();
+}
+inline ::model::Operation_OperationType Operation::operation_type() const {
+  return static_cast< ::model::Operation_OperationType >(operation_type_);
+}
+inline void Operation::set_operation_type(::model::Operation_OperationType value) {
+  assert(::model::Operation_OperationType_IsValid(value));
+  set_has_operation_type();
+  operation_type_ = value;
+}
+
+// optional int32 batch_size = 5 [default = 100];
+inline bool Operation::has_batch_size() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void Operation::set_has_batch_size() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void Operation::clear_has_batch_size() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void Operation::clear_batch_size() {
+  batch_size_ = 100;
+  clear_has_batch_size();
+}
+inline ::google::protobuf::int32 Operation::batch_size() const {
+  return batch_size_;
+}
+inline void Operation::set_batch_size(::google::protobuf::int32 value) {
+  set_has_batch_size();
+  batch_size_ = value;
+}
+
+// optional string data_proto = 6;
+inline bool Operation::has_data_proto() const {
+  return (_has_bits_[0] & 0x00000020u) != 0;
+}
+inline void Operation::set_has_data_proto() {
+  _has_bits_[0] |= 0x00000020u;
+}
+inline void Operation::clear_has_data_proto() {
+  _has_bits_[0] &= ~0x00000020u;
+}
+inline void Operation::clear_data_proto() {
+  if (data_proto_ != &::google::protobuf::internal::kEmptyString) {
+    data_proto_->clear();
+  }
+  clear_has_data_proto();
+}
+inline const ::std::string& Operation::data_proto() const {
+  return *data_proto_;
+}
+inline void Operation::set_data_proto(const ::std::string& value) {
+  set_has_data_proto();
+  if (data_proto_ == &::google::protobuf::internal::kEmptyString) {
+    data_proto_ = new ::std::string;
+  }
+  data_proto_->assign(value);
+}
+inline void Operation::set_data_proto(const char* value) {
+  set_has_data_proto();
+  if (data_proto_ == &::google::protobuf::internal::kEmptyString) {
+    data_proto_ = new ::std::string;
+  }
+  data_proto_->assign(value);
+}
+inline void Operation::set_data_proto(const char* value, size_t size) {
+  set_has_data_proto();
+  if (data_proto_ == &::google::protobuf::internal::kEmptyString) {
+    data_proto_ = new ::std::string;
+  }
+  data_proto_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* Operation::mutable_data_proto() {
+  set_has_data_proto();
+  if (data_proto_ == &::google::protobuf::internal::kEmptyString) {
+    data_proto_ = new ::std::string;
+  }
+  return data_proto_;
+}
+inline ::std::string* Operation::release_data_proto() {
+  clear_has_data_proto();
+  if (data_proto_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = data_proto_;
+    data_proto_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void Operation::set_allocated_data_proto(::std::string* data_proto) {
+  if (data_proto_ != &::google::protobuf::internal::kEmptyString) {
+    delete data_proto_;
+  }
+  if (data_proto) {
+    set_has_data_proto();
+    data_proto_ = data_proto;
+  } else {
+    clear_has_data_proto();
+    data_proto_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// optional int32 eval_after = 7 [default = 500];
+inline bool Operation::has_eval_after() const {
+  return (_has_bits_[0] & 0x00000040u) != 0;
+}
+inline void Operation::set_has_eval_after() {
+  _has_bits_[0] |= 0x00000040u;
+}
+inline void Operation::clear_has_eval_after() {
+  _has_bits_[0] &= ~0x00000040u;
+}
+inline void Operation::clear_eval_after() {
+  eval_after_ = 500;
+  clear_has_eval_after();
+}
+inline ::google::protobuf::int32 Operation::eval_after() const {
+  return eval_after_;
+}
+inline void Operation::set_eval_after(::google::protobuf::int32 value) {
+  set_has_eval_after();
+  eval_after_ = value;
+}
+
+// optional int32 checkpoint_after = 8 [default = 1000];
+inline bool Operation::has_checkpoint_after() const {
+  return (_has_bits_[0] & 0x00000080u) != 0;
+}
+inline void Operation::set_has_checkpoint_after() {
+  _has_bits_[0] |= 0x00000080u;
+}
+inline void Operation::clear_has_checkpoint_after() {
+  _has_bits_[0] &= ~0x00000080u;
+}
+inline void Operation::clear_checkpoint_after() {
+  checkpoint_after_ = 1000;
+  clear_has_checkpoint_after();
+}
+inline ::google::protobuf::int32 Operation::checkpoint_after() const {
+  return checkpoint_after_;
+}
+inline void Operation::set_checkpoint_after(::google::protobuf::int32 value) {
+  set_has_checkpoint_after();
+  checkpoint_after_ = value;
+}
+
+// optional string checkpoint_directory = 9;
+inline bool Operation::has_checkpoint_directory() const {
+  return (_has_bits_[0] & 0x00000100u) != 0;
+}
+inline void Operation::set_has_checkpoint_directory() {
+  _has_bits_[0] |= 0x00000100u;
+}
+inline void Operation::clear_has_checkpoint_directory() {
+  _has_bits_[0] &= ~0x00000100u;
+}
+inline void Operation::clear_checkpoint_directory() {
+  if (checkpoint_directory_ != &::google::protobuf::internal::kEmptyString) {
+    checkpoint_directory_->clear();
+  }
+  clear_has_checkpoint_directory();
+}
+inline const ::std::string& Operation::checkpoint_directory() const {
+  return *checkpoint_directory_;
+}
+inline void Operation::set_checkpoint_directory(const ::std::string& value) {
+  set_has_checkpoint_directory();
+  if (checkpoint_directory_ == &::google::protobuf::internal::kEmptyString) {
+    checkpoint_directory_ = new ::std::string;
+  }
+  checkpoint_directory_->assign(value);
+}
+inline void Operation::set_checkpoint_directory(const char* value) {
+  set_has_checkpoint_directory();
+  if (checkpoint_directory_ == &::google::protobuf::internal::kEmptyString) {
+    checkpoint_directory_ = new ::std::string;
+  }
+  checkpoint_directory_->assign(value);
+}
+inline void Operation::set_checkpoint_directory(const char* value, size_t size) {
+  set_has_checkpoint_directory();
+  if (checkpoint_directory_ == &::google::protobuf::internal::kEmptyString) {
+    checkpoint_directory_ = new ::std::string;
+  }
+  checkpoint_directory_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* Operation::mutable_checkpoint_directory() {
+  set_has_checkpoint_directory();
+  if (checkpoint_directory_ == &::google::protobuf::internal::kEmptyString) {
+    checkpoint_directory_ = new ::std::string;
+  }
+  return checkpoint_directory_;
+}
+inline ::std::string* Operation::release_checkpoint_directory() {
+  clear_has_checkpoint_directory();
+  if (checkpoint_directory_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = checkpoint_directory_;
+    checkpoint_directory_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void Operation::set_allocated_checkpoint_directory(::std::string* checkpoint_directory) {
+  if (checkpoint_directory_ != &::google::protobuf::internal::kEmptyString) {
+    delete checkpoint_directory_;
+  }
+  if (checkpoint_directory) {
+    set_has_checkpoint_directory();
+    checkpoint_directory_ = checkpoint_directory;
+  } else {
+    clear_has_checkpoint_directory();
+    checkpoint_directory_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// optional bool randomize = 10 [default = false];
+inline bool Operation::has_randomize() const {
+  return (_has_bits_[0] & 0x00000200u) != 0;
+}
+inline void Operation::set_has_randomize() {
+  _has_bits_[0] |= 0x00000200u;
+}
+inline void Operation::clear_has_randomize() {
+  _has_bits_[0] &= ~0x00000200u;
+}
+inline void Operation::clear_randomize() {
+  randomize_ = false;
+  clear_has_randomize();
+}
+inline bool Operation::randomize() const {
+  return randomize_;
+}
+inline void Operation::set_randomize(bool value) {
+  set_has_randomize();
+  randomize_ = value;
+}
+
+// -------------------------------------------------------------------
+
+// DatasetInfo_Data
+
+// required .model.DatasetInfo.Data.DataType type = 1;
+inline bool DatasetInfo_Data::has_type() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void DatasetInfo_Data::set_has_type() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void DatasetInfo_Data::clear_has_type() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void DatasetInfo_Data::clear_type() {
+  type_ = 0;
+  clear_has_type();
+}
+inline ::model::DatasetInfo_Data_DataType DatasetInfo_Data::type() const {
+  return static_cast< ::model::DatasetInfo_Data_DataType >(type_);
+}
+inline void DatasetInfo_Data::set_type(::model::DatasetInfo_Data_DataType value) {
+  assert(::model::DatasetInfo_Data_DataType_IsValid(value));
+  set_has_type();
+  type_ = value;
+}
+
+// required string file_pattern = 2;
+inline bool DatasetInfo_Data::has_file_pattern() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void DatasetInfo_Data::set_has_file_pattern() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void DatasetInfo_Data::clear_has_file_pattern() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void DatasetInfo_Data::clear_file_pattern() {
+  if (file_pattern_ != &::google::protobuf::internal::kEmptyString) {
+    file_pattern_->clear();
+  }
+  clear_has_file_pattern();
+}
+inline const ::std::string& DatasetInfo_Data::file_pattern() const {
+  return *file_pattern_;
+}
+inline void DatasetInfo_Data::set_file_pattern(const ::std::string& value) {
+  set_has_file_pattern();
+  if (file_pattern_ == &::google::protobuf::internal::kEmptyString) {
+    file_pattern_ = new ::std::string;
+  }
+  file_pattern_->assign(value);
+}
+inline void DatasetInfo_Data::set_file_pattern(const char* value) {
+  set_has_file_pattern();
+  if (file_pattern_ == &::google::protobuf::internal::kEmptyString) {
+    file_pattern_ = new ::std::string;
+  }
+  file_pattern_->assign(value);
+}
+inline void DatasetInfo_Data::set_file_pattern(const char* value, size_t size) {
+  set_has_file_pattern();
+  if (file_pattern_ == &::google::protobuf::internal::kEmptyString) {
+    file_pattern_ = new ::std::string;
+  }
+  file_pattern_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* DatasetInfo_Data::mutable_file_pattern() {
+  set_has_file_pattern();
+  if (file_pattern_ == &::google::protobuf::internal::kEmptyString) {
+    file_pattern_ = new ::std::string;
+  }
+  return file_pattern_;
+}
+inline ::std::string* DatasetInfo_Data::release_file_pattern() {
+  clear_has_file_pattern();
+  if (file_pattern_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = file_pattern_;
+    file_pattern_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void DatasetInfo_Data::set_allocated_file_pattern(::std::string* file_pattern) {
+  if (file_pattern_ != &::google::protobuf::internal::kEmptyString) {
+    delete file_pattern_;
+  }
+  if (file_pattern) {
+    set_has_file_pattern();
+    file_pattern_ = file_pattern;
+  } else {
+    clear_has_file_pattern();
+    file_pattern_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// required int32 size = 3;
+inline bool DatasetInfo_Data::has_size() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void DatasetInfo_Data::set_has_size() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void DatasetInfo_Data::clear_has_size() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void DatasetInfo_Data::clear_size() {
+  size_ = 0;
+  clear_has_size();
+}
+inline ::google::protobuf::int32 DatasetInfo_Data::size() const {
+  return size_;
+}
+inline void DatasetInfo_Data::set_size(::google::protobuf::int32 value) {
+  set_has_size();
+  size_ = value;
+}
+
+// required int32 dimensions = 4;
+inline bool DatasetInfo_Data::has_dimensions() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void DatasetInfo_Data::set_has_dimensions() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void DatasetInfo_Data::clear_has_dimensions() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void DatasetInfo_Data::clear_dimensions() {
+  dimensions_ = 0;
+  clear_has_dimensions();
+}
+inline ::google::protobuf::int32 DatasetInfo_Data::dimensions() const {
+  return dimensions_;
+}
+inline void DatasetInfo_Data::set_dimensions(::google::protobuf::int32 value) {
+  set_has_dimensions();
+  dimensions_ = value;
+}
+
+// -------------------------------------------------------------------
+
+// DatasetInfo
+
+// required string name = 1;
+inline bool DatasetInfo::has_name() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void DatasetInfo::set_has_name() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void DatasetInfo::clear_has_name() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void DatasetInfo::clear_name() {
+  if (name_ != &::google::protobuf::internal::kEmptyString) {
+    name_->clear();
+  }
+  clear_has_name();
+}
+inline const ::std::string& DatasetInfo::name() const {
+  return *name_;
+}
+inline void DatasetInfo::set_name(const ::std::string& value) {
+  set_has_name();
+  if (name_ == &::google::protobuf::internal::kEmptyString) {
+    name_ = new ::std::string;
+  }
+  name_->assign(value);
+}
+inline void DatasetInfo::set_name(const char* value) {
+  set_has_name();
+  if (name_ == &::google::protobuf::internal::kEmptyString) {
+    name_ = new ::std::string;
+  }
+  name_->assign(value);
+}
+inline void DatasetInfo::set_name(const char* value, size_t size) {
+  set_has_name();
+  if (name_ == &::google::protobuf::internal::kEmptyString) {
+    name_ = new ::std::string;
+  }
+  name_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* DatasetInfo::mutable_name() {
+  set_has_name();
+  if (name_ == &::google::protobuf::internal::kEmptyString) {
+    name_ = new ::std::string;
+  }
+  return name_;
+}
+inline ::std::string* DatasetInfo::release_name() {
+  clear_has_name();
+  if (name_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = name_;
+    name_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void DatasetInfo::set_allocated_name(::std::string* name) {
+  if (name_ != &::google::protobuf::internal::kEmptyString) {
+    delete name_;
+  }
+  if (name) {
+    set_has_name();
+    name_ = name;
+  } else {
+    clear_has_name();
+    name_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// repeated .model.DatasetInfo.Data data = 2;
+inline int DatasetInfo::data_size() const {
+  return data_.size();
+}
+inline void DatasetInfo::clear_data() {
+  data_.Clear();
+}
+inline const ::model::DatasetInfo_Data& DatasetInfo::data(int index) const {
+  return data_.Get(index);
+}
+inline ::model::DatasetInfo_Data* DatasetInfo::mutable_data(int index) {
+  return data_.Mutable(index);
+}
+inline ::model::DatasetInfo_Data* DatasetInfo::add_data() {
+  return data_.Add();
+}
+inline const ::google::protobuf::RepeatedPtrField< ::model::DatasetInfo_Data >&
+DatasetInfo::data() const {
+  return data_;
+}
+inline ::google::protobuf::RepeatedPtrField< ::model::DatasetInfo_Data >*
+DatasetInfo::mutable_data() {
+  return &data_;
+}
+
+// optional string data_handler = 3 [default = "deeplearn"];
+inline bool DatasetInfo::has_data_handler() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void DatasetInfo::set_has_data_handler() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void DatasetInfo::clear_has_data_handler() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void DatasetInfo::clear_data_handler() {
+  if (data_handler_ != _default_data_handler_) {
+    data_handler_->assign(*_default_data_handler_);
+  }
+  clear_has_data_handler();
+}
+inline const ::std::string& DatasetInfo::data_handler() const {
+  return *data_handler_;
+}
+inline void DatasetInfo::set_data_handler(const ::std::string& value) {
+  set_has_data_handler();
+  if (data_handler_ == _default_data_handler_) {
+    data_handler_ = new ::std::string;
+  }
+  data_handler_->assign(value);
+}
+inline void DatasetInfo::set_data_handler(const char* value) {
+  set_has_data_handler();
+  if (data_handler_ == _default_data_handler_) {
+    data_handler_ = new ::std::string;
+  }
+  data_handler_->assign(value);
+}
+inline void DatasetInfo::set_data_handler(const char* value, size_t size) {
+  set_has_data_handler();
+  if (data_handler_ == _default_data_handler_) {
+    data_handler_ = new ::std::string;
+  }
+  data_handler_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* DatasetInfo::mutable_data_handler() {
+  set_has_data_handler();
+  if (data_handler_ == _default_data_handler_) {
+    data_handler_ = new ::std::string(*_default_data_handler_);
+  }
+  return data_handler_;
+}
+inline ::std::string* DatasetInfo::release_data_handler() {
+  clear_has_data_handler();
+  if (data_handler_ == _default_data_handler_) {
+    return NULL;
+  } else {
+    ::std::string* temp = data_handler_;
+    data_handler_ = const_cast< ::std::string*>(_default_data_handler_);
+    return temp;
+  }
+}
+inline void DatasetInfo::set_allocated_data_handler(::std::string* data_handler) {
+  if (data_handler_ != _default_data_handler_) {
+    delete data_handler_;
+  }
+  if (data_handler) {
+    set_has_data_handler();
+    data_handler_ = data_handler;
+  } else {
+    clear_has_data_handler();
+    data_handler_ = const_cast< ::std::string*>(_default_data_handler_);
+  }
+}
+
+// optional float main_memory = 4 [default = 2];
+inline bool DatasetInfo::has_main_memory() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void DatasetInfo::set_has_main_memory() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void DatasetInfo::clear_has_main_memory() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void DatasetInfo::clear_main_memory() {
+  main_memory_ = 2;
+  clear_has_main_memory();
+}
+inline float DatasetInfo::main_memory() const {
+  return main_memory_;
+}
+inline void DatasetInfo::set_main_memory(float value) {
+  set_has_main_memory();
+  main_memory_ = value;
+}
+
+// optional float gpu_memory = 5 [default = 1.5];
+inline bool DatasetInfo::has_gpu_memory() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void DatasetInfo::set_has_gpu_memory() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void DatasetInfo::clear_has_gpu_memory() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void DatasetInfo::clear_gpu_memory() {
+  gpu_memory_ = 1.5f;
+  clear_has_gpu_memory();
+}
+inline float DatasetInfo::gpu_memory() const {
+  return gpu_memory_;
+}
+inline void DatasetInfo::set_gpu_memory(float value) {
+  set_has_gpu_memory();
+  gpu_memory_ = value;
+}
+
+// optional string path_prefix = 6 [default = ""];
+inline bool DatasetInfo::has_path_prefix() const {
+  return (_has_bits_[0] & 0x00000020u) != 0;
+}
+inline void DatasetInfo::set_has_path_prefix() {
+  _has_bits_[0] |= 0x00000020u;
+}
+inline void DatasetInfo::clear_has_path_prefix() {
+  _has_bits_[0] &= ~0x00000020u;
+}
+inline void DatasetInfo::clear_path_prefix() {
+  if (path_prefix_ != &::google::protobuf::internal::kEmptyString) {
+    path_prefix_->clear();
+  }
+  clear_has_path_prefix();
+}
+inline const ::std::string& DatasetInfo::path_prefix() const {
+  return *path_prefix_;
+}
+inline void DatasetInfo::set_path_prefix(const ::std::string& value) {
+  set_has_path_prefix();
+  if (path_prefix_ == &::google::protobuf::internal::kEmptyString) {
+    path_prefix_ = new ::std::string;
+  }
+  path_prefix_->assign(value);
+}
+inline void DatasetInfo::set_path_prefix(const char* value) {
+  set_has_path_prefix();
+  if (path_prefix_ == &::google::protobuf::internal::kEmptyString) {
+    path_prefix_ = new ::std::string;
+  }
+  path_prefix_->assign(value);
+}
+inline void DatasetInfo::set_path_prefix(const char* value, size_t size) {
+  set_has_path_prefix();
+  if (path_prefix_ == &::google::protobuf::internal::kEmptyString) {
+    path_prefix_ = new ::std::string;
+  }
+  path_prefix_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* DatasetInfo::mutable_path_prefix() {
+  set_has_path_prefix();
+  if (path_prefix_ == &::google::protobuf::internal::kEmptyString) {
+    path_prefix_ = new ::std::string;
+  }
+  return path_prefix_;
+}
+inline ::std::string* DatasetInfo::release_path_prefix() {
+  clear_has_path_prefix();
+  if (path_prefix_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = path_prefix_;
+    path_prefix_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void DatasetInfo::set_allocated_path_prefix(::std::string* path_prefix) {
+  if (path_prefix_ != &::google::protobuf::internal::kEmptyString) {
+    delete path_prefix_;
+  }
+  if (path_prefix) {
+    set_has_path_prefix();
+    path_prefix_ = path_prefix;
+  } else {
+    clear_has_path_prefix();
+    path_prefix_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
 
 // @@protoc_insertion_point(namespace_scope)
 
@@ -982,6 +2537,18 @@ inline const EnumDescriptor* GetEnumDescriptor< ::model::NodeData_NodeType>() {
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::model::ModelData_ModelType>() {
   return ::model::ModelData_ModelType_descriptor();
+}
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::model::Operation_Optimizer>() {
+  return ::model::Operation_Optimizer_descriptor();
+}
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::model::Operation_OperationType>() {
+  return ::model::Operation_OperationType_descriptor();
+}
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::model::DatasetInfo_Data_DataType>() {
+  return ::model::DatasetInfo_Data_DataType_descriptor();
 }
 
 }  // namespace google

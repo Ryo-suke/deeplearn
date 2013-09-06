@@ -16,8 +16,7 @@ namespace model
 class SumNode : public Node
 {
 public:
-    SumNode();
-    SumNode(const SumNode& orig);
+    SumNode(NodeData& nodeData);
     virtual ~SumNode();
     
     math::pimatrix* Forward()

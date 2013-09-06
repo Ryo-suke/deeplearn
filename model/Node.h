@@ -32,7 +32,6 @@ protected:
     std::vector<Edge*> m_incomingEdges, m_outgoingEdges;
     
 public:
-    Node();
     Node(NodeData& nodeData);
     Node(const Node& orig);
     virtual ~Node();
@@ -57,11 +56,21 @@ public:
         }
     }
     
+    virtual std::string GetName()
+    {
+        return m_nodeData.name();
+    }
+    
     virtual int GetDimension()
     {
         return m_nodeData.dimension();
     }
     
+    virtual std::vector<Edge*>& GetIncomingEdges()
+    {
+        return m_incomingEdges;
+    }
+        
     virtual int GetIncomingEdgesCount()
     {
         return m_incomingEdges.size();
@@ -76,12 +85,6 @@ public:
      * Only for Input nodes
      */
     virtual void SetValue(math::pimatrix& values)
-    {    }
-    
-    /*
-     * Only for Input nodes, when dimension of this node is 1.
-     */
-    virtual void SetValue(float value)
     {    }
     
 private:

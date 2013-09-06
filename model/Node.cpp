@@ -11,9 +11,6 @@
 namespace model
 {
 
-Node::Node()
-{   }
-
 Node::Node(NodeData& nodeData)
 {
     m_nodeData = nodeData;      // deep copy
@@ -25,6 +22,8 @@ Node::Node(const Node& orig)
 
 Node::~Node()
 {
+    m_incomingEdges.clear();
+    m_outgoingEdges.clear();
 }
 
 

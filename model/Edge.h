@@ -29,6 +29,16 @@ public:
     Edge(const Edge& orig);
     virtual ~Edge();
     
+    Node* GetNode1()
+    {
+        return m_node1;
+    }
+    
+    Node* GetNode2()
+    {
+        return m_node2;
+    }
+    
 private:
 
 };

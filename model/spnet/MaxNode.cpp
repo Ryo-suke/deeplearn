@@ -10,11 +10,8 @@
 namespace model
 {
 
-MaxNode::MaxNode()
-{
-}
-
-MaxNode::MaxNode(const MaxNode& orig)
+MaxNode::MaxNode(NodeData& nodeData)
+: Node(nodeData)
 {
 }
 

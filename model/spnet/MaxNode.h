@@ -16,8 +16,7 @@ namespace model
 class MaxNode : public Node
 {
 public:
-    MaxNode();
-    MaxNode(const MaxNode& orig);
+    MaxNode(NodeData& nodeData);
     virtual ~MaxNode();
     
     math::pimatrix* Forward()

@@ -18,7 +18,6 @@ class InputNode : public Node
 {
 public:
     InputNode(NodeData& nodeData);
-    InputNode(const InputNode& orig);
     virtual ~InputNode();
     
     /***********************************************************************/
@@ -31,24 +30,16 @@ public:
     /***********************************************************************/
     
     /*
-     * Only for Input nodes, Nx1 matrix, where N = number of dimensions
+     * Only for Input nodes, NxM matrix,
+     * where N = batch_size, M = number of dimensions in the whole dataset
      */
     virtual void SetValue(math::pimatrix& values)
     {
-        BOOST_ASSERT_MSG(values.size1() == m_nodeData.dimension()
-                && values.size2() == 1,
-                "Invalid dimension");
-        m_activations.SetColumns(values);
-    }
-    
-    /*
-     * Only for Input nodes, when dimension of this node is 1.
-     */
-    virtual void SetValue(float value)
-    {
-        BOOST_ASSERT_MSG(m_nodeData.dimension() == 1,
-             "SetValue() with scalar value is only valid with dimension = 1");
-        m_activations.SetValue(value);
+        BOOST_ASSERT_MSG(values.size2() >= m_nodeData.dimension()
+                , "Invalid dimension");
+        
+        m_activations.CopyRows(values, m_nodeData.input_start_index()
+                , values.size1());
     }
     
 private:

@@ -16,8 +16,7 @@ namespace model
 class ProductNode : public Node
 {
 public:
-    ProductNode();
-    ProductNode(const ProductNode& orig);
+    ProductNode(NodeData& nodeData);
     virtual ~ProductNode();
     
     math::pimatrix* Forward()

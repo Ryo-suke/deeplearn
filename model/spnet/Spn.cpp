@@ -6,6 +6,7 @@
  */
 
 #include <boost/lexical_cast.hpp>
+#include <boost/assert.hpp>
 
 #include <spnet/Spn.h>
 #include <pimatrix.h>
@@ -17,28 +18,81 @@
 namespace model
 {
 
-Spn::Spn(std::vector<Node*>& nodes
-            , std::vector<Edge*>& edges
-            , std::vector<Node*>& inputNodes
-            , std::vector<Node*>& hiddenNodes
-            , std::vector<Node*>& queryNodes)
-: Model(nodes, edges)
-, m_inputNodes(inputNodes)
-, m_hiddenNodes(hiddenNodes)
-, m_queryNodes(queryNodes)
+Spn::Spn()
 {   }
-
-Spn::Spn(const Spn& orig)
-{
-    
-}
 
 Spn::~Spn()
 {
-    
+    m_inputNodes.clear();
+    m_hiddenNodes.clear();
+    m_queryNodes.clear();
 }
 
 /**************************************************************************/
+
+void Spn::Train(data::DataHandler* dataHandler, Operation& trainOp)
+{
+    BOOST_ASSERT_MSG(!m_nodeList.empty(),
+            "No backprop order. Please run SortNodes() first.");
+    // check valid data handler and network architecture
+    
+    Operation_StopCondition stopCond = trainOp.stop_condition();
+    if (stopCond.all_processed())
+    {
+        stopCond.set_steps(dataHandler->GetNumBatches());
+    }
+    dataHandler->SetBatchSize(trainOp.batch_size());
+    
+    math::pimatrix* currentBatch;
+    int iTrainStep = 0;
+    
+    while (stopCondition(stopCond, iTrainStep))
+    {
+        dataHandler->EndLoadNextBatch();
+        currentBatch = dataHandler->GetCurrentBatch();
+        TrainOneBatch(trainOp, currentBatch);
+    }
+    Prune();
+}
+
+/**************************************************************************/
+
+void Spn::TrainOneBatch(Operation& trainOp
+                    , math::pimatrix* batch)
+{
+    std::vector<Node*>::iterator it;
+    
+    for(it = m_inputNodes.begin(); it != m_inputNodes.end(); ++it)
+    {
+        (*it)->SetValue(batch);
+    }
+    
+    // set 1 for H
+    
+    // set query (target)
+    for(it = m_queryNodes.begin(); it != m_queryNodes.end(); ++it)
+    {
+        (*it)->SetValue(batch);
+    }
+    
+    for (it = m_nodeList.begin(); it != m_nodeList.end(); ++it)
+    {
+        (*it)->Forward();
+    }
+    
+    // get value of root
+    
+}
+
+void Prune()
+{
+    
+}
+
+bool Spn::stopCondition(const Operation_StopCondition& cond, int iStep)
+{
+    return iStep < cond.steps();
+}
 
 /**************************************************************************/
 
@@ -61,7 +115,7 @@ Spn* Spn::FromProto(const ModelData& modelData)
     std::vector<Edge*> edges;
     Node* tmpNode;
     NodeData nodeData = NodeData::default_instance();
-    int i;
+    size_t i;
     
     nodeData.set_dimension(1);         // every node in SPN has dimension of 1
     
@@ -69,7 +123,7 @@ Spn* Spn::FromProto(const ModelData& modelData)
     {
         nodeData.set_name(boost::lexical_cast<std::string>(i));
         
-        switch((int)nodeList(0, i))
+        switch((unsigned int)nodeList(0, i))
         {
             case NodeData::INPUT:
                 nodeData.set_type(NodeData::INPUT);
@@ -90,18 +144,18 @@ Spn* Spn::FromProto(const ModelData& modelData)
                 break;
             case NodeData::SUM:
                 nodeData.set_type(NodeData::SUM);
-                tmpNode = new SumNode();
+                tmpNode = new SumNode(nodeData);
                 break;
             case NodeData::PRODUCT:
                 nodeData.set_type(NodeData::PRODUCT);
-                tmpNode = new ProductNode();
+                tmpNode = new ProductNode(nodeData);
                 break;
             case NodeData::MAX:
                 nodeData.set_type(NodeData::MAX);
-                tmpNode = new MaxNode();
+                tmpNode = new MaxNode(nodeData);
                 break;
             default:
-                Spn::deleteList(nodes);
+                Model::deleteList(nodes);
                 nodes.clear();
                 return NULL;
         }
@@ -109,26 +163,43 @@ Spn* Spn::FromProto(const ModelData& modelData)
     }
     
     // process the adjacency matrix
-    for (i = adjMatrix.size1() - 1; i >= 0; --i)
+    for (i = 0; i < adjMatrix.size1(); ++i)
     {
-        for (int j = i - 1; j >= 0; --j)
+        for (size_t j = 0; j < i; ++j)
         {
-            if (adjMatrix(i, j) != 0)
+            if(adjMatrix(i, j) != 0 && adjMatrix(j, i) != 0)
             {
-                edges.push_back(new Edge(nodes[i], nodes[j], true));
+                // should never happen with SPN because it is a directed model
+                Model::deleteList(nodes);
+                nodes.clear();
+                Model::deleteList(edges);
+                edges.clear();
+                return NULL;
+            }
+            else if (adjMatrix(i, j) != 0)
+            {
+                edges.push_back(new Edge(nodes.at(i), 
+                        nodes.at(j), true));
+            }
+            else if (adjMatrix(j, i) != 0)
+            {
+                edges.push_back(new Edge(nodes.at(j), 
+                        nodes.at(i), true));
             }
         }
     }
-    return new Spn(nodes, edges, inputNodes, hiddenNodes, queryNodes);
+    
+    Spn* spn = new Spn();
+    spn->m_modelName = modelData.name();
+    spn->m_edges.assign(edges.begin(), edges.end());
+    spn->m_nodes.assign(nodes.begin(), nodes.end());
+    spn->m_inputNodes.assign(inputNodes.begin(), inputNodes.end());
+    spn->m_hiddenNodes.assign(hiddenNodes.begin(), hiddenNodes.end());
+    spn->m_queryNodes.assign(queryNodes.begin(), queryNodes.end());
+    
+
+    return spn;
 }
 
-template <typename T>
-void Spn::deleteList(const std::vector<T*>& vList)
-{
-    for (int i = vList.size() - 1; i >= 0; --i)
-    {
-        delete (vList[i]);
-    }
-}
 
 }

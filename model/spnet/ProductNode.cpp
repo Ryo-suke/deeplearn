@@ -10,13 +10,11 @@
 namespace model
 {
 
-ProductNode::ProductNode()
+ProductNode::ProductNode(NodeData& nodeData)
+: Node(nodeData)
 {
 }
 
-ProductNode::ProductNode(const ProductNode& orig)
-{
-}
 
 ProductNode::~ProductNode()
 {

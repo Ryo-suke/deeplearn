@@ -11,6 +11,8 @@
 #include <vector>
 #include <Node.h>
 #include <Edge.h>
+#include <deeplearn.pb.h>
+#include <DataHandler.h>
 
 namespace model
 {
@@ -26,23 +28,33 @@ protected:
      */
     std::vector<Node*> m_nodeList;
     
+    std::string m_modelName;
+    
 protected:
     Model();
-    Model(std::vector<Node*> &nodes, std::vector<Edge*> &edges);
+    Model(const std::string& modelName
+            , std::vector<Node*> &nodes
+            , std::vector<Edge*> &edges);
     Model(const Model& orig);
     virtual ~Model();
     
 public:
     virtual math::pimatrix Forward() = 0;
     virtual void Backward() = 0;
-    virtual void Train() = 0;
+    virtual void Train(data::DataHandler* dataHandler, Operation& trainOp) = 0;
     
     /*
      * Run a topological sort on nodes, detect loop if there is any.
      */
     virtual bool SortNodes();
+    virtual void PrintBackpropOrder(std::ostream& s);
     
-private:
+    static Model* FromModelData(const ModelData& modelData);
+    
+protected:
+    
+    template <typename T>
+    static void deleteList(const std::vector<T*>& vList);
 
 };
 

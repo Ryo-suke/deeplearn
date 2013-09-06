@@ -30,3 +30,52 @@ message ModelData {
   required ModelType model_type = 2;
   optional model.SpnData spn_data = 3;
 }
+
+message Operation {
+  enum Optimizer {
+    GRADIENT_DESCENT = 0;
+    HARD_GRADIENT_DESCENT = 1;
+    EM = 2;
+    HARD_EM = 3;
+    CD = 4;
+    PCD = 5;
+  }
+  enum OperationType {
+    TRAIN = 0;
+    TEST = 1;
+  }
+  message StopCondition {
+    optional bool all_processed = 1 [default=true];
+    optional int32 steps = 2 [default=10000];
+  }
+  required string name = 1 [default="operation"];
+  required Optimizer optimizer = 2 [default=GRADIENT_DESCENT];
+  optional StopCondition stop_condition = 3;
+  optional OperationType operation_type = 4 [default=TRAIN];
+  optional int32 batch_size = 5 [default=100];
+  optional string data_proto = 6;
+  optional int32 eval_after = 7 [default=500];
+  optional int32 checkpoint_after = 8 [default=1000];
+  optional string checkpoint_directory = 9;
+  optional bool randomize = 10 [default=false];
+}
+
+message DatasetInfo {
+  required string name = 1;
+  message Data {
+    enum DataType {
+      TRAIN_SET = 0;
+      EVAL_SET = 1;
+      TEST_SET = 2;
+    }
+    required DataType type = 1;
+    required string file_pattern = 2;
+    required int32 size = 3;        // number of instances
+    required int32 dimensions = 4;
+  }
+  repeated Data data = 2;
+  optional string data_handler = 3 [default="deeplearn"];
+  optional float main_memory = 4 [default=2];       // in Gigabytes
+  optional float gpu_memory = 5 [default=1.5];        // in Gigabytes
+  optional string path_prefix = 6 [default=""];
+}

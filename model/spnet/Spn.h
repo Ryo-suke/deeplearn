@@ -10,32 +10,31 @@
 
 #include <Model.h>
 #include <deeplearn.pb.h>
+#include <pimatrix.h>
 
 namespace model
 {
 
 class Spn : public Model
 {
-    // views on the cannonical list of nodes
+    // views on the underlying list of nodes (in Model)
     std::vector<Node*> m_inputNodes, m_hiddenNodes, m_queryNodes;
     
 public:
-    Spn(std::vector<Node*>& nodes
-            , std::vector<Edge*>& edges
-            , std::vector<Node*>& inputNodes
-            , std::vector<Node*>& hiddenNodes
-            , std::vector<Node*>& queryNodes);
-    Spn(const Spn& orig);
+    Spn();
     virtual ~Spn();
     
     math::pimatrix Forward(){}
     void Backward(){}
-    void Train(){}
+    void Train(data::DataHandler* dataHandler, Operation& trainOp);
     
     static Spn* FromProto(const ModelData& modelData);
     
-    template <typename T>
-    static void deleteList(const std::vector<T*>& vList);
+private:
+    void TrainOneBatch(Operation& trainOp
+                    , math::pimatrix* batch);
+    void Prune();    
+    bool stopCondition(const Operation_StopCondition& cond, int iStep);
     
 };
 

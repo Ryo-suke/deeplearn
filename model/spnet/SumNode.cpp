@@ -10,11 +10,8 @@
 namespace model
 {
 
-SumNode::SumNode()
-{
-}
-
-SumNode::SumNode(const SumNode& orig)
+SumNode::SumNode(NodeData& nodeData)
+: Node(nodeData)
 {
 }
 

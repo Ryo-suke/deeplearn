@@ -15,10 +15,6 @@ InputNode::InputNode(NodeData& nodeData)
 {
 }
 
-InputNode::InputNode(const InputNode& orig)
-{
-}
-
 InputNode::~InputNode()
 {
 }
