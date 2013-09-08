@@ -19,10 +19,7 @@ public:
     SumNode(NodeData& nodeData);
     virtual ~SumNode();
     
-    math::pimatrix* Forward()
-    {
-        return NULL;
-    }
+    virtual void Forward();
         
 private:
 

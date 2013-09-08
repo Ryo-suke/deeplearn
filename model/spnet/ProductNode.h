@@ -19,10 +19,8 @@ public:
     ProductNode(NodeData& nodeData);
     virtual ~ProductNode();
     
-    math::pimatrix* Forward()
-    {
-        return NULL;
-    }
+    virtual void Forward();
+    
         
 private:
 

@@ -19,9 +19,8 @@ public:
     MaxNode(NodeData& nodeData);
     virtual ~MaxNode();
     
-    math::pimatrix* Forward()
+    virtual void Forward()
     {
-        return NULL;
     }
 
     

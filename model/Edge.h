@@ -8,6 +8,7 @@
 #ifndef EDGE_H
 #define	EDGE_H
 
+#include <boost/noncopyable.hpp>
 #include <pimatrix.h>
 #include <Node.h>
 
@@ -16,7 +17,7 @@ namespace model
 
 class Node;
 
-class Edge
+class Edge : boost::noncopyable
 {
 
 private:
@@ -26,7 +27,6 @@ private:
     
 public:
     Edge(Node *node1, Node* node2, bool directed);
-    Edge(const Edge& orig);
     virtual ~Edge();
     
     Node* GetNode1()
@@ -38,6 +38,13 @@ public:
     {
         return m_node2;
     }
+
+    math::pimatrix& GetWeights()
+    {
+        return m_weight;
+    }
+
+    virtual math::pimatrix Forward();
     
 private:
 

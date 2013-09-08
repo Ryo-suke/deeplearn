@@ -22,9 +22,9 @@ public:
     
     /***********************************************************************/
     
-    math::pimatrix* Forward()
+    virtual void Forward()
     {
-        return NULL;
+        // doing nothing
     }
 
     /***********************************************************************/
@@ -35,13 +35,25 @@ public:
      */
     virtual void SetValue(math::pimatrix& values)
     {
-        BOOST_ASSERT_MSG(values.size2() >= m_nodeData.dimension()
+        size_t dim = GetDimension();
+        BOOST_ASSERT_MSG(values.size2() >= dim
                 , "Invalid dimension");
         
-        m_activations.CopyRows(values, m_nodeData.input_start_index()
-                , values.size1());
+        if (m_activations.size1() != values.size1() 
+            || m_activations.size2() != dim)
+        {
+            m_activations.resize(values.size1(), dim);
+        }
+
+        m_activations.copyColumns(values, m_nodeData.input_start_index()
+                , dim);
     }
     
+    virtual void SetValue(float val)
+    {
+        m_activations.setValue(val);
+    }
+
 private:
 
 };

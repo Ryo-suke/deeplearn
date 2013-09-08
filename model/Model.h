@@ -8,6 +8,7 @@
 #ifndef MODEL_H
 #define	MODEL_H
 
+#include <boost/noncopyable.hpp>
 #include <vector>
 #include <Node.h>
 #include <Edge.h>
@@ -17,7 +18,7 @@
 namespace model
 {
 
-class Model
+class Model : boost::noncopyable
 {
 protected:
     std::vector<Node*> m_nodes;
@@ -35,7 +36,6 @@ protected:
     Model(const std::string& modelName
             , std::vector<Node*> &nodes
             , std::vector<Edge*> &edges);
-    Model(const Model& orig);
     virtual ~Model();
     
 public:
@@ -45,8 +45,10 @@ public:
     
     /*
      * Run a topological sort on nodes, detect loop if there is any.
+	 * If there is any loop, then backprop can not work and this function returns FALSE.
+	 * It might perform other checks in subclasses.
      */
-    virtual bool SortNodes();
+    virtual bool Validate();
     virtual void PrintBackpropOrder(std::ostream& s);
     
     static Model* FromModelData(const ModelData& modelData);

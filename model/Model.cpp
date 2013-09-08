@@ -31,10 +31,6 @@ Model::Model(const std::string& modelName
 {
 }
 
-Model::Model(const Model& orig)
-{
-}
-
 Model::~Model()
 {
     m_nodeList.clear();
@@ -44,7 +40,7 @@ Model::~Model()
     m_edges.clear();
 }
 
-bool Model::SortNodes()
+bool Model::Validate()
 {
     m_nodeList.clear();
     std::vector<bool> removedEdges(m_edges.size());

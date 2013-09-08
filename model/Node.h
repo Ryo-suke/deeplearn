@@ -37,7 +37,7 @@ public:
     virtual ~Node();
     
 public:
-    virtual math::pimatrix* Forward() = 0;
+    virtual void Forward() = 0;
     
     virtual void AddIncomingEdge(Edge* e)
     {
@@ -61,9 +61,9 @@ public:
         return m_nodeData.name();
     }
     
-    virtual int GetDimension()
+    virtual size_t GetDimension()
     {
-        return m_nodeData.dimension();
+        return (size_t)m_nodeData.dimension();
     }
     
     virtual std::vector<Edge*>& GetIncomingEdges()
@@ -71,7 +71,7 @@ public:
         return m_incomingEdges;
     }
         
-    virtual int GetIncomingEdgesCount()
+    virtual size_t GetIncomingEdgesCount()
     {
         return m_incomingEdges.size();
     }
@@ -80,11 +80,27 @@ public:
     {
         return m_outgoingEdges;
     }
+
+    virtual size_t GetOutgoingEdgesCount()
+    {
+        return m_outgoingEdges.size();
+    }
     
+    virtual math::pimatrix& GetActivations()
+    {
+        return m_activations;
+    }
+
     /*
      * Only for Input nodes
      */
     virtual void SetValue(math::pimatrix& values)
+    {    }
+
+    /*
+     * Only for Input nodes
+     */
+    virtual void SetValue(float val)
     {    }
     
 private:

@@ -19,6 +19,7 @@ namespace model
 {
 
 Spn::Spn()
+: m_root(NULL)
 {   }
 
 Spn::~Spn()
@@ -30,16 +31,21 @@ Spn::~Spn()
 
 /**************************************************************************/
 
+math::pimatrix Spn::Forward()
+{
+    return math::pimatrix(1,1);
+}
+
 void Spn::Train(data::DataHandler* dataHandler, Operation& trainOp)
 {
-    BOOST_ASSERT_MSG(!m_nodeList.empty(),
-            "No backprop order. Please run SortNodes() first.");
+    BOOST_ASSERT_MSG(!m_nodeList.empty() && !m_root,
+            "No backprop order. Please run Validate() first.");
     // check valid data handler and network architecture
     
-    Operation_StopCondition stopCond = trainOp.stop_condition();
-    if (stopCond.all_processed())
-    {
-        stopCond.set_steps(dataHandler->GetNumBatches());
+	Operation_StopCondition stopCond = trainOp.stop_condition();
+	if (stopCond.all_processed())
+	{
+		stopCond.set_steps(dataHandler->GetNumTrainingBatches());
     }
     dataHandler->SetBatchSize(trainOp.batch_size());
     
@@ -55,6 +61,27 @@ void Spn::Train(data::DataHandler* dataHandler, Operation& trainOp)
     Prune();
 }
 
+bool Spn::Validate()
+{
+	bool bRet = Model::Validate();
+	if (!bRet)
+		return false;
+
+	// find root
+    m_root = NULL;
+    for(std::vector<Node*>::iterator it = m_nodeList.end(); it != m_nodeList.begin(); it--)
+    {
+        if((*it)->GetOutgoingEdgesCount())
+        {
+            if (m_root)
+                return false;
+            else
+                m_root = (*it);
+        }
+    }
+    return m_root != NULL;
+}
+
 /**************************************************************************/
 
 void Spn::TrainOneBatch(Operation& trainOp
@@ -64,15 +91,19 @@ void Spn::TrainOneBatch(Operation& trainOp
     
     for(it = m_inputNodes.begin(); it != m_inputNodes.end(); ++it)
     {
-        (*it)->SetValue(batch);
+        (*it)->SetValue(*batch);
     }
     
     // set 1 for H
-    
+    for(it = m_hiddenNodes.begin(); it != m_hiddenNodes.end(); ++it)
+    {
+        (*it)->SetValue(1.0f);
+    }
+
     // set query (target)
     for(it = m_queryNodes.begin(); it != m_queryNodes.end(); ++it)
     {
-        (*it)->SetValue(batch);
+        (*it)->SetValue(*batch);
     }
     
     for (it = m_nodeList.begin(); it != m_nodeList.end(); ++it)
@@ -81,10 +112,11 @@ void Spn::TrainOneBatch(Operation& trainOp
     }
     
     // get value of root
+    math::pimatrix err = m_root->GetActivations();
     
 }
 
-void Prune()
+void Spn::Prune()
 {
     
 }
@@ -93,6 +125,7 @@ bool Spn::stopCondition(const Operation_StopCondition& cond, int iStep)
 {
     return iStep < cond.steps();
 }
+
 
 /**************************************************************************/
 
@@ -127,7 +160,7 @@ Spn* Spn::FromProto(const ModelData& modelData)
         {
             case NodeData::INPUT:
                 nodeData.set_type(NodeData::INPUT);
-                nodeData.set_input_start_index(inputIndices(0, i));
+                nodeData.set_input_start_index((int)inputIndices(0, i));
                 tmpNode = new InputNode(nodeData);
                 inputNodes.push_back(tmpNode);
                 break;
@@ -138,7 +171,7 @@ Spn* Spn::FromProto(const ModelData& modelData)
                 break;
             case NodeData::QUERY:
                 nodeData.set_type(NodeData::QUERY);
-                nodeData.set_input_start_index(inputIndices(0, i));
+                nodeData.set_input_start_index((int)inputIndices(0, i));
                 tmpNode = new InputNode(nodeData);
                 queryNodes.push_back(tmpNode);
                 break;

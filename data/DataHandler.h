@@ -10,6 +10,7 @@
 
 #include <boost/noncopyable.hpp>
 #include <pimatrix.h>
+#include <deeplearn.pb.h>
 
 namespace data
 {
@@ -21,20 +22,21 @@ protected:
     int m_iBatchSize;
     bool m_bGetLastPiece;
     
-public:
-    DataHandler(model::DatasetInfo& datasetInfo)
-     : m_iBatchSize(1)
-     , m_bGetLastPiece(true)
+protected:
+    DataHandler(const model::DatasetInfo& datasetInfo)
+        : m_iBatchSize(1)
+        , m_bGetLastPiece(true)
     {
-         m_datasetInfo = datasetInfo;
+        m_datasetInfo = datasetInfo;
     }
-     
+
     virtual ~DataHandler()
     {
     }
-    
+
     /******************************************************************/
-    
+public:
+
     virtual std::string GetHandlerName() = 0;
     
     
@@ -42,15 +44,12 @@ public:
     virtual void BeginLoadNextBatch() = 0;
     virtual void EndLoadNextBatch() = 0;
     
-    /*
-     * number of batches
-     */
-    virtual int GetNumBatches() = 0;
-    
     virtual void AllocateMemory() = 0;
     
+    virtual int GetNumTrainingBatches() = 0;
+
     /******************************************************************/
-    
+
     void SetBatchSize(int batchSize)
     {
         m_iBatchSize = batchSize;

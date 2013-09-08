@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{E4AA8142-717B-453E-9769-D529E14C5CCD}</ProjectGuid>
+    <RootNamespace>deeplearn</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v100</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>D:\lib\boost_1_54_0;D:\lib\protobuf-2.5_build\include;..\math;..\model;..\data;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>libprotobuf.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\lib\protobuf-2.5_build\lib\debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>D:\lib\boost_1_54_0;D:\lib\protobuf-2.5_build\include;..\math;..\model;..\data;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>libprotobuf.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\lib\protobuf-2.5_build\lib\release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\data\DeepLearnDataHandler.cpp" />
+    <ClCompile Include="..\main.cpp" />
+    <ClCompile Include="..\model\deeplearn.pb.cc" />
+    <ClCompile Include="..\model\Edge.cpp" />
+    <ClCompile Include="..\model\InputNode.cpp" />
+    <ClCompile Include="..\model\Model.cpp" />
+    <ClCompile Include="..\model\Node.cpp" />
+    <ClCompile Include="..\model\spnet\MaxNode.cpp" />
+    <ClCompile Include="..\model\spnet\ProductNode.cpp" />
+    <ClCompile Include="..\model\spnet\Spn.cpp" />
+    <ClCompile Include="..\model\spnet\SpnGraph.cpp" />
+    <ClCompile Include="..\model\spnet\SumNode.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\data\Cache.h" />
+    <ClInclude Include="..\data\DataHandler.h" />
+    <ClInclude Include="..\data\Dataset.h" />
+    <ClInclude Include="..\data\DeepLearnDataHandler.h" />
+    <ClInclude Include="..\data\Disk.h" />
+    <ClInclude Include="..\math\pimatrix.h" />
+    <ClInclude Include="..\model\deeplearn.pb.h" />
+    <ClInclude Include="..\model\Edge.h" />
+    <ClInclude Include="..\model\InputNode.h" />
+    <ClInclude Include="..\model\Model.h" />
+    <ClInclude Include="..\model\Node.h" />
+    <ClInclude Include="..\model\spnet\MaxNode.h" />
+    <ClInclude Include="..\model\spnet\ProductNode.h" />
+    <ClInclude Include="..\model\spnet\Spn.h" />
+    <ClInclude Include="..\model\spnet\SpnGraph.h" />
+    <ClInclude Include="..\model\spnet\SumNode.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
