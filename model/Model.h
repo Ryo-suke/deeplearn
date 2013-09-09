@@ -10,9 +10,9 @@
 
 #include <boost/noncopyable.hpp>
 #include <vector>
+#include <deeplearn.pb.h>
 #include <Node.h>
 #include <Edge.h>
-#include <deeplearn.pb.h>
 #include <DataHandler.h>
 
 namespace model

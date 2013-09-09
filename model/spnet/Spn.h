@@ -8,9 +8,9 @@
 #ifndef SPN_H
 #define	SPN_H
 
-#include <Model.h>
 #include <deeplearn.pb.h>
 #include <pimatrix.h>
+#include <Model.h>
 
 namespace model
 {

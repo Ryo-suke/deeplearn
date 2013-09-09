@@ -8,12 +8,43 @@
 #ifndef DATASET_H
 #define	DATASET_H
 
+#include <boost/noncopyable.hpp>
+#include <string>
+#include <vector>
+#include <Cache.h>
+#include <deeplearn.pb.h>
+
 namespace data
 {
 
-class Dataset 
+class Dataset : boost::noncopyable
 {
+    Cache *m_cache;
+    size_t m_batchSize;
+    math::pimatrix m_currentBatch;
     
+public:
+    Dataset(const model::DatasetInfo_Data& dataInfo
+            , size_t batchSize
+            , size_t capacity
+            , bool randomize = false
+            , int randomSeed = 42, bool verbose = false);
+    
+    virtual ~Dataset();
+    
+    virtual void Append(const model::DatasetInfo_Data& dataInfo);
+    
+    virtual math::pimatrix* GetCurrentBatch();
+    virtual void BeginLoadNextBatch();
+    virtual void EndLoadNextBatch();
+    
+    virtual void AllocateMemory();
+    
+    virtual int GetNumBatches();
+    
+protected:
+    void loadFileNames(const std::string sFilePattern
+    , std::vector<std::string>& filesOut);
 };
 
 }

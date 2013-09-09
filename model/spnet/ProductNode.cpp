@@ -34,7 +34,7 @@ void ProductNode::Forward()
             , "Invalid dimension");
 
         if (i == 0)
-            m_activations.assign(incomingNeighbor->GetActivations());
+            m_activations = incomingNeighbor->GetActivations();
         else
             m_activations.dot(incomingNeighbor->GetActivations());
         i++;

@@ -989,6 +989,13 @@ class DatasetInfo_Data : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 dimensions() const;
   inline void set_dimensions(::google::protobuf::int32 value);
 
+  // optional int32 type_size = 5 [default = 4];
+  inline bool has_type_size() const;
+  inline void clear_type_size();
+  static const int kTypeSizeFieldNumber = 5;
+  inline ::google::protobuf::int32 type_size() const;
+  inline void set_type_size(::google::protobuf::int32 value);
+
   // @@protoc_insertion_point(class_scope:model.DatasetInfo.Data)
  private:
   inline void set_has_type();
@@ -999,6 +1006,8 @@ class DatasetInfo_Data : public ::google::protobuf::Message {
   inline void clear_has_size();
   inline void set_has_dimensions();
   inline void clear_has_dimensions();
+  inline void set_has_type_size();
+  inline void clear_has_type_size();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -1006,9 +1015,10 @@ class DatasetInfo_Data : public ::google::protobuf::Message {
   int type_;
   ::google::protobuf::int32 size_;
   ::google::protobuf::int32 dimensions_;
+  ::google::protobuf::int32 type_size_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(4 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(5 + 31) / 32];
 
   friend void  protobuf_AddDesc_deeplearn_2eproto();
   friend void protobuf_AssignDesc_deeplearn_2eproto();
@@ -2236,6 +2246,28 @@ inline ::google::protobuf::int32 DatasetInfo_Data::dimensions() const {
 inline void DatasetInfo_Data::set_dimensions(::google::protobuf::int32 value) {
   set_has_dimensions();
   dimensions_ = value;
+}
+
+// optional int32 type_size = 5 [default = 4];
+inline bool DatasetInfo_Data::has_type_size() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void DatasetInfo_Data::set_has_type_size() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void DatasetInfo_Data::clear_has_type_size() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void DatasetInfo_Data::clear_type_size() {
+  type_size_ = 4;
+  clear_has_type_size();
+}
+inline ::google::protobuf::int32 DatasetInfo_Data::type_size() const {
+  return type_size_;
+}
+inline void DatasetInfo_Data::set_type_size(::google::protobuf::int32 value) {
+  set_has_type_size();
+  type_size_ = value;
 }
 
 // -------------------------------------------------------------------

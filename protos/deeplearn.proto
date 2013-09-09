@@ -72,6 +72,7 @@ message DatasetInfo {
     required string file_pattern = 2;
     required int32 size = 3;        // number of instances
     required int32 dimensions = 4;
+    optional int32 type_size = 5 [default=4];   // size of atomic value (in bytes)
   }
   repeated Data data = 2;
   optional string data_handler = 3 [default="deeplearn"];

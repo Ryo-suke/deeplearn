@@ -42,21 +42,25 @@ void Spn::Train(data::DataHandler* dataHandler, Operation& trainOp)
             "No backprop order. Please run Validate() first.");
     // check valid data handler and network architecture
     
+    data::Dataset* trainSet = dataHandler->GetDataset(model::DatasetInfo_Data::TRAIN_SET);
+    
 	Operation_StopCondition stopCond = trainOp.stop_condition();
 	if (stopCond.all_processed())
 	{
-		stopCond.set_steps(dataHandler->GetNumTrainingBatches());
+		stopCond.set_steps(trainSet->GetNumBatches());
     }
-    dataHandler->SetBatchSize(trainOp.batch_size());
     
     math::pimatrix* currentBatch;
     int iTrainStep = 0;
     
     while (stopCondition(stopCond, iTrainStep))
     {
-        dataHandler->EndLoadNextBatch();
-        currentBatch = dataHandler->GetCurrentBatch();
+        trainSet->EndLoadNextBatch();
+        currentBatch = trainSet->GetCurrentBatch();
+        trainSet->BeginLoadNextBatch();
         TrainOneBatch(trainOp, currentBatch);
+        
+        iTrainStep++;
     }
     Prune();
 }
@@ -69,9 +73,10 @@ bool Spn::Validate()
 
 	// find root
     m_root = NULL;
-    for(std::vector<Node*>::iterator it = m_nodeList.end(); it != m_nodeList.begin(); it--)
+    std::vector<Node*>::iterator it = m_nodeList.begin();
+    for(; it != m_nodeList.end(); it++)
     {
-        if((*it)->GetOutgoingEdgesCount())
+        if((*it)->GetOutgoingEdgesCount() == 0)
         {
             if (m_root)
                 return false;

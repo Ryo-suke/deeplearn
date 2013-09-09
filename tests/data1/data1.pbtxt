@@ -1,0 +1,26 @@
+name: "data1"
+
+gpu_memory: 2  # Upper bound on gpu memory use.
+main_memory: 4  # Upper bound on main memory use.
+data_handler: "deeplearn"
+
+data {
+  type: TRAIN_SET
+  file_pattern: "/home/hoaivu_pham/NetBeansProjects/deeplearn/tests/data1/m1.m"
+  size: 600
+  dimensions: 4
+}
+
+data {
+  type: EVAL_SET
+  file_pattern: "/home/hoaivu_pham/NetBeansProjects/deeplearn/tests/data1/m2.m"
+  size: 200
+  dimensions: 4
+}
+
+data {
+  type: TEST_SET
+  file_pattern: "/home/hoaivu_pham/NetBeansProjects/deeplearn/tests/data1/m3.m"
+  size: 200
+  dimensions: 4
+}

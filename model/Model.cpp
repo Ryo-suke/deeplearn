@@ -64,7 +64,7 @@ bool Model::Validate()
         for (std::vector<Edge*>::iterator itEdge = neighbors.begin();
                 itEdge != neighbors.end(); ++itEdge)
         {
-            int idx = std::distance(m_edges.begin(), 
+            size_t idx = std::distance(m_edges.begin(), 
                     std::find(m_edges.begin(), m_edges.end(), (*itEdge)));
             BOOST_ASSERT(idx < m_edges.size());
             removedEdges[idx] = true;
@@ -75,7 +75,7 @@ bool Model::Validate()
             for (std::vector<Edge*>::iterator itEdge2 = incomingOfNode2.begin();
                     itEdge2 != incomingOfNode2.end(); ++itEdge2)
             {
-                int idx2 = std::distance(m_edges.begin(), 
+                size_t idx2 = std::distance(m_edges.begin(), 
                     std::find(m_edges.begin(), m_edges.end(), *itEdge2));
                 BOOST_ASSERT(idx2 < m_edges.size());
                 if (!removedEdges[idx2])

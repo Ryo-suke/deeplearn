@@ -173,11 +173,12 @@ void protobuf_AssignDesc_deeplearn_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(DatasetInfo));
   DatasetInfo_Data_descriptor_ = DatasetInfo_descriptor_->nested_type(0);
-  static const int DatasetInfo_Data_offsets_[4] = {
+  static const int DatasetInfo_Data_offsets_[5] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(DatasetInfo_Data, type_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(DatasetInfo_Data, file_pattern_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(DatasetInfo_Data, size_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(DatasetInfo_Data, dimensions_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(DatasetInfo_Data, type_size_),
   };
   DatasetInfo_Data_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -272,15 +273,16 @@ void protobuf_AddDesc_deeplearn_2eproto() {
     "timizer\022\024\n\020GRADIENT_DESCENT\020\000\022\031\n\025HARD_GR"
     "ADIENT_DESCENT\020\001\022\006\n\002EM\020\002\022\013\n\007HARD_EM\020\003\022\006\n"
     "\002CD\020\004\022\007\n\003PCD\020\005\"$\n\rOperationType\022\t\n\005TRAIN"
-    "\020\000\022\010\n\004TEST\020\001\"\323\002\n\013DatasetInfo\022\014\n\004name\030\001 \002"
+    "\020\000\022\010\n\004TEST\020\001\"\351\002\n\013DatasetInfo\022\014\n\004name\030\001 \002"
     "(\t\022%\n\004data\030\002 \003(\0132\027.model.DatasetInfo.Dat"
     "a\022\037\n\014data_handler\030\003 \001(\t:\tdeeplearn\022\026\n\013ma"
     "in_memory\030\004 \001(\002:\0012\022\027\n\ngpu_memory\030\005 \001(\002:\003"
-    "1.5\022\025\n\013path_prefix\030\006 \001(\t:\000\032\245\001\n\004Data\022.\n\004t"
+    "1.5\022\025\n\013path_prefix\030\006 \001(\t:\000\032\273\001\n\004Data\022.\n\004t"
     "ype\030\001 \002(\0162 .model.DatasetInfo.Data.DataT"
     "ype\022\024\n\014file_pattern\030\002 \002(\t\022\014\n\004size\030\003 \002(\005\022"
-    "\022\n\ndimensions\030\004 \002(\005\"5\n\010DataType\022\r\n\tTRAIN"
-    "_SET\020\000\022\014\n\010EVAL_SET\020\001\022\014\n\010TEST_SET\020\002", 1354);
+    "\022\n\ndimensions\030\004 \002(\005\022\024\n\ttype_size\030\005 \001(\005:\001"
+    "4\"5\n\010DataType\022\r\n\tTRAIN_SET\020\000\022\014\n\010EVAL_SET"
+    "\020\001\022\014\n\010TEST_SET\020\002", 1376);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "deeplearn.proto", &protobuf_RegisterTypes);
   NodeData::default_instance_ = new NodeData();
@@ -2335,6 +2337,7 @@ const int DatasetInfo_Data::kTypeFieldNumber;
 const int DatasetInfo_Data::kFilePatternFieldNumber;
 const int DatasetInfo_Data::kSizeFieldNumber;
 const int DatasetInfo_Data::kDimensionsFieldNumber;
+const int DatasetInfo_Data::kTypeSizeFieldNumber;
 #endif  // !_MSC_VER
 
 DatasetInfo_Data::DatasetInfo_Data()
@@ -2357,6 +2360,7 @@ void DatasetInfo_Data::SharedCtor() {
   file_pattern_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   size_ = 0;
   dimensions_ = 0;
+  type_size_ = 4;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -2403,6 +2407,7 @@ void DatasetInfo_Data::Clear() {
     }
     size_ = 0;
     dimensions_ = 0;
+    type_size_ = 4;
   }
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   mutable_unknown_fields()->Clear();
@@ -2479,6 +2484,22 @@ bool DatasetInfo_Data::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
+        if (input->ExpectTag(40)) goto parse_type_size;
+        break;
+      }
+
+      // optional int32 type_size = 5 [default = 4];
+      case 5: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+         parse_type_size:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &type_size_)));
+          set_has_type_size();
+        } else {
+          goto handle_uninterpreted;
+        }
         if (input->ExpectAtEnd()) return true;
         break;
       }
@@ -2526,6 +2547,11 @@ void DatasetInfo_Data::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteInt32(4, this->dimensions(), output);
   }
 
+  // optional int32 type_size = 5 [default = 4];
+  if (has_type_size()) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(5, this->type_size(), output);
+  }
+
   if (!unknown_fields().empty()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -2558,6 +2584,11 @@ void DatasetInfo_Data::SerializeWithCachedSizes(
   // required int32 dimensions = 4;
   if (has_dimensions()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(4, this->dimensions(), target);
+  }
+
+  // optional int32 type_size = 5 [default = 4];
+  if (has_type_size()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(5, this->type_size(), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -2596,6 +2627,13 @@ int DatasetInfo_Data::ByteSize() const {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::Int32Size(
           this->dimensions());
+    }
+
+    // optional int32 type_size = 5 [default = 4];
+    if (has_type_size()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int32Size(
+          this->type_size());
     }
 
   }
@@ -2637,6 +2675,9 @@ void DatasetInfo_Data::MergeFrom(const DatasetInfo_Data& from) {
     if (from.has_dimensions()) {
       set_dimensions(from.dimensions());
     }
+    if (from.has_type_size()) {
+      set_type_size(from.type_size());
+    }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
@@ -2665,6 +2706,7 @@ void DatasetInfo_Data::Swap(DatasetInfo_Data* other) {
     std::swap(file_pattern_, other->file_pattern_);
     std::swap(size_, other->size_);
     std::swap(dimensions_, other->dimensions_);
+    std::swap(type_size_, other->type_size_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);
