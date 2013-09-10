@@ -91,7 +91,7 @@ void testBoostMatrix()
 void generateData(int rowCount, std::string sFile)
 {
     math::pimatrix m(rowCount, 4);
-    for (int i = 0; i < rowCount; ++i)
+    for (size_t i = 0; i < rowCount; ++i)
     {
         m.set(i, 0, ((float)i)/rowCount);
         m.set(i, 1, 1.0f - ((float)i)/rowCount);

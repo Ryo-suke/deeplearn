@@ -31,9 +31,36 @@ Spn::~Spn()
 
 /**************************************************************************/
 
-math::pimatrix Spn::Forward()
+math::pimatrix Spn::Forward(math::pimatrix* batch)
 {
-    return math::pimatrix(1,1);
+    std::vector<Node*>::iterator it;
+    
+    if (batch)
+    {
+        for(it = m_inputNodes.begin(); it != m_inputNodes.end(); ++it)
+        {
+            (*it)->SetValue(*batch);
+        }
+
+        // set 1 for H
+        for(it = m_hiddenNodes.begin(); it != m_hiddenNodes.end(); ++it)
+        {
+            (*it)->SetValue(1.0f);
+        }
+
+        // set query (target)
+        for(it = m_queryNodes.begin(); it != m_queryNodes.end(); ++it)
+        {
+            (*it)->SetValue(*batch);
+        }
+    }
+    
+    for (it = m_nodeList.begin(); it != m_nodeList.end(); ++it)
+    {
+        (*it)->Forward();
+    }    
+    // get value of root
+    return m_root->GetActivations();
 }
 
 void Spn::Train(data::DataHandler* dataHandler, Operation& trainOp)
@@ -92,33 +119,7 @@ bool Spn::Validate()
 void Spn::TrainOneBatch(Operation& trainOp
                     , math::pimatrix* batch)
 {
-    std::vector<Node*>::iterator it;
-    
-    for(it = m_inputNodes.begin(); it != m_inputNodes.end(); ++it)
-    {
-        (*it)->SetValue(*batch);
-    }
-    
-    // set 1 for H
-    for(it = m_hiddenNodes.begin(); it != m_hiddenNodes.end(); ++it)
-    {
-        (*it)->SetValue(1.0f);
-    }
-
-    // set query (target)
-    for(it = m_queryNodes.begin(); it != m_queryNodes.end(); ++it)
-    {
-        (*it)->SetValue(*batch);
-    }
-    
-    for (it = m_nodeList.begin(); it != m_nodeList.end(); ++it)
-    {
-        (*it)->Forward();
-    }
-    
-    // get value of root
-    math::pimatrix err = m_root->GetActivations();
-    
+    math::pimatrix err = Forward(batch);
 }
 
 void Spn::Prune()

@@ -19,7 +19,8 @@ class Disk : boost::noncopyable
 {
 protected:
     std::vector<std::string> m_files;
-    math::pimatrix m_leftOver;
+    math::pimatrix m_currentFile;
+    size_t m_currentRow;
     size_t m_iReadingFile;
     bool m_verbose;
     size_t m_iDimension;
@@ -31,7 +32,7 @@ public:
     
     virtual ~Disk();
 
-    virtual math::pimatrix Get(size_t sampleCount);
+    virtual void Get(size_t sampleCount, math::pimatrix& matRet);
 
     virtual void Append(std::vector<std::string>& files, size_t size, size_t dimension);
         
@@ -40,6 +41,9 @@ public:
         return m_iDimension;
     }
     
+    /*
+     * The number of samples in this set
+     */
     size_t GetSize()
     {
         return m_dataSize;
@@ -47,13 +51,7 @@ public:
         
 protected:
     
-    /*
-     * Returns the remaining number of rows needed to be filled in dest.
-     * Returns 0 means no need to fill it anymore.
-     */
-    virtual size_t copyLeftOver(math::pimatrix& dest, size_t destStart);
-    
-    virtual math::pimatrix loadFile(std::string sFile);
+    virtual void loadFile(std::string sFile, math::pimatrix& matRet);
     
 };
 

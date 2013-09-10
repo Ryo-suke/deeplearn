@@ -17,6 +17,7 @@ Edge::Edge(Node *node1, Node* node2, bool directed)
     m_bDirected = directed;
     
     m_weight.resize(m_node1->GetDimension(), m_node2->GetDimension(), false);
+    m_weight.setValue(1);
     
     m_node1->AddOutgoingEdge(this);
     m_node2->AddIncomingEdge(this);

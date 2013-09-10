@@ -13,12 +13,13 @@ namespace data
 {
 
 Disk::Disk(bool verbose /*= true*/)
-: m_leftOver(0, 0)
+: m_currentFile(0, 0)
 {
     m_verbose = verbose;
     m_iReadingFile = 0;
     m_iDimension = 0;
     m_dataSize = 0;
+    m_currentRow = 0;
 }
 
 Disk::~Disk()
@@ -26,26 +27,40 @@ Disk::~Disk()
 
 /*************************************************************************/
 
-math::pimatrix Disk::Get(size_t sampleCount)
+void Disk::Get(size_t sampleCount, math::pimatrix& matRet)
 {
     if (m_dataSize == 0 || sampleCount == 0)
-        return math::pimatrix(0, 0);
-    
-    math::pimatrix mRet(sampleCount, m_iDimension);
-    size_t iRetStart = 0;
-
-    while(iRetStart < mRet.size1())
     {
-        iRetStart = copyLeftOver(mRet, iRetStart);
-
-        if (iRetStart < mRet.size1())
+        matRet.resize(0, 0);
+        return;
+    }    
+    
+    matRet.resize(sampleCount, m_iDimension);
+    size_t copied = 0;
+    
+    while(copied < sampleCount)
+    {
+        // request more data
+        if (m_currentRow >= m_currentFile.size1())
         {
-            // load next file
-            m_leftOver = loadFile(m_files.at(m_iReadingFile));
-            m_iReadingFile = (m_iReadingFile + 1) % m_files.size();
+            if (m_files.size() > 1 || m_currentFile.size1() == 0)
+            {
+                // only load next file if we have more than 1 file
+                // or this is the first file ever read.
+                loadFile(m_files.at(m_iReadingFile), m_currentFile);
+                m_iReadingFile = (m_iReadingFile + 1) % m_files.size();
+            }
+            m_currentRow = 0;
         }
+        
+        size_t remainingCache = m_currentFile.size1() - m_currentRow;
+        size_t remainingCopy = sampleCount - copied;
+        size_t copyingRows = std::min(remainingCache, remainingCopy);
+        
+        matRet.copyRows(m_currentFile, m_currentRow, copyingRows, copied);
+        copied += copyingRows;
+        m_currentRow += copyingRows;
     }
-    return mRet;
 }
 
 void Disk::Append(std::vector<std::string>& files, size_t size, size_t dimension)
@@ -67,47 +82,14 @@ void Disk::Append(std::vector<std::string>& files, size_t size, size_t dimension
 }
 /****************************************************************************/
 
-/*
- * Returns the remaining number of rows needed to be filled in dest.
- * Returns 0 means no need to fill it anymore.
- */
-size_t Disk::copyLeftOver(math::pimatrix& dest, size_t destStart)
-{
-    size_t iNeedFill = dest.size1() - destStart;
-
-    if (m_leftOver.size1() == 0)
-        return destStart;
-
-    if (m_leftOver.size1() > iNeedFill)
-    {
-        dest.copyRows(m_leftOver, 0, iNeedFill, destStart);
-        m_leftOver = m_leftOver.rows(iNeedFill
-                , m_leftOver.size1() - iNeedFill);
-        return dest.size1();
-    }
-    else if (m_leftOver.size1() == iNeedFill)
-    {
-        dest = m_leftOver;
-        m_leftOver.resize(0, 0);
-        return dest.size1();
-    }
-    dest.copyRows(m_leftOver, 0, m_leftOver.size1(), 0);
-    size_t sNewStart = destStart + m_leftOver.size1();
-    m_leftOver.resize(0, 0);
-    return sNewStart;
-}
-
-
-math::pimatrix Disk::loadFile(std::string sFile)
+void Disk::loadFile(std::string sFile, math::pimatrix& matRet)
 {
     if (m_verbose)
     {
         std::cout << "Reading from disk: " << sFile << std::endl;
     }
-    math::pimatrix mRet;
-    mRet.load(sFile);
-    BOOST_ASSERT_MSG(mRet.size2() == m_iDimension, "Invalid data file.");
-    return mRet;
+    matRet.load(sFile);
+    BOOST_ASSERT_MSG(matRet.size2() == m_iDimension, "Invalid data file.");
 }
 
 }

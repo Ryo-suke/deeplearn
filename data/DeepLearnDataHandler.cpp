@@ -23,6 +23,9 @@ DeepLearnDataHandler::DeepLearnDataHandler(const model::DatasetInfo& datasetInfo
     memoryRatios[model::DatasetInfo_Data::EVAL_SET] = 0.2f;
     memoryRatios[model::DatasetInfo_Data::TEST_SET] = 0.2f;
     
+    // datasetInfo.main_memory() is in GB
+    float memorySize = datasetInfo.main_memory() * 1E9;
+    
     for(int i = datasetInfo.data_size() - 1; i >= 0; --i)
     {
         const model::DatasetInfo_Data& dataset = datasetInfo.data(i);
@@ -32,7 +35,7 @@ DeepLearnDataHandler::DeepLearnDataHandler(const model::DatasetInfo& datasetInfo
         {
             m_datasets[dataType] = 
                     new Dataset(dataset, batchSize
-                    , (size_t)std::floor(memoryRatios[dataType] * datasetInfo.main_memory())
+                    , (size_t)std::floor(memoryRatios[dataType] * memorySize)
                     , randomize, randomSeed, verbose);
         }
         else

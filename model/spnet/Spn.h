@@ -25,7 +25,7 @@ public:
     Spn();
     virtual ~Spn();
     
-    math::pimatrix Forward();
+    math::pimatrix Forward(math::pimatrix* batch);
     void Backward(){}
     void Train(data::DataHandler* dataHandler, Operation& trainOp);
     

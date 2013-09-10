@@ -62,8 +62,6 @@ void testSpn()
 
 void testDataHandler()
 {
-    GOOGLE_PROTOBUF_VERIFY_VERSION;
-    
     model::DatasetInfo datasetInfo;
     
     int fileDescriptor = open("./tests/data1/data1.pbtxt", O_RDONLY);
@@ -98,13 +96,70 @@ void testDataHandler()
     
     delete handler1;
     delete handler2;
-    google::protobuf::ShutdownProtobufLibrary();
+}
+
+/*****************************************************************************/
+
+void testSpnForward()
+{
+    // get Spn
+    model::Spn* spn = createSimpleSpn();
+    BOOST_ASSERT_MSG(spn, "Couldn't create Spn (createSimpleSpn)");
+    
+    bool sorted = spn->Validate();
+    if (!sorted)
+    {
+        std::cout << "%TEST_FAILED% time=0 testname=testSpnForward (test_model) message=spn->Validate() failed" << std::endl;
+    }
+    
+    // get dataset
+    model::DatasetInfo datasetInfo;
+    
+    int fileDescriptor = open("./tests/data1/data1.pbtxt", O_RDONLY);
+
+    if( fileDescriptor < 0 )
+    {
+        std::cout << "%TEST_FAILED% time=0 testname=testSpnForward (test_model) message=fileDescriptor < 0" << std::endl;
+        return;
+    }
+
+    google::protobuf::io::FileInputStream fileInput(fileDescriptor);
+    fileInput.SetCloseOnDelete( true );
+
+    if (!google::protobuf::TextFormat::Parse(&fileInput, &datasetInfo))
+    {
+        std::cout << "%TEST_FAILED% time=0 testname=testSpnForward (test_model) message=protobuf import failed" << std::endl;
+        return;
+    }
+  
+    data::DataHandler *handler;
+    handler = data::DataHandler::GetDataHandler(datasetInfo, 100, true, 42, true);
+    data::Dataset* trainSet = handler->GetDataset(model::DatasetInfo_Data::TRAIN_SET);
+    
+    for (int i = trainSet->GetNumBatches() - 1; i >= 0; --i)
+    {
+        trainSet->EndLoadNextBatch();
+        math::pimatrix *batch = trainSet->GetCurrentBatch();
+        math::pimatrix err = spn->Forward(batch);
+        for (size_t i = 0; i < batch->size1(); ++i)
+        {
+            float t = batch->operator()(i, 0) * batch->operator()(i, 2)
+                    + batch->operator()(i, 1) * batch->operator()(i, 3);
+            if (err(i, 0) != t)
+                std::cout << "%TEST_FAILED% time=0 testname=testSpnForward (test_model) message=forward computation failed" << std::endl;
+        }
+    }
+    
+    delete handler;
+    delete spn;
 }
 
 /*****************************************************************************/
 
 int main(int argc, char** argv)
 {
+    GOOGLE_PROTOBUF_VERIFY_VERSION;
+    
     std::cout << "%SUITE_STARTING% test_model" << std::endl;
     std::cout << "%SUITE_STARTED%" << std::endl;
 
@@ -116,8 +171,14 @@ int main(int argc, char** argv)
     testDataHandler();
     std::cout << "%TEST_FINISHED% time=0 testDataHandler (test_model)" << std::endl;
     
+    std::cout << "%TEST_STARTED% testSpnForward (test_model)" << std::endl;
+    testSpnForward();
+    std::cout << "%TEST_FINISHED% time=0 testSpnForward (test_model)" << std::endl;
+    
     std::cout << "%SUITE_FINISHED% time=0" << std::endl;
 
+    google::protobuf::ShutdownProtobufLibrary();
+        
     return (EXIT_SUCCESS);
 }
 

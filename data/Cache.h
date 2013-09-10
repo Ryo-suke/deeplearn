@@ -26,6 +26,7 @@ class Cache : boost::noncopyable
     math::pimatrix m_data;
     size_t m_currentRow;                // current row in m_data
     boost::minstd_rand m_rndGenerator;
+    size_t m_maxRowCount;            // computed base on the allocated capacity
     
 public:
     /*
@@ -42,6 +43,9 @@ public:
     virtual size_t GetSize();
     
     virtual void Append(std::vector<std::string>& files, size_t size, size_t dimension);
+    
+protected:
+    virtual void AllocateMemory();
 };
 
 }
