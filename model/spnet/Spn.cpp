@@ -147,8 +147,18 @@ void Spn::TrainOneBatch(Operation& trainOp
          twoBatch.setValue(1.0f, nSamples, nSamples
                  , (*it)->GetInputStartIndex(), (*it)->GetDimension());
     }
+    
+    // get the error
     m_error = Forward(&twoBatch);
+    
+    // then we negate the error of half of the "batch"
+    BOOST_ASSERT(m_error.size1() == 2*nSamples && m_error.size2() == 1);
     m_error.element_inverse();
+    m_error.element_negate(nSamples, nSamples, 0, 1);
+    
+    // and do backward.
+    
+    // check correctness with multiple layes...
     Backward();
 }
 

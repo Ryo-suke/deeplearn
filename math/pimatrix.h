@@ -66,7 +66,7 @@ public:
 
     //static pimatrix mult(pimatrix& m1, pimatrix& m2);
 
-    void mult_add(pimatrix& m1, pimatrix& m2);
+    //void mult_add(pimatrix& m1, pimatrix& m2);
     
     /*****************************************************************/
     
@@ -84,6 +84,9 @@ public:
      */
     void element_add(pimatrix& m, float beta = 1);
     
+    void element_negate(size_t startRow, size_t rowCount
+                        , size_t startCol, size_t colCount);
+    
     /*****************************************************************/
     
     void shuffleRows(boost::minstd_rand& generator);
@@ -100,6 +103,7 @@ public:
     operator () (size_t i, size_t j) const;
     
     void set(size_t i, size_t j, float val);
+    
         
     friend std::ostream& operator<< (std::ostream &out, pimatrix &m);
     

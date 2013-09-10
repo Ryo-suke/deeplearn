@@ -191,7 +191,7 @@ pimatrix pimatrix::mult(pimatrix& m1, pimatrix& m2)
     return mRet;
 }
 */
-
+/*
 void pimatrix::mult_add(pimatrix& m1, pimatrix& m2)
 {
     if (m2.size1() == 1 && m2.size2() == 1)
@@ -206,6 +206,7 @@ void pimatrix::mult_add(pimatrix& m1, pimatrix& m2)
     }
     m_matrix += bu::block_prod<bu::matrix<float>, 64>(m1.m_matrix, m2.m_matrix);
 }
+*/
 
 /******************************************************************************/
 
@@ -218,7 +219,8 @@ float op_add_tiny(float x)
 
 void pimatrix::element_inverse()
 {
-     std::transform(m_matrix.data().begin(), m_matrix.data().end(),
+    
+    std::transform(m_matrix.data().begin(), m_matrix.data().end(),
                m_matrix.data().begin(), op_inverse);
 }
 
@@ -238,6 +240,17 @@ void pimatrix::element_div(pimatrix& m)
 void pimatrix::element_add(pimatrix& m, float beta)
 {
     m_matrix += beta * m.m_matrix;
+}
+
+void pimatrix::element_negate(size_t startRow, size_t rowCount
+                        , size_t startCol, size_t colCount)
+{
+    bu::project(m_matrix
+        , bu::range(startRow, startRow + rowCount)
+        , bu::range(startCol, startCol + colCount)) = 
+    (-1)*bu::project(m_matrix
+        , bu::range(startRow, startRow + rowCount)
+        , bu::range(startCol, startCol + colCount));
 }
 
 /******************************************************************************/
