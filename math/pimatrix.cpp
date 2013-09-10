@@ -17,17 +17,20 @@
 #include <sstream>
 #include <iostream>
 #include <fstream>
+#include <algorithm>
 
 namespace bu = boost::numeric::ublas;
 
 typedef boost::uniform_int<> distribution_type;
 typedef boost::variate_generator<boost::minstd_rand&, distribution_type> gen_type;
-    
+
+#define PIMATRIX_TINY 1E-10
+
 namespace math
 {
 
 pimatrix::pimatrix()
-: m_matrix(1, 1)
+: m_matrix(0, 0)
 {   }
 
 pimatrix::pimatrix(size_t m, size_t n)
@@ -71,15 +74,17 @@ void pimatrix::setValue(float v)
 /*
  * Set all columns to the parameter
  */
-void pimatrix::setColumns(pimatrix& col)
+void pimatrix::setValue(float v, size_t startCol, size_t colCount
+                               , size_t startRow, size_t rowCount)
 {
-    BOOST_ASSERT_MSG(m_matrix.size1() == col.size1() && col.size2() == 1,
-            "Invalid dimensions");
+    BOOST_ASSERT_MSG(m_matrix.size1() >= startRow + rowCount
+                  && m_matrix.size2() >= startCol + colCount,
+            "There are fewer columns/rows than required.");
 
-    for (unsigned int i = m_matrix.size2() - 1; i >= 0; --i)
-    {
-        bu::column(m_matrix, i) = bu::column(col.m_matrix, 0);
-    }
+    bu::matrix<float> mTmp = bu::scalar_matrix<float>(rowCount, colCount, v);
+    bu::project(m_matrix
+            , bu::range(startRow, startRow + rowCount)
+            , bu::range(startCol, startCol + colCount)) = mTmp;
 }
 
 void pimatrix::copyRows(pimatrix& source, size_t startRowSrc
@@ -132,7 +137,7 @@ void pimatrix::dot(pimatrix& m)
     m_matrix = bu::element_prod(m_matrix, m.m_matrix);
 }
 
-void pimatrix::mult(pimatrix& m)
+void pimatrix::mult(pimatrix& m, int transpose /*= 0*/)
 {
     if (m.size1() == 1 && m.size2() == 1)
     {
@@ -144,10 +149,29 @@ void pimatrix::mult(pimatrix& m)
     }
     else
     {
-        m_matrix = bu::block_prod<bu::matrix<float>, 64>(m_matrix, m.m_matrix);
+        switch(transpose)
+        {
+            case 1:
+                // transpose this
+                m_matrix = bu::block_prod<bu::matrix<float>, 64>
+                        (bu::trans(m_matrix), m.m_matrix);
+                break;
+            case 2:
+                // transpose this
+                m_matrix = bu::block_prod<bu::matrix<float>, 64>
+                        (m_matrix, bu::trans(m.m_matrix));
+                break;
+            case 0:
+                m_matrix = bu::block_prod<bu::matrix<float>, 64>
+                        (m_matrix, m.m_matrix);
+                break;
+            default:
+                BOOST_ASSERT_MSG(false, "Wrong transpose mode. Can only be 0, 1, 2");
+        }
     }
 }
 
+/*
 pimatrix pimatrix::mult(pimatrix& m1, pimatrix& m2)
 {
     pimatrix mRet;
@@ -166,6 +190,7 @@ pimatrix pimatrix::mult(pimatrix& m1, pimatrix& m2)
     }
     return mRet;
 }
+*/
 
 void pimatrix::mult_add(pimatrix& m1, pimatrix& m2)
 {
@@ -181,6 +206,41 @@ void pimatrix::mult_add(pimatrix& m1, pimatrix& m2)
     }
     m_matrix += bu::block_prod<bu::matrix<float>, 64>(m1.m_matrix, m2.m_matrix);
 }
+
+/******************************************************************************/
+
+float op_inverse(float x){return 1.0f/(x + PIMATRIX_TINY);}
+float op_add_tiny(float x)
+{
+    return (x < -PIMATRIX_TINY || x > PIMATRIX_TINY ? x :
+        (x < PIMATRIX_TINY && x >= 0 ? PIMATRIX_TINY : -PIMATRIX_TINY));
+}
+
+void pimatrix::element_inverse()
+{
+     std::transform(m_matrix.data().begin(), m_matrix.data().end(),
+               m_matrix.data().begin(), op_inverse);
+}
+
+void pimatrix::element_mult(pimatrix& m)
+{
+    m_matrix = bu::element_prod(m_matrix, m.m_matrix);
+}
+    
+void pimatrix::element_div(pimatrix& m)
+{
+    bu::matrix<float> tmp = m.m_matrix;
+    std::transform(tmp.data().begin(), tmp.data().end(),
+               tmp.data().begin(), op_add_tiny);
+    m_matrix = bu::element_div(m_matrix, tmp);
+}
+
+void pimatrix::element_add(pimatrix& m, float beta)
+{
+    m_matrix += beta * m.m_matrix;
+}
+
+/******************************************************************************/
 
 void pimatrix::shuffleRows(boost::minstd_rand& generator)
 {
@@ -211,7 +271,8 @@ size_t pimatrix::size2() const
 
 void pimatrix::resize(size_t size1, size_t size2, bool preserve /*= false*/)
 {
-    m_matrix.resize(size1, size2, preserve);
+    if (m_matrix.size1() != size1 || m_matrix.size2() != size2)
+        m_matrix.resize(size1, size2, preserve);
 }
 
 boost::numeric::ublas::matrix<float>::const_reference 

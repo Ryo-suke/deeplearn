@@ -21,7 +21,15 @@ class Edge : boost::noncopyable
 {
 
 private:
+    /*
+     * node1_size x node2_size
+     */
     math::pimatrix m_weight;
+    /*
+     * node1_size x node2_size
+     */
+    math::pimatrix m_derivatives;
+    
     Node *m_node1, *m_node2;
     bool m_bDirected;
     
@@ -39,12 +47,11 @@ public:
         return m_node2;
     }
 
-    math::pimatrix& GetWeights()
-    {
-        return m_weight;
-    }
-
     virtual math::pimatrix Forward();
+    
+    virtual void Backward(math::pimatrix& derivatives);
+    
+    virtual void UpdateParams();
     
 private:
 

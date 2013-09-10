@@ -17,10 +17,13 @@ class SumNode : public Node
 {
 public:
     SumNode(NodeData& nodeData);
+    
     virtual ~SumNode();
     
     virtual void Forward();
-        
+    
+    virtual void Backward();
+    
 private:
 
 };

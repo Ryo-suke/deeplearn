@@ -19,4 +19,36 @@ MaxNode::~MaxNode()
 {
 }
 
+void MaxNode::Forward()
+{
+    /*
+    std::vector<Edge*>::iterator it = m_incomingEdges.begin();
+    int i = 0;
+    for (; it != m_incomingEdges.end(); ++it)
+    {
+        BOOST_ASSERT((*it)->GetNode2() == this);
+        
+        if (i == 0)
+            m_activations = (*it)->Forward();
+        else
+            m_activations += (*it)->Forward();
+        i++;
+    }
+    */
+}
+
+void MaxNode::Backward()
+{
+    /*
+    std::vector<Edge*>::iterator it = m_incomingEdges.begin();
+    math::pimatrix mProdActs = m_activations;
+    mProdActs.element_mult(m_derivatives);
+    
+    for (; it != m_incomingEdges.end(); ++it)
+    {
+        (*it)->Backward(m_derivatives);
+    }
+    */
+}
+
 }

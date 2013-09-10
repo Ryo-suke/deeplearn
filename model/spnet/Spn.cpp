@@ -35,6 +35,7 @@ math::pimatrix Spn::Forward(math::pimatrix* batch)
 {
     std::vector<Node*>::iterator it;
     
+    // set data
     if (batch)
     {
         for(it = m_inputNodes.begin(); it != m_inputNodes.end(); ++it)
@@ -45,7 +46,7 @@ math::pimatrix Spn::Forward(math::pimatrix* batch)
         // set 1 for H
         for(it = m_hiddenNodes.begin(); it != m_hiddenNodes.end(); ++it)
         {
-            (*it)->SetValue(1.0f);
+            (*it)->SetValue(1.0f, batch->size1());
         }
 
         // set query (target)
@@ -61,6 +62,16 @@ math::pimatrix Spn::Forward(math::pimatrix* batch)
     }    
     // get value of root
     return m_root->GetActivations();
+}
+
+void Spn::Backward()
+{
+    std::vector<Node*>::reverse_iterator it;
+    
+    for (it = m_nodeList.rbegin(); it != m_nodeList.rend(); ++it)
+    {
+        (*it)->Backward();
+    } 
 }
 
 void Spn::Train(data::DataHandler* dataHandler, Operation& trainOp)
@@ -119,7 +130,26 @@ bool Spn::Validate()
 void Spn::TrainOneBatch(Operation& trainOp
                     , math::pimatrix* batch)
 {
-    math::pimatrix err = Forward(batch);
+    std::vector<Node*>::iterator it;
+    size_t nSamples = batch->size1();
+    
+    // quite tricky here: we construct 2 set of samples,
+    // the first set is for the positive phase
+    // and the second for the negative phase
+    math::pimatrix twoBatch(nSamples*2, batch->size2());
+    
+    twoBatch.copyRows(*batch, 0, nSamples, 0);
+    twoBatch.copyRows(*batch, 0, nSamples, nSamples);
+    
+    // set query variables of the second half to 1
+    for(it = m_queryNodes.begin(); it != m_queryNodes.end(); ++it)
+    {
+         twoBatch.setValue(1.0f, nSamples, nSamples
+                 , (*it)->GetInputStartIndex(), (*it)->GetDimension());
+    }
+    m_error = Forward(&twoBatch);
+    m_error.element_inverse();
+    Backward();
 }
 
 void Spn::Prune()

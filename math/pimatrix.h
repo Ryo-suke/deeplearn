@@ -42,9 +42,9 @@ public:
     void setValue(float v);
     
     /*
-     * Set all columns to the parameter
+     * Set a slice of the matrix to the given value
      */
-    void setColumns(pimatrix& col);
+    void setValue(float v, size_t startCol, size_t colCount, size_t startRow, size_t rowCount);
     
     void copyRows(pimatrix& source, size_t startRowSrc
                 , size_t rowCount, size_t startRowDest);
@@ -57,11 +57,34 @@ public:
 
     void dot(pimatrix& m);
 
-    void mult(pimatrix& m);
+    /*
+     * transpose = 0: no transpose before multiplying
+     * transpose = 1: transpose this
+     * transpose = 2: transpose m
+     */
+    void mult(pimatrix& m, int transpose = 0);
 
-    static pimatrix mult(pimatrix& m1, pimatrix& m2);
+    //static pimatrix mult(pimatrix& m1, pimatrix& m2);
 
     void mult_add(pimatrix& m1, pimatrix& m2);
+    
+    /*****************************************************************/
+    
+    /*
+     * Compute 1/x for each entry x in the matrix
+     */
+    void element_inverse();
+
+    void element_mult(pimatrix& m);
+    
+    void element_div(pimatrix& m);
+    
+    /*
+     * this += beta * m
+     */
+    void element_add(pimatrix& m, float beta = 1);
+    
+    /*****************************************************************/
     
     void shuffleRows(boost::minstd_rand& generator);
     

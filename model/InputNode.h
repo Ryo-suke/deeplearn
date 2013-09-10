@@ -27,6 +27,21 @@ public:
         // doing nothing
     }
 
+    virtual void Backward()
+    {
+        // doing nothing
+    }
+    
+    virtual void InitializeDerivative(size_t nSamples)
+    {
+        // doing nothing
+    }
+    
+    virtual void AccumDerivatives(math::pimatrix& derivative)
+    {
+        // doing nothing
+    }
+    
     /***********************************************************************/
     
     /*
@@ -49,11 +64,21 @@ public:
                 , dim);
     }
     
-    virtual void SetValue(float val)
+    virtual void SetValue(float val, size_t sampleCount)
     {
+        size_t dim = GetDimension();
+        if (m_activations.size1() != sampleCount
+            || m_activations.size2() != dim)
+        {
+            m_activations.resize(sampleCount, dim);
+        }
         m_activations.setValue(val);
     }
 
+    virtual size_t GetInputStartIndex()
+    {
+        return (size_t)m_nodeData.input_start_index();
+    }
 private:
 
 };

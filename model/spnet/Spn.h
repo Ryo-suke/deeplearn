@@ -20,17 +20,18 @@ class Spn : public Model
     // views on the underlying list of nodes (in Model)
     std::vector<Node*> m_inputNodes, m_hiddenNodes, m_queryNodes;
     Node* m_root;
-
+    math::pimatrix m_error;
+    
 public:
     Spn();
     virtual ~Spn();
     
     math::pimatrix Forward(math::pimatrix* batch);
-    void Backward(){}
+    void Backward();
     void Train(data::DataHandler* dataHandler, Operation& trainOp);
     
-	virtual bool Validate();
-
+    virtual bool Validate();
+    
     static Spn* FromProto(const ModelData& modelData);
     
 private:

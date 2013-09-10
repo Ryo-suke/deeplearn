@@ -22,9 +22,10 @@ ProductNode::~ProductNode()
 
 void ProductNode::Forward()
 {
-    // weights of the edges are ignored
-    std::vector<Edge*>::iterator it = m_incomingEdges.begin();
+    // weights of the edges are ignored in product node
+    
     int i = 0;
+    std::vector<Edge*>::iterator it = m_incomingEdges.begin();
     for (; it != m_incomingEdges.end(); ++it)
     {
         Node* incomingNeighbor = (*it)->GetNode1();
@@ -38,6 +39,23 @@ void ProductNode::Forward()
         else
             m_activations.dot(incomingNeighbor->GetActivations());
         i++;
+    }
+}
+
+void ProductNode::Backward()
+{
+    std::vector<Edge*>::iterator it = m_incomingEdges.begin();
+    math::pimatrix mProdActs = m_activations;
+    mProdActs.element_mult(m_derivatives);
+    
+    for (; it != m_incomingEdges.end(); ++it)
+    {
+        Node* incomingNeighbor = (*it)->GetNode1();
+        BOOST_ASSERT((*it)->GetNode2() == this);
+        
+        math::pimatrix tmp = mProdActs;
+        tmp.element_div(incomingNeighbor->GetActivations());
+        incomingNeighbor->AccumDerivatives(tmp);
     }
 }
 

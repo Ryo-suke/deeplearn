@@ -16,10 +16,6 @@ Node::Node(NodeData& nodeData)
     m_nodeData = nodeData;      // deep copy
 }
 
-Node::Node(const Node& orig)
-{
-}
-
 Node::~Node()
 {
     m_incomingEdges.clear();

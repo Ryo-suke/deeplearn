@@ -37,4 +37,16 @@ void SumNode::Forward()
     }
 }
 
+void SumNode::Backward()
+{
+    std::vector<Edge*>::iterator it = m_incomingEdges.begin();
+    math::pimatrix mProdActs = m_activations;
+    mProdActs.element_mult(m_derivatives);
+    
+    for (; it != m_incomingEdges.end(); ++it)
+    {
+        (*it)->Backward(m_derivatives);
+    }
+}
+
 }

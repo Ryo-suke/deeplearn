@@ -17,12 +17,12 @@ class MaxNode : public Node
 {
 public:
     MaxNode(NodeData& nodeData);
+    
     virtual ~MaxNode();
     
-    virtual void Forward()
-    {
-    }
+    virtual void Forward();
 
+    virtual void Backward();
     
 private:
 

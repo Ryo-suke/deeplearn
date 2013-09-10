@@ -21,7 +21,8 @@ public:
     
     virtual void Forward();
     
-        
+    virtual void Backward();
+    
 private:
 
 };
