@@ -16,7 +16,7 @@ namespace model
 class MaxNode : public Node
 {
 public:
-    MaxNode(NodeData& nodeData);
+    MaxNode(const NodeData& nodeData);
     
     virtual ~MaxNode();
     

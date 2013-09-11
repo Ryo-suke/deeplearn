@@ -39,10 +39,11 @@ protected:
     math::pimatrix m_derivatives;
     
     NodeData m_nodeData;
+    
     std::vector<Edge*> m_incomingEdges, m_outgoingEdges;
     
 public:
-    Node(NodeData& nodeData);
+    Node(const NodeData& nodeData);
     virtual ~Node();
     
 public:
@@ -53,9 +54,9 @@ public:
     /*
      * Initialize all the derivative to zeros
      */
-    virtual void InitializeDerivative(size_t nSamples)
+    virtual void InitializeDerivative()
     {
-        m_derivatives.resize(nSamples, GetDimension());
+        m_derivatives.resize(m_activations.size1(), GetDimension());
         m_derivatives.setValue(0);
     }
 
@@ -69,7 +70,7 @@ public:
         m_derivatives += derivative;
     }
     
-    virtual void UpdateParams()
+    virtual void UpdateParams(int iStep)
     {
         // do nothing by default.
         // Normally this is only implemented in nodes
@@ -105,9 +106,15 @@ public:
         return (size_t)m_nodeData.dimension();
     }
     
+    virtual NodeData_NodeType GetNodeType()
+    {
+        return m_nodeData.type();
+    }
+    
     virtual size_t GetInputStartIndex()
     {
         BOOST_ASSERT_MSG(false, "This operation is only valid for InputNode.");
+        return 0;
     }
     
     virtual std::vector<Edge*>& GetIncomingEdges()
@@ -135,6 +142,29 @@ public:
         return m_activations;
     }
 
+    virtual void MergeNodeData(const NodeData& nodeData)
+    {
+        m_nodeData.MergeFrom(nodeData);
+        if (nodeData.has_bias())
+        {
+            m_bias.FromBinaryString(m_nodeData.bias());
+        }
+    }
+    
+    virtual void MergeHyperparams(const Hyperparams& hyp)
+    {
+        Hyperparams *newHyp = Hyperparams::default_instance().New();
+        newHyp->MergeFrom(hyp);
+        newHyp->MergeFrom(m_nodeData.hyper_params());
+        m_nodeData.set_allocated_hyper_params(newHyp);
+    }
+    
+    virtual void ToNodeData(NodeData& nodeData)
+    {
+        nodeData.MergeFrom(m_nodeData);
+        nodeData.set_bias(m_bias.ToBinaryString());
+    }
+    
     /*
      * Only for Input nodes
      */

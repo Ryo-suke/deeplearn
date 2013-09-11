@@ -24,7 +24,7 @@ class DeepLearnDataHandler : public DataHandler
     
 public:
     DeepLearnDataHandler(const model::DatasetInfo& datasetInfo
-        , size_t batchSize, bool randomize, int randomSeed, bool verbose);
+        , bool randomize, int randomSeed, bool verbose);
 
     virtual ~DeepLearnDataHandler();
     

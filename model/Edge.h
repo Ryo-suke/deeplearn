@@ -31,7 +31,8 @@ private:
     math::pimatrix m_derivatives;
     
     Node *m_node1, *m_node2;
-    bool m_bDirected;
+
+    EdgeData m_edgeData;
     
 public:
     Edge(Node *node1, Node* node2, bool directed);
@@ -51,10 +52,16 @@ public:
     
     virtual void Backward(math::pimatrix& derivatives);
     
-    virtual void UpdateParams();
+    virtual void UpdateParams(int iStep);
     
-private:
-
+    /*************************************************************************/
+    
+    virtual void MergeEdgeData(const EdgeData& edgeData);
+    
+    virtual void MergeHyperparams(const Hyperparams& hyp);
+    
+    virtual void ToEdgeData(EdgeData& edgeData);
+    
 };
 
 }

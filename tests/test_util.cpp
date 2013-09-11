@@ -13,6 +13,8 @@
 #include <iostream>
 #include <pimatrix.h>
 
+#include "deeplearn.pb.h"
+
 void loadFileNames(const std::string sFilePattern)
 {
     namespace bf = boost::filesystem;
@@ -83,6 +85,10 @@ void testBoostMatrix()
     boost::random::minstd_rand gen(42);
     m.shuffleRows(gen);
     std::cout << "After shuffleRows(gen): " << std::endl << m << std::endl;
+    
+    math::pimatrix mBig(200, 200);
+    std::cout << "ToString(): " << m.ToString().size() << std::endl
+              << " ToBinaryString(): " << m.ToBinaryString().size() << std::endl;
 }
 
 /*****************************************************************************/
@@ -110,6 +116,30 @@ void generateData()
 
 /*****************************************************************************/
 
+void testProtobufMerge()
+{
+    model::Hyperparams p1;
+    p1.set_base_learningrate(0.002f);
+    
+    model::Hyperparams p2;
+    p2.set_initial_momentum(1.0f);
+    p2.set_base_learningrate(0.003f);
+    
+    p1.MergeFrom(p2);
+
+    if (p1.initial_momentum() != p2.initial_momentum())
+    {
+        std::cout << "%TEST_FAILED% time=0 testname=testProtobufMerge (test_util) message=Merge failed" << std::endl;
+    }
+    
+    if (p1.final_momentum() != p2.final_momentum())
+    {
+        std::cout << "%TEST_FAILED% time=0 testname=testProtobufMerge (test_util) message=Merge failed" << std::endl;
+    }
+}
+
+/*****************************************************************************/
+
 int main(int argc, char** argv)
 {
     std::cout << "%SUITE_STARTING% test_util" << std::endl;
@@ -123,7 +153,11 @@ int main(int argc, char** argv)
     testBoostMatrix();
     std::cout << "%TEST_FINISHED% time=0 testBoostMatrix (test_util)" << std::endl;
     
-    generateData();
+    std::cout << "%TEST_STARTED% testProtobufMerge (test_util)" << std::endl;
+    testProtobufMerge();
+    std::cout << "%TEST_FINISHED% time=0 testProtobufMerge (test_util)" << std::endl;
+    
+    //generateData();
     
     std::cout << "%SUITE_FINISHED% time=0" << std::endl;
 

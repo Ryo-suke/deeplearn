@@ -27,8 +27,8 @@ void testMatrix()
 
 void testNodeData()
 {
-    model::NodeData d = model::NodeData::default_instance();
-    model::NodeData d2 = d;
+    model::NodeData d;
+    model::NodeData d2;
     d.set_name("Node d");
     d2.set_name("Node d2");
     std::cout << d.SerializeAsString() << std::endl << d2.SerializeAsString()

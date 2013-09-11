@@ -1,5 +1,19 @@
 package model;
 
+message Hyperparams {
+  optional float base_learningrate = 1 [default=0.01];
+  enum Decay {
+    NONE = 0;
+    INVERSE_T = 1;
+    EXPONENTIAL = 2;
+  }
+  optional Decay learningrate_decay = 2 [default=NONE];
+  optional int32 learningrate_decay_half_life = 3 [default=1000];
+  optional float initial_momentum = 4 [default=0.0];
+  optional float final_momentum = 5 [default=0.0];
+  optional int32 momentum_change_steps = 6 [default=10];
+}
+
 message NodeData {
   enum NodeType {
     INPUT = 0;
@@ -13,6 +27,16 @@ message NodeData {
   required NodeType type = 2;
   required int32 dimension = 3;
   optional int32 input_start_index = 4;     // only used if type = INPUT
+  optional bytes bias = 5;
+  optional Hyperparams hyper_params = 6;
+}
+
+message EdgeData {
+  optional bool directed = 1 [default=true];
+  optional bytes weight = 2;
+  optional string node1 = 3;
+  optional string node2 = 4;
+  optional Hyperparams hyper_params = 5;
 }
 
 message SpnData {
@@ -29,6 +53,9 @@ message ModelData {
   required string name = 1;
   required ModelType model_type = 2;
   optional model.SpnData spn_data = 3;
+  optional Hyperparams hyper_params = 4;
+  repeated NodeData nodes = 5;
+  repeated EdgeData edges = 6;
 }
 
 message Operation {
@@ -58,6 +85,8 @@ message Operation {
   optional int32 checkpoint_after = 8 [default=1000];
   optional string checkpoint_directory = 9;
   optional bool randomize = 10 [default=false];
+  optional int32 random_seed = 11 [default=42];
+  optional bool verbose = 12 [default=true];
 }
 
 message DatasetInfo {

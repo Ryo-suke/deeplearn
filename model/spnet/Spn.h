@@ -28,18 +28,28 @@ public:
     
     math::pimatrix Forward(math::pimatrix* batch);
     void Backward();
-    void Train(data::DataHandler* dataHandler, Operation& trainOp);
+    void Train(Operation& trainOp, Operation* evalOp = NULL);
     
     virtual bool Validate();
     
-    static Spn* FromProto(const ModelData& modelData);
-    
 private:
     void TrainOneBatch(Operation& trainOp
-                    , math::pimatrix* batch);
-    void Prune();    
-    bool stopCondition(const Operation_StopCondition& cond, int iStep);
+                    , math::pimatrix* batch, int iTrainStep);
+    void Prune();
     
+    bool stopCondition(const Operation_StopCondition& cond, int iStep);
+    bool evalCondition(int eval_after, int iStep);
+    bool checkpointCondition(int checkpoint_after, int iStep);
+    
+public:
+    static Spn* FromProto(const ModelData& modelData);
+
+private:
+    static bool LoadSpnInits(const SpnData& spnData
+                , std::vector<Node*>& nodes, std::vector<Edge*>& edges);
+    static bool LoadSpnStructure(const ModelData& modelData
+                , std::vector<Node*>& nodes, std::vector<Edge*>& edges);
+    static Node* CreateNewNode(const NodeData& nodeData);
 };
 
 }

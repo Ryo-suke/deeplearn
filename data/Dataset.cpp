@@ -11,15 +11,16 @@
 #include <boost/regex.hpp>
 #include <Disk.h>
 
+#define DEFAULT_BATCH_SIZE 100
 namespace data
 {
 
 Dataset::Dataset(const model::DatasetInfo_Data& dataInfo
-        , size_t batchSize, size_t capacity
+        , size_t capacity
         , bool randomize /*= false*/
         , int randomSeed /*= 42*/
         , bool verbose /*= false*/)
-: m_batchSize(batchSize)
+: m_batchSize(DEFAULT_BATCH_SIZE)
 {
     std::vector<std::string> files;
     Disk *disk;
@@ -33,8 +34,6 @@ Dataset::Dataset(const model::DatasetInfo_Data& dataInfo
             , "Only 4-byte atomic types are supported");
     m_cache = new Cache(disk, capacity
             , 4, randomize, randomSeed, verbose);
-    
-    m_currentBatch.resize(m_batchSize, dataInfo.dimensions());
 }
 
 Dataset::~Dataset()
@@ -75,7 +74,12 @@ void Dataset::AllocateMemory()
 {
     // do nothing
 }
-    
+
+void Dataset::SetBatchSize(size_t nSamples)
+{
+    m_batchSize = nSamples;
+}
+
 int Dataset::GetNumBatches()
 {
     size_t n = m_cache->GetSize() / m_batchSize;

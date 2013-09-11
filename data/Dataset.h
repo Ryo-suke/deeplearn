@@ -25,7 +25,6 @@ class Dataset : boost::noncopyable
     
 public:
     Dataset(const model::DatasetInfo_Data& dataInfo
-            , size_t batchSize
             , size_t capacity
             , bool randomize = false
             , int randomSeed = 42, bool verbose = false);
@@ -40,8 +39,10 @@ public:
     
     virtual void AllocateMemory();
     
-    virtual int GetNumBatches();
+    virtual void SetBatchSize(size_t nSamples);
     
+    virtual int GetNumBatches();
+        
 protected:
     void loadFileNames(const std::string sFilePattern
     , std::vector<std::string>& filesOut);

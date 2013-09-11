@@ -31,10 +31,6 @@ public:
     
     pimatrix(const std::string& str);
     
-    pimatrix& operator=(const pimatrix &rhs);
-
-    pimatrix& operator+=(const pimatrix &rhs);
-    
     virtual ~pimatrix();
     
     /*****************************************************************/
@@ -104,7 +100,10 @@ public:
     
     void set(size_t i, size_t j, float val);
     
-        
+    pimatrix& operator=(const pimatrix &rhs);
+
+    pimatrix& operator+=(const pimatrix &rhs);
+    
     friend std::ostream& operator<< (std::ostream &out, pimatrix &m);
     
     friend std::istream& operator>> (std::istream &in, pimatrix &m);
@@ -117,6 +116,18 @@ public:
     
     std::string ToString();
 
+    /*
+     * Serialize the matrix into a byte array and wrap it into a string
+     * This is for the sake of protobuf
+     */
+    std::string ToBinaryString();
+    
+    /*
+     * Deserialize the matrix from a string made from a byte array
+     * (which is normally procedured by ToBinaryString())
+     */
+    void FromBinaryString(const std::string& s);
+    
     /*************************************************************************/
 };
 

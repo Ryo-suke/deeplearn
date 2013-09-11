@@ -16,7 +16,7 @@ namespace model
 class SumNode : public Node
 {
 public:
-    SumNode(NodeData& nodeData);
+    SumNode(const NodeData& nodeData);
     
     virtual ~SumNode();
     

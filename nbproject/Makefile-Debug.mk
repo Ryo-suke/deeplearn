@@ -41,13 +41,14 @@ OBJECTFILES= \
 	${OBJECTDIR}/_ext/1121161165/pimatrix.o \
 	${OBJECTDIR}/_ext/1121429291/Cache.o \
 	${OBJECTDIR}/model/InputNode.o \
+	${OBJECTDIR}/_ext/1120904915/Util.o \
 	${OBJECTDIR}/_ext/382279727/SumNode.o \
 	${OBJECTDIR}/_ext/395856034/deeplearn.pb.o \
 	${OBJECTDIR}/model/Model.o \
 	${OBJECTDIR}/model/spnet/Spn.o \
+	${OBJECTDIR}/model/Edge.o \
 	${OBJECTDIR}/_ext/1121429291/DeepLearnDataHandler.o \
 	${OBJECTDIR}/_ext/1121429291/DataHandler.o \
-	${OBJECTDIR}/model/Edge.o \
 	${OBJECTDIR}/_ext/1121429291/Disk.o \
 	${OBJECTDIR}/_ext/382279727/MaxNode.o
 
@@ -86,82 +87,87 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/deeplearn: ${OBJECTFILES}
 ${OBJECTDIR}/_ext/1121429291/Dataset.o: /home/hoaivu_pham/NetBeansProjects/deeplearn/data/Dataset.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1121429291
 	${RM} $@.d
-	$(COMPILE.cc) -g -Imath -Imodel -Idata -I/home/hoaivu_pham/lib/boost_1_54_0/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1121429291/Dataset.o /home/hoaivu_pham/NetBeansProjects/deeplearn/data/Dataset.cpp
+	$(COMPILE.cc) -g -Wall -Imath -Imodel -Idata -Iutil -I/home/hoaivu_pham/lib/boost_1_54_0/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1121429291/Dataset.o /home/hoaivu_pham/NetBeansProjects/deeplearn/data/Dataset.cpp
 
 ${OBJECTDIR}/_ext/382279727/ProductNode.o: /home/hoaivu_pham/NetBeansProjects/deeplearn/model/spnet/ProductNode.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/382279727
 	${RM} $@.d
-	$(COMPILE.cc) -g -Imath -Imodel -Idata -I/home/hoaivu_pham/lib/boost_1_54_0/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/382279727/ProductNode.o /home/hoaivu_pham/NetBeansProjects/deeplearn/model/spnet/ProductNode.cpp
+	$(COMPILE.cc) -g -Wall -Imath -Imodel -Idata -Iutil -I/home/hoaivu_pham/lib/boost_1_54_0/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/382279727/ProductNode.o /home/hoaivu_pham/NetBeansProjects/deeplearn/model/spnet/ProductNode.cpp
 
 ${OBJECTDIR}/model/Node.o: model/Node.cpp 
 	${MKDIR} -p ${OBJECTDIR}/model
 	${RM} $@.d
-	$(COMPILE.cc) -g -Imath -Imodel -Idata -I/home/hoaivu_pham/lib/boost_1_54_0/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/model/Node.o model/Node.cpp
+	$(COMPILE.cc) -g -Wall -Imath -Imodel -Idata -Iutil -I/home/hoaivu_pham/lib/boost_1_54_0/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/model/Node.o model/Node.cpp
 
 ${OBJECTDIR}/main.o: main.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -g -Imath -Imodel -Idata -I/home/hoaivu_pham/lib/boost_1_54_0/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
+	$(COMPILE.cc) -g -Wall -Imath -Imodel -Idata -Iutil -I/home/hoaivu_pham/lib/boost_1_54_0/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
 
 ${OBJECTDIR}/_ext/1121161165/pimatrix.o: /home/hoaivu_pham/NetBeansProjects/deeplearn/math/pimatrix.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1121161165
 	${RM} $@.d
-	$(COMPILE.cc) -g -Imath -Imodel -Idata -I/home/hoaivu_pham/lib/boost_1_54_0/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1121161165/pimatrix.o /home/hoaivu_pham/NetBeansProjects/deeplearn/math/pimatrix.cpp
+	$(COMPILE.cc) -g -Wall -Imath -Imodel -Idata -Iutil -I/home/hoaivu_pham/lib/boost_1_54_0/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1121161165/pimatrix.o /home/hoaivu_pham/NetBeansProjects/deeplearn/math/pimatrix.cpp
 
 ${OBJECTDIR}/_ext/1121429291/Cache.o: /home/hoaivu_pham/NetBeansProjects/deeplearn/data/Cache.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1121429291
 	${RM} $@.d
-	$(COMPILE.cc) -g -Imath -Imodel -Idata -I/home/hoaivu_pham/lib/boost_1_54_0/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1121429291/Cache.o /home/hoaivu_pham/NetBeansProjects/deeplearn/data/Cache.cpp
+	$(COMPILE.cc) -g -Wall -Imath -Imodel -Idata -Iutil -I/home/hoaivu_pham/lib/boost_1_54_0/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1121429291/Cache.o /home/hoaivu_pham/NetBeansProjects/deeplearn/data/Cache.cpp
 
 ${OBJECTDIR}/model/InputNode.o: model/InputNode.cpp 
 	${MKDIR} -p ${OBJECTDIR}/model
 	${RM} $@.d
-	$(COMPILE.cc) -g -Imath -Imodel -Idata -I/home/hoaivu_pham/lib/boost_1_54_0/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/model/InputNode.o model/InputNode.cpp
+	$(COMPILE.cc) -g -Wall -Imath -Imodel -Idata -Iutil -I/home/hoaivu_pham/lib/boost_1_54_0/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/model/InputNode.o model/InputNode.cpp
+
+${OBJECTDIR}/_ext/1120904915/Util.o: /home/hoaivu_pham/NetBeansProjects/deeplearn/util/Util.cpp 
+	${MKDIR} -p ${OBJECTDIR}/_ext/1120904915
+	${RM} $@.d
+	$(COMPILE.cc) -g -Wall -Imath -Imodel -Idata -Iutil -I/home/hoaivu_pham/lib/boost_1_54_0/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1120904915/Util.o /home/hoaivu_pham/NetBeansProjects/deeplearn/util/Util.cpp
 
 ${OBJECTDIR}/_ext/382279727/SumNode.o: /home/hoaivu_pham/NetBeansProjects/deeplearn/model/spnet/SumNode.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/382279727
 	${RM} $@.d
-	$(COMPILE.cc) -g -Imath -Imodel -Idata -I/home/hoaivu_pham/lib/boost_1_54_0/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/382279727/SumNode.o /home/hoaivu_pham/NetBeansProjects/deeplearn/model/spnet/SumNode.cpp
+	$(COMPILE.cc) -g -Wall -Imath -Imodel -Idata -Iutil -I/home/hoaivu_pham/lib/boost_1_54_0/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/382279727/SumNode.o /home/hoaivu_pham/NetBeansProjects/deeplearn/model/spnet/SumNode.cpp
 
 ${OBJECTDIR}/_ext/395856034/deeplearn.pb.o: /home/hoaivu_pham/NetBeansProjects/deeplearn/model/deeplearn.pb.cc 
 	${MKDIR} -p ${OBJECTDIR}/_ext/395856034
 	${RM} $@.d
-	$(COMPILE.cc) -g -Imath -Imodel -Idata -I/home/hoaivu_pham/lib/boost_1_54_0/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/395856034/deeplearn.pb.o /home/hoaivu_pham/NetBeansProjects/deeplearn/model/deeplearn.pb.cc
+	$(COMPILE.cc) -g -Wall -Imath -Imodel -Idata -Iutil -I/home/hoaivu_pham/lib/boost_1_54_0/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/395856034/deeplearn.pb.o /home/hoaivu_pham/NetBeansProjects/deeplearn/model/deeplearn.pb.cc
 
 ${OBJECTDIR}/model/Model.o: model/Model.cpp 
 	${MKDIR} -p ${OBJECTDIR}/model
 	${RM} $@.d
-	$(COMPILE.cc) -g -Imath -Imodel -Idata -I/home/hoaivu_pham/lib/boost_1_54_0/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/model/Model.o model/Model.cpp
+	$(COMPILE.cc) -g -Wall -Imath -Imodel -Idata -Iutil -I/home/hoaivu_pham/lib/boost_1_54_0/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/model/Model.o model/Model.cpp
 
 ${OBJECTDIR}/model/spnet/Spn.o: model/spnet/Spn.cpp 
 	${MKDIR} -p ${OBJECTDIR}/model/spnet
 	${RM} $@.d
-	$(COMPILE.cc) -g -Imath -Imodel -Idata -I/home/hoaivu_pham/lib/boost_1_54_0/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/model/spnet/Spn.o model/spnet/Spn.cpp
-
-${OBJECTDIR}/_ext/1121429291/DeepLearnDataHandler.o: /home/hoaivu_pham/NetBeansProjects/deeplearn/data/DeepLearnDataHandler.cpp 
-	${MKDIR} -p ${OBJECTDIR}/_ext/1121429291
-	${RM} $@.d
-	$(COMPILE.cc) -g -Imath -Imodel -Idata -I/home/hoaivu_pham/lib/boost_1_54_0/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1121429291/DeepLearnDataHandler.o /home/hoaivu_pham/NetBeansProjects/deeplearn/data/DeepLearnDataHandler.cpp
-
-${OBJECTDIR}/_ext/1121429291/DataHandler.o: /home/hoaivu_pham/NetBeansProjects/deeplearn/data/DataHandler.cpp 
-	${MKDIR} -p ${OBJECTDIR}/_ext/1121429291
-	${RM} $@.d
-	$(COMPILE.cc) -g -Imath -Imodel -Idata -I/home/hoaivu_pham/lib/boost_1_54_0/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1121429291/DataHandler.o /home/hoaivu_pham/NetBeansProjects/deeplearn/data/DataHandler.cpp
+	$(COMPILE.cc) -g -Wall -Imath -Imodel -Idata -Iutil -I/home/hoaivu_pham/lib/boost_1_54_0/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/model/spnet/Spn.o model/spnet/Spn.cpp
 
 ${OBJECTDIR}/model/Edge.o: model/Edge.cpp 
 	${MKDIR} -p ${OBJECTDIR}/model
 	${RM} $@.d
-	$(COMPILE.cc) -g -Imath -Imodel -Idata -I/home/hoaivu_pham/lib/boost_1_54_0/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/model/Edge.o model/Edge.cpp
+	$(COMPILE.cc) -g -Wall -Imath -Imodel -Idata -Iutil -I/home/hoaivu_pham/lib/boost_1_54_0/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/model/Edge.o model/Edge.cpp
+
+${OBJECTDIR}/_ext/1121429291/DeepLearnDataHandler.o: /home/hoaivu_pham/NetBeansProjects/deeplearn/data/DeepLearnDataHandler.cpp 
+	${MKDIR} -p ${OBJECTDIR}/_ext/1121429291
+	${RM} $@.d
+	$(COMPILE.cc) -g -Wall -Imath -Imodel -Idata -Iutil -I/home/hoaivu_pham/lib/boost_1_54_0/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1121429291/DeepLearnDataHandler.o /home/hoaivu_pham/NetBeansProjects/deeplearn/data/DeepLearnDataHandler.cpp
+
+${OBJECTDIR}/_ext/1121429291/DataHandler.o: /home/hoaivu_pham/NetBeansProjects/deeplearn/data/DataHandler.cpp 
+	${MKDIR} -p ${OBJECTDIR}/_ext/1121429291
+	${RM} $@.d
+	$(COMPILE.cc) -g -Wall -Imath -Imodel -Idata -Iutil -I/home/hoaivu_pham/lib/boost_1_54_0/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1121429291/DataHandler.o /home/hoaivu_pham/NetBeansProjects/deeplearn/data/DataHandler.cpp
 
 ${OBJECTDIR}/_ext/1121429291/Disk.o: /home/hoaivu_pham/NetBeansProjects/deeplearn/data/Disk.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/1121429291
 	${RM} $@.d
-	$(COMPILE.cc) -g -Imath -Imodel -Idata -I/home/hoaivu_pham/lib/boost_1_54_0/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1121429291/Disk.o /home/hoaivu_pham/NetBeansProjects/deeplearn/data/Disk.cpp
+	$(COMPILE.cc) -g -Wall -Imath -Imodel -Idata -Iutil -I/home/hoaivu_pham/lib/boost_1_54_0/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1121429291/Disk.o /home/hoaivu_pham/NetBeansProjects/deeplearn/data/Disk.cpp
 
 ${OBJECTDIR}/_ext/382279727/MaxNode.o: /home/hoaivu_pham/NetBeansProjects/deeplearn/model/spnet/MaxNode.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/382279727
 	${RM} $@.d
-	$(COMPILE.cc) -g -Imath -Imodel -Idata -I/home/hoaivu_pham/lib/boost_1_54_0/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/382279727/MaxNode.o /home/hoaivu_pham/NetBeansProjects/deeplearn/model/spnet/MaxNode.cpp
+	$(COMPILE.cc) -g -Wall -Imath -Imodel -Idata -Iutil -I/home/hoaivu_pham/lib/boost_1_54_0/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/382279727/MaxNode.o /home/hoaivu_pham/NetBeansProjects/deeplearn/model/spnet/MaxNode.cpp
 
 # Subprojects
 .build-subprojects:
@@ -180,13 +186,13 @@ ${TESTDIR}/TestFiles/f2: ${TESTDIR}/_ext/389674410/test_util.o ${OBJECTFILES:%.o
 ${TESTDIR}/_ext/389674410/test_spn.o: /home/hoaivu_pham/NetBeansProjects/deeplearn/tests/test_spn.cpp 
 	${MKDIR} -p ${TESTDIR}/_ext/389674410
 	${RM} $@.d
-	$(COMPILE.cc) -g -I. -Imath -Imodel -Idata -I/home/hoaivu_pham/lib/boost_1_54_0/include -MMD -MP -MF $@.d -o ${TESTDIR}/_ext/389674410/test_spn.o /home/hoaivu_pham/NetBeansProjects/deeplearn/tests/test_spn.cpp
+	$(COMPILE.cc) -g -Wall -I. -I. -Imath -Imodel -Idata -Iutil -I/home/hoaivu_pham/lib/boost_1_54_0/include -MMD -MP -MF $@.d -o ${TESTDIR}/_ext/389674410/test_spn.o /home/hoaivu_pham/NetBeansProjects/deeplearn/tests/test_spn.cpp
 
 
 ${TESTDIR}/_ext/389674410/test_util.o: /home/hoaivu_pham/NetBeansProjects/deeplearn/tests/test_util.cpp 
 	${MKDIR} -p ${TESTDIR}/_ext/389674410
 	${RM} $@.d
-	$(COMPILE.cc) -g -I. -Imath -Imodel -Idata -I/home/hoaivu_pham/lib/boost_1_54_0/include -MMD -MP -MF $@.d -o ${TESTDIR}/_ext/389674410/test_util.o /home/hoaivu_pham/NetBeansProjects/deeplearn/tests/test_util.cpp
+	$(COMPILE.cc) -g -Wall -I. -I. -Imath -Imodel -Idata -Iutil -I/home/hoaivu_pham/lib/boost_1_54_0/include -MMD -MP -MF $@.d -o ${TESTDIR}/_ext/389674410/test_util.o /home/hoaivu_pham/NetBeansProjects/deeplearn/tests/test_util.cpp
 
 
 ${OBJECTDIR}/_ext/1121429291/Dataset_nomain.o: ${OBJECTDIR}/_ext/1121429291/Dataset.o /home/hoaivu_pham/NetBeansProjects/deeplearn/data/Dataset.cpp 
@@ -197,7 +203,7 @@ ${OBJECTDIR}/_ext/1121429291/Dataset_nomain.o: ${OBJECTDIR}/_ext/1121429291/Data
 	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
 	then  \
 	    ${RM} $@.d;\
-	    $(COMPILE.cc) -g -Imath -Imodel -Idata -I/home/hoaivu_pham/lib/boost_1_54_0/include -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1121429291/Dataset_nomain.o /home/hoaivu_pham/NetBeansProjects/deeplearn/data/Dataset.cpp;\
+	    $(COMPILE.cc) -g -Wall -Imath -Imodel -Idata -Iutil -I/home/hoaivu_pham/lib/boost_1_54_0/include -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1121429291/Dataset_nomain.o /home/hoaivu_pham/NetBeansProjects/deeplearn/data/Dataset.cpp;\
 	else  \
 	    ${CP} ${OBJECTDIR}/_ext/1121429291/Dataset.o ${OBJECTDIR}/_ext/1121429291/Dataset_nomain.o;\
 	fi
@@ -210,7 +216,7 @@ ${OBJECTDIR}/_ext/382279727/ProductNode_nomain.o: ${OBJECTDIR}/_ext/382279727/Pr
 	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
 	then  \
 	    ${RM} $@.d;\
-	    $(COMPILE.cc) -g -Imath -Imodel -Idata -I/home/hoaivu_pham/lib/boost_1_54_0/include -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/382279727/ProductNode_nomain.o /home/hoaivu_pham/NetBeansProjects/deeplearn/model/spnet/ProductNode.cpp;\
+	    $(COMPILE.cc) -g -Wall -Imath -Imodel -Idata -Iutil -I/home/hoaivu_pham/lib/boost_1_54_0/include -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/382279727/ProductNode_nomain.o /home/hoaivu_pham/NetBeansProjects/deeplearn/model/spnet/ProductNode.cpp;\
 	else  \
 	    ${CP} ${OBJECTDIR}/_ext/382279727/ProductNode.o ${OBJECTDIR}/_ext/382279727/ProductNode_nomain.o;\
 	fi
@@ -223,7 +229,7 @@ ${OBJECTDIR}/model/Node_nomain.o: ${OBJECTDIR}/model/Node.o model/Node.cpp
 	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
 	then  \
 	    ${RM} $@.d;\
-	    $(COMPILE.cc) -g -Imath -Imodel -Idata -I/home/hoaivu_pham/lib/boost_1_54_0/include -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/model/Node_nomain.o model/Node.cpp;\
+	    $(COMPILE.cc) -g -Wall -Imath -Imodel -Idata -Iutil -I/home/hoaivu_pham/lib/boost_1_54_0/include -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/model/Node_nomain.o model/Node.cpp;\
 	else  \
 	    ${CP} ${OBJECTDIR}/model/Node.o ${OBJECTDIR}/model/Node_nomain.o;\
 	fi
@@ -236,7 +242,7 @@ ${OBJECTDIR}/main_nomain.o: ${OBJECTDIR}/main.o main.cpp
 	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
 	then  \
 	    ${RM} $@.d;\
-	    $(COMPILE.cc) -g -Imath -Imodel -Idata -I/home/hoaivu_pham/lib/boost_1_54_0/include -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/main_nomain.o main.cpp;\
+	    $(COMPILE.cc) -g -Wall -Imath -Imodel -Idata -Iutil -I/home/hoaivu_pham/lib/boost_1_54_0/include -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/main_nomain.o main.cpp;\
 	else  \
 	    ${CP} ${OBJECTDIR}/main.o ${OBJECTDIR}/main_nomain.o;\
 	fi
@@ -249,7 +255,7 @@ ${OBJECTDIR}/_ext/1121161165/pimatrix_nomain.o: ${OBJECTDIR}/_ext/1121161165/pim
 	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
 	then  \
 	    ${RM} $@.d;\
-	    $(COMPILE.cc) -g -Imath -Imodel -Idata -I/home/hoaivu_pham/lib/boost_1_54_0/include -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1121161165/pimatrix_nomain.o /home/hoaivu_pham/NetBeansProjects/deeplearn/math/pimatrix.cpp;\
+	    $(COMPILE.cc) -g -Wall -Imath -Imodel -Idata -Iutil -I/home/hoaivu_pham/lib/boost_1_54_0/include -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1121161165/pimatrix_nomain.o /home/hoaivu_pham/NetBeansProjects/deeplearn/math/pimatrix.cpp;\
 	else  \
 	    ${CP} ${OBJECTDIR}/_ext/1121161165/pimatrix.o ${OBJECTDIR}/_ext/1121161165/pimatrix_nomain.o;\
 	fi
@@ -262,7 +268,7 @@ ${OBJECTDIR}/_ext/1121429291/Cache_nomain.o: ${OBJECTDIR}/_ext/1121429291/Cache.
 	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
 	then  \
 	    ${RM} $@.d;\
-	    $(COMPILE.cc) -g -Imath -Imodel -Idata -I/home/hoaivu_pham/lib/boost_1_54_0/include -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1121429291/Cache_nomain.o /home/hoaivu_pham/NetBeansProjects/deeplearn/data/Cache.cpp;\
+	    $(COMPILE.cc) -g -Wall -Imath -Imodel -Idata -Iutil -I/home/hoaivu_pham/lib/boost_1_54_0/include -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1121429291/Cache_nomain.o /home/hoaivu_pham/NetBeansProjects/deeplearn/data/Cache.cpp;\
 	else  \
 	    ${CP} ${OBJECTDIR}/_ext/1121429291/Cache.o ${OBJECTDIR}/_ext/1121429291/Cache_nomain.o;\
 	fi
@@ -275,9 +281,22 @@ ${OBJECTDIR}/model/InputNode_nomain.o: ${OBJECTDIR}/model/InputNode.o model/Inpu
 	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
 	then  \
 	    ${RM} $@.d;\
-	    $(COMPILE.cc) -g -Imath -Imodel -Idata -I/home/hoaivu_pham/lib/boost_1_54_0/include -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/model/InputNode_nomain.o model/InputNode.cpp;\
+	    $(COMPILE.cc) -g -Wall -Imath -Imodel -Idata -Iutil -I/home/hoaivu_pham/lib/boost_1_54_0/include -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/model/InputNode_nomain.o model/InputNode.cpp;\
 	else  \
 	    ${CP} ${OBJECTDIR}/model/InputNode.o ${OBJECTDIR}/model/InputNode_nomain.o;\
+	fi
+
+${OBJECTDIR}/_ext/1120904915/Util_nomain.o: ${OBJECTDIR}/_ext/1120904915/Util.o /home/hoaivu_pham/NetBeansProjects/deeplearn/util/Util.cpp 
+	${MKDIR} -p ${OBJECTDIR}/_ext/1120904915
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/_ext/1120904915/Util.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} $@.d;\
+	    $(COMPILE.cc) -g -Wall -Imath -Imodel -Idata -Iutil -I/home/hoaivu_pham/lib/boost_1_54_0/include -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1120904915/Util_nomain.o /home/hoaivu_pham/NetBeansProjects/deeplearn/util/Util.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/_ext/1120904915/Util.o ${OBJECTDIR}/_ext/1120904915/Util_nomain.o;\
 	fi
 
 ${OBJECTDIR}/_ext/382279727/SumNode_nomain.o: ${OBJECTDIR}/_ext/382279727/SumNode.o /home/hoaivu_pham/NetBeansProjects/deeplearn/model/spnet/SumNode.cpp 
@@ -288,7 +307,7 @@ ${OBJECTDIR}/_ext/382279727/SumNode_nomain.o: ${OBJECTDIR}/_ext/382279727/SumNod
 	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
 	then  \
 	    ${RM} $@.d;\
-	    $(COMPILE.cc) -g -Imath -Imodel -Idata -I/home/hoaivu_pham/lib/boost_1_54_0/include -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/382279727/SumNode_nomain.o /home/hoaivu_pham/NetBeansProjects/deeplearn/model/spnet/SumNode.cpp;\
+	    $(COMPILE.cc) -g -Wall -Imath -Imodel -Idata -Iutil -I/home/hoaivu_pham/lib/boost_1_54_0/include -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/382279727/SumNode_nomain.o /home/hoaivu_pham/NetBeansProjects/deeplearn/model/spnet/SumNode.cpp;\
 	else  \
 	    ${CP} ${OBJECTDIR}/_ext/382279727/SumNode.o ${OBJECTDIR}/_ext/382279727/SumNode_nomain.o;\
 	fi
@@ -301,7 +320,7 @@ ${OBJECTDIR}/_ext/395856034/deeplearn.pb_nomain.o: ${OBJECTDIR}/_ext/395856034/d
 	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
 	then  \
 	    ${RM} $@.d;\
-	    $(COMPILE.cc) -g -Imath -Imodel -Idata -I/home/hoaivu_pham/lib/boost_1_54_0/include -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/395856034/deeplearn.pb_nomain.o /home/hoaivu_pham/NetBeansProjects/deeplearn/model/deeplearn.pb.cc;\
+	    $(COMPILE.cc) -g -Wall -Imath -Imodel -Idata -Iutil -I/home/hoaivu_pham/lib/boost_1_54_0/include -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/395856034/deeplearn.pb_nomain.o /home/hoaivu_pham/NetBeansProjects/deeplearn/model/deeplearn.pb.cc;\
 	else  \
 	    ${CP} ${OBJECTDIR}/_ext/395856034/deeplearn.pb.o ${OBJECTDIR}/_ext/395856034/deeplearn.pb_nomain.o;\
 	fi
@@ -314,7 +333,7 @@ ${OBJECTDIR}/model/Model_nomain.o: ${OBJECTDIR}/model/Model.o model/Model.cpp
 	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
 	then  \
 	    ${RM} $@.d;\
-	    $(COMPILE.cc) -g -Imath -Imodel -Idata -I/home/hoaivu_pham/lib/boost_1_54_0/include -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/model/Model_nomain.o model/Model.cpp;\
+	    $(COMPILE.cc) -g -Wall -Imath -Imodel -Idata -Iutil -I/home/hoaivu_pham/lib/boost_1_54_0/include -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/model/Model_nomain.o model/Model.cpp;\
 	else  \
 	    ${CP} ${OBJECTDIR}/model/Model.o ${OBJECTDIR}/model/Model_nomain.o;\
 	fi
@@ -327,9 +346,22 @@ ${OBJECTDIR}/model/spnet/Spn_nomain.o: ${OBJECTDIR}/model/spnet/Spn.o model/spne
 	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
 	then  \
 	    ${RM} $@.d;\
-	    $(COMPILE.cc) -g -Imath -Imodel -Idata -I/home/hoaivu_pham/lib/boost_1_54_0/include -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/model/spnet/Spn_nomain.o model/spnet/Spn.cpp;\
+	    $(COMPILE.cc) -g -Wall -Imath -Imodel -Idata -Iutil -I/home/hoaivu_pham/lib/boost_1_54_0/include -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/model/spnet/Spn_nomain.o model/spnet/Spn.cpp;\
 	else  \
 	    ${CP} ${OBJECTDIR}/model/spnet/Spn.o ${OBJECTDIR}/model/spnet/Spn_nomain.o;\
+	fi
+
+${OBJECTDIR}/model/Edge_nomain.o: ${OBJECTDIR}/model/Edge.o model/Edge.cpp 
+	${MKDIR} -p ${OBJECTDIR}/model
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/model/Edge.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} $@.d;\
+	    $(COMPILE.cc) -g -Wall -Imath -Imodel -Idata -Iutil -I/home/hoaivu_pham/lib/boost_1_54_0/include -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/model/Edge_nomain.o model/Edge.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/model/Edge.o ${OBJECTDIR}/model/Edge_nomain.o;\
 	fi
 
 ${OBJECTDIR}/_ext/1121429291/DeepLearnDataHandler_nomain.o: ${OBJECTDIR}/_ext/1121429291/DeepLearnDataHandler.o /home/hoaivu_pham/NetBeansProjects/deeplearn/data/DeepLearnDataHandler.cpp 
@@ -340,7 +372,7 @@ ${OBJECTDIR}/_ext/1121429291/DeepLearnDataHandler_nomain.o: ${OBJECTDIR}/_ext/11
 	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
 	then  \
 	    ${RM} $@.d;\
-	    $(COMPILE.cc) -g -Imath -Imodel -Idata -I/home/hoaivu_pham/lib/boost_1_54_0/include -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1121429291/DeepLearnDataHandler_nomain.o /home/hoaivu_pham/NetBeansProjects/deeplearn/data/DeepLearnDataHandler.cpp;\
+	    $(COMPILE.cc) -g -Wall -Imath -Imodel -Idata -Iutil -I/home/hoaivu_pham/lib/boost_1_54_0/include -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1121429291/DeepLearnDataHandler_nomain.o /home/hoaivu_pham/NetBeansProjects/deeplearn/data/DeepLearnDataHandler.cpp;\
 	else  \
 	    ${CP} ${OBJECTDIR}/_ext/1121429291/DeepLearnDataHandler.o ${OBJECTDIR}/_ext/1121429291/DeepLearnDataHandler_nomain.o;\
 	fi
@@ -353,22 +385,9 @@ ${OBJECTDIR}/_ext/1121429291/DataHandler_nomain.o: ${OBJECTDIR}/_ext/1121429291/
 	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
 	then  \
 	    ${RM} $@.d;\
-	    $(COMPILE.cc) -g -Imath -Imodel -Idata -I/home/hoaivu_pham/lib/boost_1_54_0/include -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1121429291/DataHandler_nomain.o /home/hoaivu_pham/NetBeansProjects/deeplearn/data/DataHandler.cpp;\
+	    $(COMPILE.cc) -g -Wall -Imath -Imodel -Idata -Iutil -I/home/hoaivu_pham/lib/boost_1_54_0/include -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1121429291/DataHandler_nomain.o /home/hoaivu_pham/NetBeansProjects/deeplearn/data/DataHandler.cpp;\
 	else  \
 	    ${CP} ${OBJECTDIR}/_ext/1121429291/DataHandler.o ${OBJECTDIR}/_ext/1121429291/DataHandler_nomain.o;\
-	fi
-
-${OBJECTDIR}/model/Edge_nomain.o: ${OBJECTDIR}/model/Edge.o model/Edge.cpp 
-	${MKDIR} -p ${OBJECTDIR}/model
-	@NMOUTPUT=`${NM} ${OBJECTDIR}/model/Edge.o`; \
-	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
-	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
-	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
-	then  \
-	    ${RM} $@.d;\
-	    $(COMPILE.cc) -g -Imath -Imodel -Idata -I/home/hoaivu_pham/lib/boost_1_54_0/include -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/model/Edge_nomain.o model/Edge.cpp;\
-	else  \
-	    ${CP} ${OBJECTDIR}/model/Edge.o ${OBJECTDIR}/model/Edge_nomain.o;\
 	fi
 
 ${OBJECTDIR}/_ext/1121429291/Disk_nomain.o: ${OBJECTDIR}/_ext/1121429291/Disk.o /home/hoaivu_pham/NetBeansProjects/deeplearn/data/Disk.cpp 
@@ -379,7 +398,7 @@ ${OBJECTDIR}/_ext/1121429291/Disk_nomain.o: ${OBJECTDIR}/_ext/1121429291/Disk.o 
 	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
 	then  \
 	    ${RM} $@.d;\
-	    $(COMPILE.cc) -g -Imath -Imodel -Idata -I/home/hoaivu_pham/lib/boost_1_54_0/include -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1121429291/Disk_nomain.o /home/hoaivu_pham/NetBeansProjects/deeplearn/data/Disk.cpp;\
+	    $(COMPILE.cc) -g -Wall -Imath -Imodel -Idata -Iutil -I/home/hoaivu_pham/lib/boost_1_54_0/include -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/1121429291/Disk_nomain.o /home/hoaivu_pham/NetBeansProjects/deeplearn/data/Disk.cpp;\
 	else  \
 	    ${CP} ${OBJECTDIR}/_ext/1121429291/Disk.o ${OBJECTDIR}/_ext/1121429291/Disk_nomain.o;\
 	fi
@@ -392,7 +411,7 @@ ${OBJECTDIR}/_ext/382279727/MaxNode_nomain.o: ${OBJECTDIR}/_ext/382279727/MaxNod
 	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
 	then  \
 	    ${RM} $@.d;\
-	    $(COMPILE.cc) -g -Imath -Imodel -Idata -I/home/hoaivu_pham/lib/boost_1_54_0/include -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/382279727/MaxNode_nomain.o /home/hoaivu_pham/NetBeansProjects/deeplearn/model/spnet/MaxNode.cpp;\
+	    $(COMPILE.cc) -g -Wall -Imath -Imodel -Idata -Iutil -I/home/hoaivu_pham/lib/boost_1_54_0/include -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/382279727/MaxNode_nomain.o /home/hoaivu_pham/NetBeansProjects/deeplearn/model/spnet/MaxNode.cpp;\
 	else  \
 	    ${CP} ${OBJECTDIR}/_ext/382279727/MaxNode.o ${OBJECTDIR}/_ext/382279727/MaxNode_nomain.o;\
 	fi

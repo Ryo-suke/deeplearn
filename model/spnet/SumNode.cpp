@@ -11,7 +11,7 @@
 namespace model
 {
 
-SumNode::SumNode(NodeData& nodeData)
+SumNode::SumNode(const NodeData& nodeData)
 : Node(nodeData)
 {
 }
@@ -40,8 +40,6 @@ void SumNode::Forward()
 void SumNode::Backward()
 {
     std::vector<Edge*>::iterator it = m_incomingEdges.begin();
-    math::pimatrix mProdActs = m_activations;
-    mProdActs.element_mult(m_derivatives);
     
     for (; it != m_incomingEdges.end(); ++it)
     {

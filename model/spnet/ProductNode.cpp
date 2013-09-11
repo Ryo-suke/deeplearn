@@ -10,7 +10,7 @@
 namespace model
 {
 
-ProductNode::ProductNode(NodeData& nodeData)
+ProductNode::ProductNode(const NodeData& nodeData)
 : Node(nodeData)
 {
 }

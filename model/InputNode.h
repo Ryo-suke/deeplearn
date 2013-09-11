@@ -17,7 +17,7 @@ namespace model
 class InputNode : public Node
 {
 public:
-    InputNode(NodeData& nodeData);
+    InputNode(const NodeData& nodeData);
     virtual ~InputNode();
     
     /***********************************************************************/
@@ -32,7 +32,7 @@ public:
         // doing nothing
     }
     
-    virtual void InitializeDerivative(size_t nSamples)
+    virtual void InitializeDerivative()
     {
         // doing nothing
     }

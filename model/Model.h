@@ -29,7 +29,7 @@ protected:
      */
     std::vector<Node*> m_nodeList;
     
-    std::string m_modelName;
+    ModelData m_modelData;
     
 protected:
     Model();
@@ -39,9 +39,15 @@ protected:
     virtual ~Model();
     
 public:
+    
+    virtual std::string GetName();
+    
+    
     virtual math::pimatrix Forward(math::pimatrix* batch) = 0;
     virtual void Backward() = 0;
-    virtual void Train(data::DataHandler* dataHandler, Operation& trainOp) = 0;
+    virtual void Train(Operation& trainOp, Operation* evalOp = NULL) = 0;
+    
+    
     
     /*
      * Run a topological sort on nodes, detect loop if there is any.
@@ -49,8 +55,14 @@ public:
 	 * It might perform other checks in subclasses.
      */
     virtual bool Validate();
+    
     virtual void PrintBackpropOrder(std::ostream& s);
     
+    virtual void ToModelData(ModelData& modelData);
+    
+    virtual void ToFile(std::string sFilePath);
+    
+public:
     static Model* FromModelData(const ModelData& modelData);
     
 protected:

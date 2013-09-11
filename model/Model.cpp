@@ -5,20 +5,17 @@
  * Created on September 4, 2013, 3:10 PM
  */
 
-#include "Model.h"
-
-
+#include <boost/assert.hpp>
 #include <algorithm>
 #include <queue>
-#include <boost/assert.hpp>
-
+#include <fstream>
+#include "Model.h"
 #include "spnet/Spn.h"
 
 namespace model
 {
 
 Model::Model()
-: m_modelName("defaultModel")
 {
 }
 
@@ -27,7 +24,6 @@ Model::Model(const std::string& modelName
     , std::vector<Edge*> &edges)
 : m_nodes(nodes)
 , m_edges(edges)
-, m_modelName(modelName)
 {
 }
 
@@ -40,6 +36,14 @@ Model::~Model()
     m_edges.clear();
 }
 
+/*****************************************************************************/
+
+std::string Model::GetName()
+{
+    return m_modelData.name();
+}
+
+/*****************************************************************************/
 bool Model::Validate()
 {
     m_nodeList.clear();
@@ -113,6 +117,40 @@ void Model::PrintBackpropOrder(std::ostream& s)
     s << std::endl;
 }
 
+void Model::ToModelData(ModelData& modelData)
+{
+    modelData.MergeFrom(m_modelData);
+    
+    std::vector<Node*>::iterator itNode;
+    std::vector<Edge*>::iterator itEdge;
+    
+    // nodes
+    modelData.clear_nodes();
+    for (itNode = m_nodes.begin(); itNode != m_nodes.end(); ++itNode)
+    {
+        NodeData *nodeData = modelData.add_nodes();
+        (*itNode)->ToNodeData(*nodeData);
+    }
+        
+    // edges
+    modelData.clear_edges();
+    for (itEdge = m_edges.begin(); itEdge != m_edges.end(); ++itEdge)
+    {
+        EdgeData *edgeData = modelData.add_edges();
+        (*itEdge)->ToEdgeData(*edgeData);
+    }
+}
+
+void Model::ToFile(std::string sFilePath)
+{
+    std::ofstream ofs(sFilePath.c_str());
+    ModelData mData;
+    
+    ToModelData(mData);
+    mData.SerializeToOstream(&ofs);
+    ofs.flush();
+    ofs.close();
+}
 
 Model* Model::FromModelData(const ModelData& modelData)
 {

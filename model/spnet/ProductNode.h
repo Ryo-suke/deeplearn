@@ -16,7 +16,7 @@ namespace model
 class ProductNode : public Node
 {
 public:
-    ProductNode(NodeData& nodeData);
+    ProductNode(const NodeData& nodeData);
     virtual ~ProductNode();
     
     virtual void Forward();

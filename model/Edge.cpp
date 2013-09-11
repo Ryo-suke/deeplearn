@@ -6,6 +6,7 @@
  */
 
 #include "Edge.h"
+#include "Util.h"
 
 namespace model
 {
@@ -14,14 +15,14 @@ Edge::Edge(Node *node1, Node* node2, bool directed)
 {
     m_node1 = node1;
     m_node2 = node2;
-    m_bDirected = directed;
+    m_edgeData.set_directed(directed);
     
     m_weight.resize(m_node1->GetDimension(), m_node2->GetDimension(), false);
     m_weight.setValue(1);
     
     m_node1->AddOutgoingEdge(this);
     m_node2->AddIncomingEdge(this);
-    if (!m_bDirected)
+    if (!directed)
     {
         m_node1->AddIncomingEdge(this);
         m_node2->AddOutgoingEdge(this);
@@ -62,14 +63,48 @@ void Edge::Backward(math::pimatrix& derivatives)
     m_node1->AccumDerivatives(node1_deriv);
 }
 
-void Edge::UpdateParams()
+void Edge::UpdateParams(int iStep)
 {
     if (m_derivatives.size1() == 0)
         return;
     
-    // get learning rate
-    float learningRate = 0.0001;
+    // get learning rate: based on momentum, batch size...
+    float learningRate, momentum;
+    util::Util::GetLearningRateAndMomentum(iStep, 
+            m_edgeData.hyper_params(), learningRate, momentum);
     m_weight.element_add(m_derivatives, -learningRate);
+}
+
+/*****************************************************************************/
+
+void Edge::MergeEdgeData(const EdgeData& edgeData)
+{
+    m_edgeData.MergeFrom(edgeData);
+    
+    if (m_edgeData.has_weight())
+    {
+        m_weight.FromBinaryString(m_edgeData.weight());
+                
+        BOOST_ASSERT_MSG(m_weight.size1() == m_node1->GetDimension()
+                && m_weight.size2() == m_node2->GetDimension(),
+                "Invalid dimensions of the weight matrix");
+    }
+}
+
+void Edge::MergeHyperparams(const Hyperparams& hyp)
+{
+    Hyperparams *newHyp = Hyperparams::default_instance().New();
+    newHyp->MergeFrom(hyp);
+    newHyp->MergeFrom(m_edgeData.hyper_params());
+    m_edgeData.set_allocated_hyper_params(newHyp);
+}
+
+void Edge::ToEdgeData(EdgeData& edgeData)
+{
+    edgeData.MergeFrom(m_edgeData);
+    edgeData.set_node1(m_node1->GetName());
+    edgeData.set_node2(m_node2->GetName());
+    edgeData.set_weight(m_weight.ToBinaryString());
 }
 
 }

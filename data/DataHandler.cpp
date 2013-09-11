@@ -12,14 +12,14 @@ namespace data
 {
 
 DataHandler* DataHandler::GetDataHandler(const model::DatasetInfo& datasetInfo
-    , size_t batchSize, bool randomize, int randomSeed, bool verbose)
+    , bool randomize, int randomSeed, bool verbose)
 {
     std::string sName = datasetInfo.data_handler();
 
     if (sName.compare(DeepLearnDataHandler::GetHandlerName()) == 0)
     {
         return new DeepLearnDataHandler(datasetInfo
-                , batchSize, randomize, randomSeed, verbose);
+                , randomize, randomSeed, verbose);
     }
     return NULL;
 }

@@ -34,7 +34,9 @@ void  protobuf_AddDesc_deeplearn_2eproto();
 void protobuf_AssignDesc_deeplearn_2eproto();
 void protobuf_ShutdownFile_deeplearn_2eproto();
 
+class Hyperparams;
 class NodeData;
+class EdgeData;
 class SpnData;
 class ModelData;
 class Operation;
@@ -42,6 +44,26 @@ class Operation_StopCondition;
 class DatasetInfo;
 class DatasetInfo_Data;
 
+enum Hyperparams_Decay {
+  Hyperparams_Decay_NONE = 0,
+  Hyperparams_Decay_INVERSE_T = 1,
+  Hyperparams_Decay_EXPONENTIAL = 2
+};
+bool Hyperparams_Decay_IsValid(int value);
+const Hyperparams_Decay Hyperparams_Decay_Decay_MIN = Hyperparams_Decay_NONE;
+const Hyperparams_Decay Hyperparams_Decay_Decay_MAX = Hyperparams_Decay_EXPONENTIAL;
+const int Hyperparams_Decay_Decay_ARRAYSIZE = Hyperparams_Decay_Decay_MAX + 1;
+
+const ::google::protobuf::EnumDescriptor* Hyperparams_Decay_descriptor();
+inline const ::std::string& Hyperparams_Decay_Name(Hyperparams_Decay value) {
+  return ::google::protobuf::internal::NameOfEnum(
+    Hyperparams_Decay_descriptor(), value);
+}
+inline bool Hyperparams_Decay_Parse(
+    const ::std::string& name, Hyperparams_Decay* value) {
+  return ::google::protobuf::internal::ParseNamedEnum<Hyperparams_Decay>(
+    Hyperparams_Decay_descriptor(), name, value);
+}
 enum NodeData_NodeType {
   NodeData_NodeType_INPUT = 0,
   NodeData_NodeType_HIDDEN = 1,
@@ -146,6 +168,163 @@ inline bool DatasetInfo_Data_DataType_Parse(
     DatasetInfo_Data_DataType_descriptor(), name, value);
 }
 // ===================================================================
+
+class Hyperparams : public ::google::protobuf::Message {
+ public:
+  Hyperparams();
+  virtual ~Hyperparams();
+
+  Hyperparams(const Hyperparams& from);
+
+  inline Hyperparams& operator=(const Hyperparams& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const Hyperparams& default_instance();
+
+  void Swap(Hyperparams* other);
+
+  // implements Message ----------------------------------------------
+
+  Hyperparams* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const Hyperparams& from);
+  void MergeFrom(const Hyperparams& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  typedef Hyperparams_Decay Decay;
+  static const Decay NONE = Hyperparams_Decay_NONE;
+  static const Decay INVERSE_T = Hyperparams_Decay_INVERSE_T;
+  static const Decay EXPONENTIAL = Hyperparams_Decay_EXPONENTIAL;
+  static inline bool Decay_IsValid(int value) {
+    return Hyperparams_Decay_IsValid(value);
+  }
+  static const Decay Decay_MIN =
+    Hyperparams_Decay_Decay_MIN;
+  static const Decay Decay_MAX =
+    Hyperparams_Decay_Decay_MAX;
+  static const int Decay_ARRAYSIZE =
+    Hyperparams_Decay_Decay_ARRAYSIZE;
+  static inline const ::google::protobuf::EnumDescriptor*
+  Decay_descriptor() {
+    return Hyperparams_Decay_descriptor();
+  }
+  static inline const ::std::string& Decay_Name(Decay value) {
+    return Hyperparams_Decay_Name(value);
+  }
+  static inline bool Decay_Parse(const ::std::string& name,
+      Decay* value) {
+    return Hyperparams_Decay_Parse(name, value);
+  }
+
+  // accessors -------------------------------------------------------
+
+  // optional float base_learningrate = 1 [default = 0.01];
+  inline bool has_base_learningrate() const;
+  inline void clear_base_learningrate();
+  static const int kBaseLearningrateFieldNumber = 1;
+  inline float base_learningrate() const;
+  inline void set_base_learningrate(float value);
+
+  // optional .model.Hyperparams.Decay learningrate_decay = 2 [default = NONE];
+  inline bool has_learningrate_decay() const;
+  inline void clear_learningrate_decay();
+  static const int kLearningrateDecayFieldNumber = 2;
+  inline ::model::Hyperparams_Decay learningrate_decay() const;
+  inline void set_learningrate_decay(::model::Hyperparams_Decay value);
+
+  // optional int32 learningrate_decay_half_life = 3 [default = 1000];
+  inline bool has_learningrate_decay_half_life() const;
+  inline void clear_learningrate_decay_half_life();
+  static const int kLearningrateDecayHalfLifeFieldNumber = 3;
+  inline ::google::protobuf::int32 learningrate_decay_half_life() const;
+  inline void set_learningrate_decay_half_life(::google::protobuf::int32 value);
+
+  // optional float initial_momentum = 4 [default = 0];
+  inline bool has_initial_momentum() const;
+  inline void clear_initial_momentum();
+  static const int kInitialMomentumFieldNumber = 4;
+  inline float initial_momentum() const;
+  inline void set_initial_momentum(float value);
+
+  // optional float final_momentum = 5 [default = 0];
+  inline bool has_final_momentum() const;
+  inline void clear_final_momentum();
+  static const int kFinalMomentumFieldNumber = 5;
+  inline float final_momentum() const;
+  inline void set_final_momentum(float value);
+
+  // optional int32 momentum_change_steps = 6 [default = 10];
+  inline bool has_momentum_change_steps() const;
+  inline void clear_momentum_change_steps();
+  static const int kMomentumChangeStepsFieldNumber = 6;
+  inline ::google::protobuf::int32 momentum_change_steps() const;
+  inline void set_momentum_change_steps(::google::protobuf::int32 value);
+
+  // @@protoc_insertion_point(class_scope:model.Hyperparams)
+ private:
+  inline void set_has_base_learningrate();
+  inline void clear_has_base_learningrate();
+  inline void set_has_learningrate_decay();
+  inline void clear_has_learningrate_decay();
+  inline void set_has_learningrate_decay_half_life();
+  inline void clear_has_learningrate_decay_half_life();
+  inline void set_has_initial_momentum();
+  inline void clear_has_initial_momentum();
+  inline void set_has_final_momentum();
+  inline void clear_has_final_momentum();
+  inline void set_has_momentum_change_steps();
+  inline void clear_has_momentum_change_steps();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  float base_learningrate_;
+  int learningrate_decay_;
+  ::google::protobuf::int32 learningrate_decay_half_life_;
+  float initial_momentum_;
+  float final_momentum_;
+  ::google::protobuf::int32 momentum_change_steps_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(6 + 31) / 32];
+
+  friend void  protobuf_AddDesc_deeplearn_2eproto();
+  friend void protobuf_AssignDesc_deeplearn_2eproto();
+  friend void protobuf_ShutdownFile_deeplearn_2eproto();
+
+  void InitAsDefaultInstance();
+  static Hyperparams* default_instance_;
+};
+// -------------------------------------------------------------------
 
 class NodeData : public ::google::protobuf::Message {
  public:
@@ -262,6 +441,27 @@ class NodeData : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 input_start_index() const;
   inline void set_input_start_index(::google::protobuf::int32 value);
 
+  // optional bytes bias = 5;
+  inline bool has_bias() const;
+  inline void clear_bias();
+  static const int kBiasFieldNumber = 5;
+  inline const ::std::string& bias() const;
+  inline void set_bias(const ::std::string& value);
+  inline void set_bias(const char* value);
+  inline void set_bias(const void* value, size_t size);
+  inline ::std::string* mutable_bias();
+  inline ::std::string* release_bias();
+  inline void set_allocated_bias(::std::string* bias);
+
+  // optional .model.Hyperparams hyper_params = 6;
+  inline bool has_hyper_params() const;
+  inline void clear_hyper_params();
+  static const int kHyperParamsFieldNumber = 6;
+  inline const ::model::Hyperparams& hyper_params() const;
+  inline ::model::Hyperparams* mutable_hyper_params();
+  inline ::model::Hyperparams* release_hyper_params();
+  inline void set_allocated_hyper_params(::model::Hyperparams* hyper_params);
+
   // @@protoc_insertion_point(class_scope:model.NodeData)
  private:
   inline void set_has_name();
@@ -272,16 +472,22 @@ class NodeData : public ::google::protobuf::Message {
   inline void clear_has_dimension();
   inline void set_has_input_start_index();
   inline void clear_has_input_start_index();
+  inline void set_has_bias();
+  inline void clear_has_bias();
+  inline void set_has_hyper_params();
+  inline void clear_has_hyper_params();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
   ::std::string* name_;
   int type_;
   ::google::protobuf::int32 dimension_;
+  ::std::string* bias_;
+  ::model::Hyperparams* hyper_params_;
   ::google::protobuf::int32 input_start_index_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(4 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(6 + 31) / 32];
 
   friend void  protobuf_AddDesc_deeplearn_2eproto();
   friend void protobuf_AssignDesc_deeplearn_2eproto();
@@ -289,6 +495,145 @@ class NodeData : public ::google::protobuf::Message {
 
   void InitAsDefaultInstance();
   static NodeData* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class EdgeData : public ::google::protobuf::Message {
+ public:
+  EdgeData();
+  virtual ~EdgeData();
+
+  EdgeData(const EdgeData& from);
+
+  inline EdgeData& operator=(const EdgeData& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const EdgeData& default_instance();
+
+  void Swap(EdgeData* other);
+
+  // implements Message ----------------------------------------------
+
+  EdgeData* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const EdgeData& from);
+  void MergeFrom(const EdgeData& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional bool directed = 1 [default = true];
+  inline bool has_directed() const;
+  inline void clear_directed();
+  static const int kDirectedFieldNumber = 1;
+  inline bool directed() const;
+  inline void set_directed(bool value);
+
+  // optional bytes weight = 2;
+  inline bool has_weight() const;
+  inline void clear_weight();
+  static const int kWeightFieldNumber = 2;
+  inline const ::std::string& weight() const;
+  inline void set_weight(const ::std::string& value);
+  inline void set_weight(const char* value);
+  inline void set_weight(const void* value, size_t size);
+  inline ::std::string* mutable_weight();
+  inline ::std::string* release_weight();
+  inline void set_allocated_weight(::std::string* weight);
+
+  // optional string node1 = 3;
+  inline bool has_node1() const;
+  inline void clear_node1();
+  static const int kNode1FieldNumber = 3;
+  inline const ::std::string& node1() const;
+  inline void set_node1(const ::std::string& value);
+  inline void set_node1(const char* value);
+  inline void set_node1(const char* value, size_t size);
+  inline ::std::string* mutable_node1();
+  inline ::std::string* release_node1();
+  inline void set_allocated_node1(::std::string* node1);
+
+  // optional string node2 = 4;
+  inline bool has_node2() const;
+  inline void clear_node2();
+  static const int kNode2FieldNumber = 4;
+  inline const ::std::string& node2() const;
+  inline void set_node2(const ::std::string& value);
+  inline void set_node2(const char* value);
+  inline void set_node2(const char* value, size_t size);
+  inline ::std::string* mutable_node2();
+  inline ::std::string* release_node2();
+  inline void set_allocated_node2(::std::string* node2);
+
+  // optional .model.Hyperparams hyper_params = 5;
+  inline bool has_hyper_params() const;
+  inline void clear_hyper_params();
+  static const int kHyperParamsFieldNumber = 5;
+  inline const ::model::Hyperparams& hyper_params() const;
+  inline ::model::Hyperparams* mutable_hyper_params();
+  inline ::model::Hyperparams* release_hyper_params();
+  inline void set_allocated_hyper_params(::model::Hyperparams* hyper_params);
+
+  // @@protoc_insertion_point(class_scope:model.EdgeData)
+ private:
+  inline void set_has_directed();
+  inline void clear_has_directed();
+  inline void set_has_weight();
+  inline void clear_has_weight();
+  inline void set_has_node1();
+  inline void clear_has_node1();
+  inline void set_has_node2();
+  inline void clear_has_node2();
+  inline void set_has_hyper_params();
+  inline void clear_has_hyper_params();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::std::string* weight_;
+  ::std::string* node1_;
+  ::std::string* node2_;
+  ::model::Hyperparams* hyper_params_;
+  bool directed_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(5 + 31) / 32];
+
+  friend void  protobuf_AddDesc_deeplearn_2eproto();
+  friend void protobuf_AssignDesc_deeplearn_2eproto();
+  friend void protobuf_ShutdownFile_deeplearn_2eproto();
+
+  void InitAsDefaultInstance();
+  static EdgeData* default_instance_;
 };
 // -------------------------------------------------------------------
 
@@ -514,6 +859,39 @@ class ModelData : public ::google::protobuf::Message {
   inline ::model::SpnData* release_spn_data();
   inline void set_allocated_spn_data(::model::SpnData* spn_data);
 
+  // optional .model.Hyperparams hyper_params = 4;
+  inline bool has_hyper_params() const;
+  inline void clear_hyper_params();
+  static const int kHyperParamsFieldNumber = 4;
+  inline const ::model::Hyperparams& hyper_params() const;
+  inline ::model::Hyperparams* mutable_hyper_params();
+  inline ::model::Hyperparams* release_hyper_params();
+  inline void set_allocated_hyper_params(::model::Hyperparams* hyper_params);
+
+  // repeated .model.NodeData nodes = 5;
+  inline int nodes_size() const;
+  inline void clear_nodes();
+  static const int kNodesFieldNumber = 5;
+  inline const ::model::NodeData& nodes(int index) const;
+  inline ::model::NodeData* mutable_nodes(int index);
+  inline ::model::NodeData* add_nodes();
+  inline const ::google::protobuf::RepeatedPtrField< ::model::NodeData >&
+      nodes() const;
+  inline ::google::protobuf::RepeatedPtrField< ::model::NodeData >*
+      mutable_nodes();
+
+  // repeated .model.EdgeData edges = 6;
+  inline int edges_size() const;
+  inline void clear_edges();
+  static const int kEdgesFieldNumber = 6;
+  inline const ::model::EdgeData& edges(int index) const;
+  inline ::model::EdgeData* mutable_edges(int index);
+  inline ::model::EdgeData* add_edges();
+  inline const ::google::protobuf::RepeatedPtrField< ::model::EdgeData >&
+      edges() const;
+  inline ::google::protobuf::RepeatedPtrField< ::model::EdgeData >*
+      mutable_edges();
+
   // @@protoc_insertion_point(class_scope:model.ModelData)
  private:
   inline void set_has_name();
@@ -522,15 +900,20 @@ class ModelData : public ::google::protobuf::Message {
   inline void clear_has_model_type();
   inline void set_has_spn_data();
   inline void clear_has_spn_data();
+  inline void set_has_hyper_params();
+  inline void clear_has_hyper_params();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
   ::std::string* name_;
   ::model::SpnData* spn_data_;
+  ::model::Hyperparams* hyper_params_;
+  ::google::protobuf::RepeatedPtrField< ::model::NodeData > nodes_;
+  ::google::protobuf::RepeatedPtrField< ::model::EdgeData > edges_;
   int model_type_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(6 + 31) / 32];
 
   friend void  protobuf_AddDesc_deeplearn_2eproto();
   friend void protobuf_AssignDesc_deeplearn_2eproto();
@@ -828,6 +1211,20 @@ class Operation : public ::google::protobuf::Message {
   inline bool randomize() const;
   inline void set_randomize(bool value);
 
+  // optional int32 random_seed = 11 [default = 42];
+  inline bool has_random_seed() const;
+  inline void clear_random_seed();
+  static const int kRandomSeedFieldNumber = 11;
+  inline ::google::protobuf::int32 random_seed() const;
+  inline void set_random_seed(::google::protobuf::int32 value);
+
+  // optional bool verbose = 12 [default = true];
+  inline bool has_verbose() const;
+  inline void clear_verbose();
+  static const int kVerboseFieldNumber = 12;
+  inline bool verbose() const;
+  inline void set_verbose(bool value);
+
   // @@protoc_insertion_point(class_scope:model.Operation)
  private:
   inline void set_has_name();
@@ -850,6 +1247,10 @@ class Operation : public ::google::protobuf::Message {
   inline void clear_has_checkpoint_directory();
   inline void set_has_randomize();
   inline void clear_has_randomize();
+  inline void set_has_random_seed();
+  inline void clear_has_random_seed();
+  inline void set_has_verbose();
+  inline void clear_has_verbose();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -863,10 +1264,12 @@ class Operation : public ::google::protobuf::Message {
   ::google::protobuf::int32 eval_after_;
   ::std::string* checkpoint_directory_;
   ::google::protobuf::int32 checkpoint_after_;
+  ::google::protobuf::int32 random_seed_;
   bool randomize_;
+  bool verbose_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(10 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(12 + 31) / 32];
 
   friend void  protobuf_AddDesc_deeplearn_2eproto();
   friend void protobuf_AssignDesc_deeplearn_2eproto();
@@ -1185,6 +1588,143 @@ class DatasetInfo : public ::google::protobuf::Message {
 
 // ===================================================================
 
+// Hyperparams
+
+// optional float base_learningrate = 1 [default = 0.01];
+inline bool Hyperparams::has_base_learningrate() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void Hyperparams::set_has_base_learningrate() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void Hyperparams::clear_has_base_learningrate() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void Hyperparams::clear_base_learningrate() {
+  base_learningrate_ = 0.01f;
+  clear_has_base_learningrate();
+}
+inline float Hyperparams::base_learningrate() const {
+  return base_learningrate_;
+}
+inline void Hyperparams::set_base_learningrate(float value) {
+  set_has_base_learningrate();
+  base_learningrate_ = value;
+}
+
+// optional .model.Hyperparams.Decay learningrate_decay = 2 [default = NONE];
+inline bool Hyperparams::has_learningrate_decay() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void Hyperparams::set_has_learningrate_decay() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void Hyperparams::clear_has_learningrate_decay() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void Hyperparams::clear_learningrate_decay() {
+  learningrate_decay_ = 0;
+  clear_has_learningrate_decay();
+}
+inline ::model::Hyperparams_Decay Hyperparams::learningrate_decay() const {
+  return static_cast< ::model::Hyperparams_Decay >(learningrate_decay_);
+}
+inline void Hyperparams::set_learningrate_decay(::model::Hyperparams_Decay value) {
+  assert(::model::Hyperparams_Decay_IsValid(value));
+  set_has_learningrate_decay();
+  learningrate_decay_ = value;
+}
+
+// optional int32 learningrate_decay_half_life = 3 [default = 1000];
+inline bool Hyperparams::has_learningrate_decay_half_life() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void Hyperparams::set_has_learningrate_decay_half_life() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void Hyperparams::clear_has_learningrate_decay_half_life() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void Hyperparams::clear_learningrate_decay_half_life() {
+  learningrate_decay_half_life_ = 1000;
+  clear_has_learningrate_decay_half_life();
+}
+inline ::google::protobuf::int32 Hyperparams::learningrate_decay_half_life() const {
+  return learningrate_decay_half_life_;
+}
+inline void Hyperparams::set_learningrate_decay_half_life(::google::protobuf::int32 value) {
+  set_has_learningrate_decay_half_life();
+  learningrate_decay_half_life_ = value;
+}
+
+// optional float initial_momentum = 4 [default = 0];
+inline bool Hyperparams::has_initial_momentum() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void Hyperparams::set_has_initial_momentum() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void Hyperparams::clear_has_initial_momentum() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void Hyperparams::clear_initial_momentum() {
+  initial_momentum_ = 0;
+  clear_has_initial_momentum();
+}
+inline float Hyperparams::initial_momentum() const {
+  return initial_momentum_;
+}
+inline void Hyperparams::set_initial_momentum(float value) {
+  set_has_initial_momentum();
+  initial_momentum_ = value;
+}
+
+// optional float final_momentum = 5 [default = 0];
+inline bool Hyperparams::has_final_momentum() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void Hyperparams::set_has_final_momentum() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void Hyperparams::clear_has_final_momentum() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void Hyperparams::clear_final_momentum() {
+  final_momentum_ = 0;
+  clear_has_final_momentum();
+}
+inline float Hyperparams::final_momentum() const {
+  return final_momentum_;
+}
+inline void Hyperparams::set_final_momentum(float value) {
+  set_has_final_momentum();
+  final_momentum_ = value;
+}
+
+// optional int32 momentum_change_steps = 6 [default = 10];
+inline bool Hyperparams::has_momentum_change_steps() const {
+  return (_has_bits_[0] & 0x00000020u) != 0;
+}
+inline void Hyperparams::set_has_momentum_change_steps() {
+  _has_bits_[0] |= 0x00000020u;
+}
+inline void Hyperparams::clear_has_momentum_change_steps() {
+  _has_bits_[0] &= ~0x00000020u;
+}
+inline void Hyperparams::clear_momentum_change_steps() {
+  momentum_change_steps_ = 10;
+  clear_has_momentum_change_steps();
+}
+inline ::google::protobuf::int32 Hyperparams::momentum_change_steps() const {
+  return momentum_change_steps_;
+}
+inline void Hyperparams::set_momentum_change_steps(::google::protobuf::int32 value) {
+  set_has_momentum_change_steps();
+  momentum_change_steps_ = value;
+}
+
+// -------------------------------------------------------------------
+
 // NodeData
 
 // required string name = 1;
@@ -1322,6 +1862,388 @@ inline ::google::protobuf::int32 NodeData::input_start_index() const {
 inline void NodeData::set_input_start_index(::google::protobuf::int32 value) {
   set_has_input_start_index();
   input_start_index_ = value;
+}
+
+// optional bytes bias = 5;
+inline bool NodeData::has_bias() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void NodeData::set_has_bias() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void NodeData::clear_has_bias() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void NodeData::clear_bias() {
+  if (bias_ != &::google::protobuf::internal::kEmptyString) {
+    bias_->clear();
+  }
+  clear_has_bias();
+}
+inline const ::std::string& NodeData::bias() const {
+  return *bias_;
+}
+inline void NodeData::set_bias(const ::std::string& value) {
+  set_has_bias();
+  if (bias_ == &::google::protobuf::internal::kEmptyString) {
+    bias_ = new ::std::string;
+  }
+  bias_->assign(value);
+}
+inline void NodeData::set_bias(const char* value) {
+  set_has_bias();
+  if (bias_ == &::google::protobuf::internal::kEmptyString) {
+    bias_ = new ::std::string;
+  }
+  bias_->assign(value);
+}
+inline void NodeData::set_bias(const void* value, size_t size) {
+  set_has_bias();
+  if (bias_ == &::google::protobuf::internal::kEmptyString) {
+    bias_ = new ::std::string;
+  }
+  bias_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* NodeData::mutable_bias() {
+  set_has_bias();
+  if (bias_ == &::google::protobuf::internal::kEmptyString) {
+    bias_ = new ::std::string;
+  }
+  return bias_;
+}
+inline ::std::string* NodeData::release_bias() {
+  clear_has_bias();
+  if (bias_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = bias_;
+    bias_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void NodeData::set_allocated_bias(::std::string* bias) {
+  if (bias_ != &::google::protobuf::internal::kEmptyString) {
+    delete bias_;
+  }
+  if (bias) {
+    set_has_bias();
+    bias_ = bias;
+  } else {
+    clear_has_bias();
+    bias_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// optional .model.Hyperparams hyper_params = 6;
+inline bool NodeData::has_hyper_params() const {
+  return (_has_bits_[0] & 0x00000020u) != 0;
+}
+inline void NodeData::set_has_hyper_params() {
+  _has_bits_[0] |= 0x00000020u;
+}
+inline void NodeData::clear_has_hyper_params() {
+  _has_bits_[0] &= ~0x00000020u;
+}
+inline void NodeData::clear_hyper_params() {
+  if (hyper_params_ != NULL) hyper_params_->::model::Hyperparams::Clear();
+  clear_has_hyper_params();
+}
+inline const ::model::Hyperparams& NodeData::hyper_params() const {
+  return hyper_params_ != NULL ? *hyper_params_ : *default_instance_->hyper_params_;
+}
+inline ::model::Hyperparams* NodeData::mutable_hyper_params() {
+  set_has_hyper_params();
+  if (hyper_params_ == NULL) hyper_params_ = new ::model::Hyperparams;
+  return hyper_params_;
+}
+inline ::model::Hyperparams* NodeData::release_hyper_params() {
+  clear_has_hyper_params();
+  ::model::Hyperparams* temp = hyper_params_;
+  hyper_params_ = NULL;
+  return temp;
+}
+inline void NodeData::set_allocated_hyper_params(::model::Hyperparams* hyper_params) {
+  delete hyper_params_;
+  hyper_params_ = hyper_params;
+  if (hyper_params) {
+    set_has_hyper_params();
+  } else {
+    clear_has_hyper_params();
+  }
+}
+
+// -------------------------------------------------------------------
+
+// EdgeData
+
+// optional bool directed = 1 [default = true];
+inline bool EdgeData::has_directed() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void EdgeData::set_has_directed() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void EdgeData::clear_has_directed() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void EdgeData::clear_directed() {
+  directed_ = true;
+  clear_has_directed();
+}
+inline bool EdgeData::directed() const {
+  return directed_;
+}
+inline void EdgeData::set_directed(bool value) {
+  set_has_directed();
+  directed_ = value;
+}
+
+// optional bytes weight = 2;
+inline bool EdgeData::has_weight() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void EdgeData::set_has_weight() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void EdgeData::clear_has_weight() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void EdgeData::clear_weight() {
+  if (weight_ != &::google::protobuf::internal::kEmptyString) {
+    weight_->clear();
+  }
+  clear_has_weight();
+}
+inline const ::std::string& EdgeData::weight() const {
+  return *weight_;
+}
+inline void EdgeData::set_weight(const ::std::string& value) {
+  set_has_weight();
+  if (weight_ == &::google::protobuf::internal::kEmptyString) {
+    weight_ = new ::std::string;
+  }
+  weight_->assign(value);
+}
+inline void EdgeData::set_weight(const char* value) {
+  set_has_weight();
+  if (weight_ == &::google::protobuf::internal::kEmptyString) {
+    weight_ = new ::std::string;
+  }
+  weight_->assign(value);
+}
+inline void EdgeData::set_weight(const void* value, size_t size) {
+  set_has_weight();
+  if (weight_ == &::google::protobuf::internal::kEmptyString) {
+    weight_ = new ::std::string;
+  }
+  weight_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* EdgeData::mutable_weight() {
+  set_has_weight();
+  if (weight_ == &::google::protobuf::internal::kEmptyString) {
+    weight_ = new ::std::string;
+  }
+  return weight_;
+}
+inline ::std::string* EdgeData::release_weight() {
+  clear_has_weight();
+  if (weight_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = weight_;
+    weight_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void EdgeData::set_allocated_weight(::std::string* weight) {
+  if (weight_ != &::google::protobuf::internal::kEmptyString) {
+    delete weight_;
+  }
+  if (weight) {
+    set_has_weight();
+    weight_ = weight;
+  } else {
+    clear_has_weight();
+    weight_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// optional string node1 = 3;
+inline bool EdgeData::has_node1() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void EdgeData::set_has_node1() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void EdgeData::clear_has_node1() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void EdgeData::clear_node1() {
+  if (node1_ != &::google::protobuf::internal::kEmptyString) {
+    node1_->clear();
+  }
+  clear_has_node1();
+}
+inline const ::std::string& EdgeData::node1() const {
+  return *node1_;
+}
+inline void EdgeData::set_node1(const ::std::string& value) {
+  set_has_node1();
+  if (node1_ == &::google::protobuf::internal::kEmptyString) {
+    node1_ = new ::std::string;
+  }
+  node1_->assign(value);
+}
+inline void EdgeData::set_node1(const char* value) {
+  set_has_node1();
+  if (node1_ == &::google::protobuf::internal::kEmptyString) {
+    node1_ = new ::std::string;
+  }
+  node1_->assign(value);
+}
+inline void EdgeData::set_node1(const char* value, size_t size) {
+  set_has_node1();
+  if (node1_ == &::google::protobuf::internal::kEmptyString) {
+    node1_ = new ::std::string;
+  }
+  node1_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* EdgeData::mutable_node1() {
+  set_has_node1();
+  if (node1_ == &::google::protobuf::internal::kEmptyString) {
+    node1_ = new ::std::string;
+  }
+  return node1_;
+}
+inline ::std::string* EdgeData::release_node1() {
+  clear_has_node1();
+  if (node1_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = node1_;
+    node1_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void EdgeData::set_allocated_node1(::std::string* node1) {
+  if (node1_ != &::google::protobuf::internal::kEmptyString) {
+    delete node1_;
+  }
+  if (node1) {
+    set_has_node1();
+    node1_ = node1;
+  } else {
+    clear_has_node1();
+    node1_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// optional string node2 = 4;
+inline bool EdgeData::has_node2() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void EdgeData::set_has_node2() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void EdgeData::clear_has_node2() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void EdgeData::clear_node2() {
+  if (node2_ != &::google::protobuf::internal::kEmptyString) {
+    node2_->clear();
+  }
+  clear_has_node2();
+}
+inline const ::std::string& EdgeData::node2() const {
+  return *node2_;
+}
+inline void EdgeData::set_node2(const ::std::string& value) {
+  set_has_node2();
+  if (node2_ == &::google::protobuf::internal::kEmptyString) {
+    node2_ = new ::std::string;
+  }
+  node2_->assign(value);
+}
+inline void EdgeData::set_node2(const char* value) {
+  set_has_node2();
+  if (node2_ == &::google::protobuf::internal::kEmptyString) {
+    node2_ = new ::std::string;
+  }
+  node2_->assign(value);
+}
+inline void EdgeData::set_node2(const char* value, size_t size) {
+  set_has_node2();
+  if (node2_ == &::google::protobuf::internal::kEmptyString) {
+    node2_ = new ::std::string;
+  }
+  node2_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* EdgeData::mutable_node2() {
+  set_has_node2();
+  if (node2_ == &::google::protobuf::internal::kEmptyString) {
+    node2_ = new ::std::string;
+  }
+  return node2_;
+}
+inline ::std::string* EdgeData::release_node2() {
+  clear_has_node2();
+  if (node2_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = node2_;
+    node2_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void EdgeData::set_allocated_node2(::std::string* node2) {
+  if (node2_ != &::google::protobuf::internal::kEmptyString) {
+    delete node2_;
+  }
+  if (node2) {
+    set_has_node2();
+    node2_ = node2;
+  } else {
+    clear_has_node2();
+    node2_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// optional .model.Hyperparams hyper_params = 5;
+inline bool EdgeData::has_hyper_params() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void EdgeData::set_has_hyper_params() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void EdgeData::clear_has_hyper_params() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void EdgeData::clear_hyper_params() {
+  if (hyper_params_ != NULL) hyper_params_->::model::Hyperparams::Clear();
+  clear_has_hyper_params();
+}
+inline const ::model::Hyperparams& EdgeData::hyper_params() const {
+  return hyper_params_ != NULL ? *hyper_params_ : *default_instance_->hyper_params_;
+}
+inline ::model::Hyperparams* EdgeData::mutable_hyper_params() {
+  set_has_hyper_params();
+  if (hyper_params_ == NULL) hyper_params_ = new ::model::Hyperparams;
+  return hyper_params_;
+}
+inline ::model::Hyperparams* EdgeData::release_hyper_params() {
+  clear_has_hyper_params();
+  ::model::Hyperparams* temp = hyper_params_;
+  hyper_params_ = NULL;
+  return temp;
+}
+inline void EdgeData::set_allocated_hyper_params(::model::Hyperparams* hyper_params) {
+  delete hyper_params_;
+  hyper_params_ = hyper_params;
+  if (hyper_params) {
+    set_has_hyper_params();
+  } else {
+    clear_has_hyper_params();
+  }
 }
 
 // -------------------------------------------------------------------
@@ -1671,6 +2593,94 @@ inline void ModelData::set_allocated_spn_data(::model::SpnData* spn_data) {
   } else {
     clear_has_spn_data();
   }
+}
+
+// optional .model.Hyperparams hyper_params = 4;
+inline bool ModelData::has_hyper_params() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void ModelData::set_has_hyper_params() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void ModelData::clear_has_hyper_params() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void ModelData::clear_hyper_params() {
+  if (hyper_params_ != NULL) hyper_params_->::model::Hyperparams::Clear();
+  clear_has_hyper_params();
+}
+inline const ::model::Hyperparams& ModelData::hyper_params() const {
+  return hyper_params_ != NULL ? *hyper_params_ : *default_instance_->hyper_params_;
+}
+inline ::model::Hyperparams* ModelData::mutable_hyper_params() {
+  set_has_hyper_params();
+  if (hyper_params_ == NULL) hyper_params_ = new ::model::Hyperparams;
+  return hyper_params_;
+}
+inline ::model::Hyperparams* ModelData::release_hyper_params() {
+  clear_has_hyper_params();
+  ::model::Hyperparams* temp = hyper_params_;
+  hyper_params_ = NULL;
+  return temp;
+}
+inline void ModelData::set_allocated_hyper_params(::model::Hyperparams* hyper_params) {
+  delete hyper_params_;
+  hyper_params_ = hyper_params;
+  if (hyper_params) {
+    set_has_hyper_params();
+  } else {
+    clear_has_hyper_params();
+  }
+}
+
+// repeated .model.NodeData nodes = 5;
+inline int ModelData::nodes_size() const {
+  return nodes_.size();
+}
+inline void ModelData::clear_nodes() {
+  nodes_.Clear();
+}
+inline const ::model::NodeData& ModelData::nodes(int index) const {
+  return nodes_.Get(index);
+}
+inline ::model::NodeData* ModelData::mutable_nodes(int index) {
+  return nodes_.Mutable(index);
+}
+inline ::model::NodeData* ModelData::add_nodes() {
+  return nodes_.Add();
+}
+inline const ::google::protobuf::RepeatedPtrField< ::model::NodeData >&
+ModelData::nodes() const {
+  return nodes_;
+}
+inline ::google::protobuf::RepeatedPtrField< ::model::NodeData >*
+ModelData::mutable_nodes() {
+  return &nodes_;
+}
+
+// repeated .model.EdgeData edges = 6;
+inline int ModelData::edges_size() const {
+  return edges_.size();
+}
+inline void ModelData::clear_edges() {
+  edges_.Clear();
+}
+inline const ::model::EdgeData& ModelData::edges(int index) const {
+  return edges_.Get(index);
+}
+inline ::model::EdgeData* ModelData::mutable_edges(int index) {
+  return edges_.Mutable(index);
+}
+inline ::model::EdgeData* ModelData::add_edges() {
+  return edges_.Add();
+}
+inline const ::google::protobuf::RepeatedPtrField< ::model::EdgeData >&
+ModelData::edges() const {
+  return edges_;
+}
+inline ::google::protobuf::RepeatedPtrField< ::model::EdgeData >*
+ModelData::mutable_edges() {
+  return &edges_;
 }
 
 // -------------------------------------------------------------------
@@ -2105,6 +3115,50 @@ inline bool Operation::randomize() const {
 inline void Operation::set_randomize(bool value) {
   set_has_randomize();
   randomize_ = value;
+}
+
+// optional int32 random_seed = 11 [default = 42];
+inline bool Operation::has_random_seed() const {
+  return (_has_bits_[0] & 0x00000400u) != 0;
+}
+inline void Operation::set_has_random_seed() {
+  _has_bits_[0] |= 0x00000400u;
+}
+inline void Operation::clear_has_random_seed() {
+  _has_bits_[0] &= ~0x00000400u;
+}
+inline void Operation::clear_random_seed() {
+  random_seed_ = 42;
+  clear_has_random_seed();
+}
+inline ::google::protobuf::int32 Operation::random_seed() const {
+  return random_seed_;
+}
+inline void Operation::set_random_seed(::google::protobuf::int32 value) {
+  set_has_random_seed();
+  random_seed_ = value;
+}
+
+// optional bool verbose = 12 [default = true];
+inline bool Operation::has_verbose() const {
+  return (_has_bits_[0] & 0x00000800u) != 0;
+}
+inline void Operation::set_has_verbose() {
+  _has_bits_[0] |= 0x00000800u;
+}
+inline void Operation::clear_has_verbose() {
+  _has_bits_[0] &= ~0x00000800u;
+}
+inline void Operation::clear_verbose() {
+  verbose_ = true;
+  clear_has_verbose();
+}
+inline bool Operation::verbose() const {
+  return verbose_;
+}
+inline void Operation::set_verbose(bool value) {
+  set_has_verbose();
+  verbose_ = value;
 }
 
 // -------------------------------------------------------------------
@@ -2562,6 +3616,10 @@ inline void DatasetInfo::set_allocated_path_prefix(::std::string* path_prefix) {
 namespace google {
 namespace protobuf {
 
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::model::Hyperparams_Decay>() {
+  return ::model::Hyperparams_Decay_descriptor();
+}
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::model::NodeData_NodeType>() {
   return ::model::NodeData_NodeType_descriptor();

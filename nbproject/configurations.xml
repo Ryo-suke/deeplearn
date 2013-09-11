@@ -17,6 +17,7 @@
       <itemPath>/home/hoaivu_pham/NetBeansProjects/deeplearn/model/spnet/ProductNode.h</itemPath>
       <itemPath>model/spnet/Spn.h</itemPath>
       <itemPath>/home/hoaivu_pham/NetBeansProjects/deeplearn/model/spnet/SumNode.h</itemPath>
+      <itemPath>/home/hoaivu_pham/NetBeansProjects/deeplearn/util/Util.h</itemPath>
       <itemPath>/home/hoaivu_pham/NetBeansProjects/deeplearn/model/deeplearn.pb.h</itemPath>
       <itemPath>math/pimatrix.h</itemPath>
     </logicalFolder>
@@ -40,6 +41,7 @@
       <itemPath>/home/hoaivu_pham/NetBeansProjects/deeplearn/model/spnet/ProductNode.cpp</itemPath>
       <itemPath>model/spnet/Spn.cpp</itemPath>
       <itemPath>/home/hoaivu_pham/NetBeansProjects/deeplearn/model/spnet/SumNode.cpp</itemPath>
+      <itemPath>/home/hoaivu_pham/NetBeansProjects/deeplearn/util/Util.cpp</itemPath>
       <itemPath>/home/hoaivu_pham/NetBeansProjects/deeplearn/model/deeplearn.pb.cc</itemPath>
       <itemPath>main.cpp</itemPath>
       <itemPath>/home/hoaivu_pham/NetBeansProjects/deeplearn/math/pimatrix.cpp</itemPath>
@@ -78,8 +80,10 @@
             <pElem>math</pElem>
             <pElem>model</pElem>
             <pElem>data</pElem>
+            <pElem>util</pElem>
             <pElem>/home/hoaivu_pham/lib/boost_1_54_0/include</pElem>
           </incDir>
+          <warningLevel>2</warningLevel>
         </ccTool>
         <linkerTool>
           <linkerAddLib>
@@ -102,10 +106,12 @@
         <cTool>
           <incDir>
             <pElem>.</pElem>
+            <pElem>.</pElem>
           </incDir>
         </cTool>
         <ccTool>
           <incDir>
+            <pElem>.</pElem>
             <pElem>.</pElem>
           </incDir>
         </ccTool>
@@ -117,10 +123,12 @@
         <cTool>
           <incDir>
             <pElem>.</pElem>
+            <pElem>.</pElem>
           </incDir>
         </cTool>
         <ccTool>
           <incDir>
+            <pElem>.</pElem>
             <pElem>.</pElem>
           </incDir>
         </ccTool>
@@ -144,6 +152,7 @@
             <pElem>math</pElem>
             <pElem>model</pElem>
             <pElem>data</pElem>
+            <pElem>util</pElem>
             <pElem>/home/hoaivu_pham/lib/boost_1_54_0/include</pElem>
           </incDir>
         </ccTool>
@@ -174,10 +183,12 @@
         <cTool>
           <incDir>
             <pElem>.</pElem>
+            <pElem>.</pElem>
           </incDir>
         </cTool>
         <ccTool>
           <incDir>
+            <pElem>.</pElem>
             <pElem>.</pElem>
           </incDir>
         </ccTool>
@@ -189,10 +200,12 @@
         <cTool>
           <incDir>
             <pElem>.</pElem>
+            <pElem>.</pElem>
           </incDir>
         </cTool>
         <ccTool>
           <incDir>
+            <pElem>.</pElem>
             <pElem>.</pElem>
           </incDir>
         </ccTool>

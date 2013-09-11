@@ -11,9 +11,9 @@
 namespace model
 {
 
-Node::Node(NodeData& nodeData)
+Node::Node(const NodeData& nodeData)
 {
-    m_nodeData = nodeData;      // deep copy
+    MergeNodeData(nodeData);      // deep copy
 }
 
 Node::~Node()

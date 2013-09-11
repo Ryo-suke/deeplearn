@@ -317,8 +317,10 @@ void pimatrix::save(std::string sFileName)
 {
     std::ofstream ofs(sFileName.c_str());
     boost::archive::binary_oarchive oa(ofs);
-    
     oa << m_matrix;
+    ofs.flush();
+    ofs.close();
+    
 }
 
 void pimatrix::load(std::string sFileName)
@@ -326,6 +328,7 @@ void pimatrix::load(std::string sFileName)
     std::ifstream ifs(sFileName.c_str());
     boost::archive::binary_iarchive ia(ifs);
     ia >> m_matrix;
+    ifs.close();
 }
     
 std::string pimatrix::ToString()
@@ -335,4 +338,20 @@ std::string pimatrix::ToString()
     return ss.str();
 }
 
+std::string pimatrix::ToBinaryString()
+{
+    std::stringstream oss;
+    boost::archive::binary_oarchive oa(oss);
+        
+    oa << m_matrix;
+    return oss.str();
+}
+
+void pimatrix::FromBinaryString(const std::string& s)
+{
+    std::stringstream iss(s);
+    boost::archive::binary_iarchive ia(iss);
+    ia >> m_matrix;
+}
+    
 }

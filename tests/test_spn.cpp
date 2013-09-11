@@ -9,13 +9,11 @@
 #include <iostream>
 #include <fstream>
 #include <streambuf>
-#include <fcntl.h>
-#include <google/protobuf/text_format.h>
-#include <google/protobuf/io/zero_copy_stream_impl.h>
 #include "spnet/Spn.h"
 #include "deeplearn.pb.h"
+#include "util/Util.h"
 #include <DataHandler.h>
-
+#include <Util.h>
 
 /*
  * Simple C++ Test Suite
@@ -23,7 +21,7 @@
 
 model::Spn* createSimpleSpn()
 {
-    model::ModelData modelData = model::ModelData::default_instance();
+    model::ModelData modelData;
         
     model::SpnData *spnData = model::SpnData::default_instance().New();
     /*
@@ -63,19 +61,8 @@ void testSpn()
 void testDataHandler()
 {
     model::DatasetInfo datasetInfo;
-    
-    int fileDescriptor = open("./tests/data1/data1.pbtxt", O_RDONLY);
-
-    if( fileDescriptor < 0 )
-    {
-        std::cout << "%TEST_FAILED% time=0 testname=testDataHandler (test_model) message=fileDescriptor < 0" << std::endl;
-        return;
-    }
-
-    google::protobuf::io::FileInputStream fileInput(fileDescriptor);
-    fileInput.SetCloseOnDelete( true );
-
-    if (!google::protobuf::TextFormat::Parse(&fileInput, &datasetInfo))
+    std::string sProtoFile("./tests/data1/data1.pbtxt");
+    if(!util::Util::LoadProto(sProtoFile, &datasetInfo))
     {
         std::cout << "%TEST_FAILED% time=0 testname=testDataHandler (test_model) message=protobuf import failed" << std::endl;
         return;
@@ -83,13 +70,15 @@ void testDataHandler()
   
     data::DataHandler *handler1, *handler2;
     
-    handler1 = data::DataHandler::GetDataHandler(datasetInfo, 100, false, 42, true);
-    handler2 = data::DataHandler::GetDataHandler(datasetInfo, 100, true, 42, true);
+    handler1 = data::DataHandler::GetDataHandler(datasetInfo, false, 42, true);
+    handler2 = data::DataHandler::GetDataHandler(datasetInfo, true, 42, true);
     
     if(!handler1 || !handler2)
     {
         std::cout << "%TEST_FAILED% time=0 testname=testDataHandler (test_model) message=GetDataHandler() failed" << std::endl;
     }
+    
+    // default batch size = 100
     std::cout << handler1->GetDataset(model::DatasetInfo_Data::TRAIN_SET)->GetNumBatches() << std::endl;
     std::cout << handler1->GetDataset(model::DatasetInfo_Data::TEST_SET)->GetNumBatches() << std::endl;
     std::cout << handler1->GetDataset(model::DatasetInfo_Data::EVAL_SET)->GetNumBatches() << std::endl;
@@ -114,28 +103,19 @@ void testSpnForward()
     
     // get dataset
     model::DatasetInfo datasetInfo;
+    std::string sProtoFile("./tests/data1/data1.pbtxt");
     
-    int fileDescriptor = open("./tests/data1/data1.pbtxt", O_RDONLY);
-
-    if( fileDescriptor < 0 )
-    {
-        std::cout << "%TEST_FAILED% time=0 testname=testSpnForward (test_model) message=fileDescriptor < 0" << std::endl;
-        return;
-    }
-
-    google::protobuf::io::FileInputStream fileInput(fileDescriptor);
-    fileInput.SetCloseOnDelete( true );
-
-    if (!google::protobuf::TextFormat::Parse(&fileInput, &datasetInfo))
+    if (!util::Util::LoadProto(sProtoFile, &datasetInfo))
     {
         std::cout << "%TEST_FAILED% time=0 testname=testSpnForward (test_model) message=protobuf import failed" << std::endl;
         return;
     }
   
     data::DataHandler *handler;
-    handler = data::DataHandler::GetDataHandler(datasetInfo, 100, true, 42, true);
+    handler = data::DataHandler::GetDataHandler(datasetInfo, true, 42, true);
     data::Dataset* trainSet = handler->GetDataset(model::DatasetInfo_Data::TRAIN_SET);
     
+    trainSet->SetBatchSize(100);
     for (int i = trainSet->GetNumBatches() - 1; i >= 0; --i)
     {
         trainSet->EndLoadNextBatch();

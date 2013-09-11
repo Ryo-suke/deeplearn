@@ -14,7 +14,7 @@ namespace data
 {
 
 DeepLearnDataHandler::DeepLearnDataHandler(const model::DatasetInfo& datasetInfo
-    , size_t batchSize, bool randomize, int randomSeed, bool verbose)
+    , bool randomize, int randomSeed, bool verbose)
 {
     m_sName = datasetInfo.name();
 
@@ -34,7 +34,7 @@ DeepLearnDataHandler::DeepLearnDataHandler(const model::DatasetInfo& datasetInfo
         if (m_datasets.count(dataType) == 0)
         {
             m_datasets[dataType] = 
-                    new Dataset(dataset, batchSize
+                    new Dataset(dataset
                     , (size_t)std::floor(memoryRatios[dataType] * memorySize)
                     , randomize, randomSeed, verbose);
         }
