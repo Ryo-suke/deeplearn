@@ -7,17 +7,38 @@
 
 #include "Util.h"
 
+#ifdef _MSC_VER
+#include <stdio.h>
+#include <io.h>
+#else
 #include <fcntl.h>
+#endif
 #include <google/protobuf/text_format.h>
 #include <google/protobuf/io/zero_copy_stream_impl.h>
 
 namespace util
 {
 
+#ifdef _MSC_VER
+    int getFileHandle(const std::string& sFile)
+    {
+        FILE* f;
+        if (fopen_s(&f, sFile.c_str(), "r") == 0)
+            return -1;
+
+        return _fileno(f);
+    }
+#else
+    int getFileHandle(const std::string& sFile)
+    {
+        return open(sFile.c_str(), O_RDONLY);
+    }
+#endif
+
 bool Util::LoadProto(const std::string& sFile, google::protobuf::Message* mess)
 {
-    int fileDescriptor = open(sFile.c_str(), O_RDONLY);
-
+    int fileDescriptor = getFileHandle(sFile);
+    
     if( fileDescriptor < 0 )
     {
         return false;
@@ -26,7 +47,9 @@ bool Util::LoadProto(const std::string& sFile, google::protobuf::Message* mess)
     google::protobuf::io::FileInputStream fileInput(fileDescriptor);
     fileInput.SetCloseOnDelete( true );
 
-    return google::protobuf::TextFormat::Parse(&fileInput, mess);
+    bool bRet = google::protobuf::TextFormat::Parse(&fileInput, mess);
+    _close(fileDescriptor);
+    return bRet;
 }
 
 data::DataHandler* Util::LoadDataHandler(const std::string& sDataProtoFile
@@ -50,6 +73,7 @@ data::DataHandler* Util::LoadDataHandler(const std::string& sDataProtoFile
 }
 
 /*****************************************************************************/
+
 void Util::GetLearningRateAndMomentum(int step, const model::Hyperparams& hyperParams
                 , float& learningRate, float& momentum)
 {

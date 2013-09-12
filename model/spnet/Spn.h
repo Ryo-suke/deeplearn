@@ -29,7 +29,8 @@ public:
     math::pimatrix Forward(math::pimatrix* batch);
     void Backward();
     void Train(Operation& trainOp, Operation* evalOp = NULL);
-    
+    virtual void Evaluate(Operation& evalOp, data::Dataset* evalDataset);
+
     virtual bool Validate();
     
 private:

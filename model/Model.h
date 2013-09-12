@@ -46,7 +46,10 @@ public:
     virtual math::pimatrix Forward(math::pimatrix* batch) = 0;
     virtual void Backward() = 0;
     virtual void Train(Operation& trainOp, Operation* evalOp = NULL) = 0;
-    
+    /*
+     * evalDataset will be used. Information about dataset in evalOp will be ignored.
+     */
+    virtual void Evaluate(Operation& evalOp, data::Dataset* evalDataset) = 0;
     
     
     /*

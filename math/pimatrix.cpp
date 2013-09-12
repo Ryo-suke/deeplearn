@@ -24,7 +24,7 @@ namespace bu = boost::numeric::ublas;
 typedef boost::uniform_int<> distribution_type;
 typedef boost::variate_generator<boost::minstd_rand&, distribution_type> gen_type;
 
-#define PIMATRIX_TINY 1E-10
+#define PIMATRIX_TINY (float)1E-10
 
 namespace math
 {

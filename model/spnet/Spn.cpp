@@ -92,7 +92,8 @@ void Spn::Train(Operation& trainOp, Operation* evalOp /*= NULL*/)
         return;
     
     data::Dataset* trainSet = dataHandler->GetDataset(model::DatasetInfo_Data::TRAIN_SET);
-    
+    data::Dataset* evalSet = dataHandler->GetDataset(model::DatasetInfo_Data::EVAL_SET);
+
     // set batch size and training stop condition
     trainSet->SetBatchSize(trainOp.batch_size());
 	Operation_StopCondition stopCond = trainOp.stop_condition();
@@ -131,6 +132,13 @@ void Spn::Train(Operation& trainOp, Operation* evalOp /*= NULL*/)
     }
     Prune();
 }
+
+void Spn::Evaluate(Operation& evalOp, data::Dataset* evalDataset)
+{
+    // TODO: Metric (performance stats), compute probability in log-domain?
+}
+
+/*****************************************************************************/
 
 bool Spn::Validate()
 {
