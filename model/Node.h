@@ -70,7 +70,7 @@ public:
         m_derivatives += derivative;
     }
     
-    virtual void UpdateParams(int iStep)
+    virtual void UpdateParams(int iStep, int batchSize)
     {
         // do nothing by default.
         // Normally this is only implemented in nodes

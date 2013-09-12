@@ -27,7 +27,7 @@ public:
     
     pimatrix();
     
-    pimatrix(size_t m, size_t n);
+    pimatrix(size_t m, size_t n, float initVal = 0);
     
     pimatrix(const std::string& str);
     
@@ -59,7 +59,7 @@ public:
      * transpose = 2: transpose m
      */
     void mult(pimatrix& m, int transpose = 0);
-
+    
     //static pimatrix mult(pimatrix& m1, pimatrix& m2);
 
     //void mult_add(pimatrix& m1, pimatrix& m2);

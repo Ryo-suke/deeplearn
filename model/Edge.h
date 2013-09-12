@@ -28,7 +28,7 @@ private:
     /*
      * node1_size x node2_size
      */
-    math::pimatrix m_derivatives;
+    math::pimatrix m_derivatives, m_oldDerivatives;
     
     Node *m_node1, *m_node2;
 
@@ -52,7 +52,7 @@ public:
     
     virtual void Backward(math::pimatrix& derivatives);
     
-    virtual void UpdateParams(int iStep);
+    virtual void UpdateParams(int iStep, int batchSize);
     
     /*************************************************************************/
     

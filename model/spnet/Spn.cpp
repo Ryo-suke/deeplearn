@@ -201,14 +201,14 @@ void Spn::TrainOneBatch(Operation& trainOp
     std::vector<Edge*>::iterator itEdge;
     for(itEdge = m_edges.begin(); itEdge != m_edges.end(); ++itEdge)
     {
-        (*itEdge)->UpdateParams(iTrainStep);
+        (*itEdge)->UpdateParams(iTrainStep, trainOp.batch_size());
     }
     
     // update parameters for nodes. Normally this is not 
     // neccessary for SPN where nodes do not have biases.
     for(it = m_nodes.begin(); it != m_nodes.end(); ++it)
     {
-        (*it)->UpdateParams(iTrainStep);
+        (*it)->UpdateParams(iTrainStep, trainOp.batch_size());
     }
 }
 

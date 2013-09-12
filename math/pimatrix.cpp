@@ -33,9 +33,10 @@ pimatrix::pimatrix()
 : m_matrix(0, 0)
 {   }
 
-pimatrix::pimatrix(size_t m, size_t n)
-: m_matrix (m, n)
-{   }
+pimatrix::pimatrix(size_t m, size_t n, float initVal /*= 0*/)
+: m_matrix (m, n, initVal)
+{
+}
 
 pimatrix::pimatrix(const std::string& str)
 {

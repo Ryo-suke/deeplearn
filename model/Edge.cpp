@@ -55,6 +55,7 @@ void Edge::Backward(math::pimatrix& derivatives)
     
     BOOST_ASSERT_MSG(derivatives.size2() == m_node2->GetDimension(),
             "Derivatives should have size (batch_size x m_node2->GetDimension())");
+    m_oldDerivatives = m_derivatives;
     m_derivatives = m_node1->GetActivations();
     m_derivatives.mult(derivatives, 1);
     
@@ -63,16 +64,26 @@ void Edge::Backward(math::pimatrix& derivatives)
     m_node1->AccumDerivatives(node1_deriv);
 }
 
-void Edge::UpdateParams(int iStep)
+void Edge::UpdateParams(int iStep, int batchSize)
 {
     if (m_derivatives.size1() == 0)
         return;
     
-    // get learning rate: based on momentum, batch size...
     float learningRate, momentum;
+    math::pimatrix delta_w(m_derivatives.size1(), m_derivatives.size2(), 0);
+    
+    // get learning rate and momentum...
     util::Util::GetLearningRateAndMomentum(iStep, 
             m_edgeData.hyper_params(), learningRate, momentum);
-    m_weight.element_add(m_derivatives, -learningRate);
+    
+    if (m_oldDerivatives.size1() == m_derivatives.size1()
+            && m_oldDerivatives.size2() == m_derivatives.size2())
+    {
+        delta_w.element_add(m_oldDerivatives, momentum);
+    }
+    delta_w.element_add(m_derivatives);
+    
+    m_weight.element_add(delta_w, -learningRate/batchSize);
 }
 
 /*****************************************************************************/
