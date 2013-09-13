@@ -1,0 +1,17 @@
+name: "train"
+optimizer: GRADIENT_DESCENT
+
+stop_condition {
+  all_processed: false
+  steps: 1000
+}
+
+operation_type: TRAIN
+batch_size: 100
+data_proto: "/home/hoaivu_pham/NetBeansProjects/deeplearn/tests/data1/data1.pbtxt"
+eval_after: 6
+checkpoint_after: 12
+checkpoint_directory: "/home/hoaivu_pham/NetBeansProjects/deeplearn/tests/data1/cp_simple"
+randomize: true
+random_seed: 42
+verbose: true

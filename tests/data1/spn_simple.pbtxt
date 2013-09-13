@@ -1,0 +1,16 @@
+name: "spn_simple"
+model_type: SPN
+
+spn_data 
+{
+  node_list: "[1,7]((4,3,3,0,0,0,0))"
+  input_indices: "[1,7]((-1,-1,-1,0,1,2,3))"
+  adjacency_matrix: "[7,7]((0,0,0,0,0,0,0),(1,0,0,0,0,0,0),(1,0,0,0,0,0,0),(0,1,0,0,0,0,0),(0,0,1,0,0,0,0),(0,1,0,0,0,0,0),(0,0,1,0,0,0,0))"
+}
+
+hyper_params
+{
+  base_learningrate: 0.01
+  learningrate_decay: DECAY_NONE
+  select_model_criterion: CRITERION_NLL
+}

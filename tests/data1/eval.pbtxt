@@ -1,0 +1,6 @@
+name: "eval"
+stop_condition {
+  all_processed: true
+}
+randomize: false
+verbose: true
