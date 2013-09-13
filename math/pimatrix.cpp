@@ -6,6 +6,7 @@
  */
 
 #include "pimatrix.h"
+#include "deeplearn.pb.h"
 
 #include <boost/assert.hpp>
 #include <boost/numeric/ublas/io.hpp>
@@ -25,6 +26,7 @@ typedef boost::uniform_int<> distribution_type;
 typedef boost::variate_generator<boost::minstd_rand&, distribution_type> gen_type;
 
 #define PIMATRIX_TINY (float)1E-10
+#define PIMATRIX_HUGE (float)1E+10
 
 namespace math
 {
@@ -64,6 +66,10 @@ pimatrix& pimatrix::operator+=(const pimatrix &rhs)
 pimatrix::~pimatrix()
 {   }
 
+float pimatrix::HugeValue()
+{
+    return PIMATRIX_HUGE;
+}
 /*****************************************************************/
 
 void pimatrix::setValue(float v)
@@ -209,6 +215,41 @@ void pimatrix::mult_add(pimatrix& m1, pimatrix& m2)
 }
 */
 
+void pimatrix::sum(int dim, pimatrix& result)
+{
+    switch(dim)
+    {
+        case 0:
+            result.resize(1, 1);
+            result.set(0, 0, std::accumulate(
+                m_matrix.data().begin(), m_matrix.data().end(), 0));
+            break;
+        case 1:
+        {
+            if (size2() == 1)
+            {
+                result.resize(1, 1);
+                result.set(0, 0, std::accumulate(
+                    m_matrix.data().begin(), m_matrix.data().end(), 0));
+            }
+            else
+            {
+                bu::matrix<float> identityRow(1, size1(), 1);
+                result.m_matrix = bu::block_prod<bu::matrix<float>, 64>(identityRow, m_matrix);
+            }
+            break;
+        }
+        case 2:
+        {
+            bu::matrix<float> identityCol(size2(), 1, 1);
+            result.m_matrix = bu::block_prod<bu::matrix<float>, 64>(m_matrix, identityCol);
+            break;
+        }
+        default:
+            BOOST_ASSERT_MSG(false, "Invalid argument (dim)");
+    }
+}
+
 /******************************************************************************/
 
 float op_inverse(float x){return 1.0f/(x + PIMATRIX_TINY);}
@@ -217,10 +258,17 @@ float op_add_tiny(float x)
     return (x < -PIMATRIX_TINY || x > PIMATRIX_TINY ? x :
         (x < PIMATRIX_TINY && x >= 0 ? PIMATRIX_TINY : -PIMATRIX_TINY));
 }
+float op_neg_log(float x)
+{
+    return (x <= PIMATRIX_TINY ? PIMATRIX_HUGE : -std::log(x));
+}
+float op_log(float x)
+{
+    return (x <= PIMATRIX_TINY ? -PIMATRIX_HUGE : std::log(x));
+}
 
 void pimatrix::element_inverse()
 {
-    
     std::transform(m_matrix.data().begin(), m_matrix.data().end(),
                m_matrix.data().begin(), op_inverse);
 }
@@ -252,6 +300,12 @@ void pimatrix::element_negate(size_t startRow, size_t rowCount
     (-1)*bu::project(m_matrix
         , bu::range(startRow, startRow + rowCount)
         , bu::range(startCol, startCol + colCount));
+}
+
+void pimatrix::element_log(bool bNegativeLog /*= false*/)
+{
+    std::transform(m_matrix.data().begin(), m_matrix.data().end(),
+               m_matrix.data().begin(), bNegativeLog ? op_neg_log : op_log);
 }
 
 /******************************************************************************/

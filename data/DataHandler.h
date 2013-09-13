@@ -29,13 +29,13 @@ public:
     /******************************************************************/
 public:
 
-    virtual Dataset* GetDataset(model::DatasetInfo_Data_DataType type) = 0;
+    virtual Dataset* GetDataset(model::DatasetInfo::DataType type) = 0;
 
     virtual std::string GetDatasetName() = 0;
     
     /******************************************************************/
 
-    static DataHandler* GetDataHandler(const model::DatasetInfo& datasetInfo
+    static DataHandler* GetDataHandler(const model::DatabaseInfo& databaseInfo
     , bool randomize, int randomSeed, bool verbose);
 };
 

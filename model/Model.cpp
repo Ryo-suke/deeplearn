@@ -119,7 +119,7 @@ void Model::PrintBackpropOrder(std::ostream& s)
 
 void Model::ToModelData(ModelData& modelData)
 {
-    modelData.MergeFrom(m_modelData);
+    modelData.CopyFrom(m_modelData);
     
     std::vector<Node*>::iterator itNode;
     std::vector<Edge*>::iterator itEdge;
@@ -139,17 +139,6 @@ void Model::ToModelData(ModelData& modelData)
         EdgeData *edgeData = modelData.add_edges();
         (*itEdge)->ToEdgeData(*edgeData);
     }
-}
-
-void Model::ToFile(std::string sFilePath)
-{
-    std::ofstream ofs(sFilePath.c_str());
-    ModelData mData;
-    
-    ToModelData(mData);
-    mData.SerializeToOstream(&ofs);
-    ofs.flush();
-    ofs.close();
 }
 
 Model* Model::FromModelData(const ModelData& modelData)

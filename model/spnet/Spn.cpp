@@ -79,6 +79,31 @@ void Spn::Backward()
     } 
 }
 
+float getLastMetricAvg(Metrics& metrics, Metric_MetricType t)
+{
+    int i = -1;
+    for (i = metrics.metrics_size() - 1; i >= 0; --i)
+    {
+        if (metrics.metrics(i).type() == t)
+            break;
+    }
+    if (i < 0)
+        return math::pimatrix::HugeValue();
+    int idx = metrics.metrics(i).steps_size() - 1;
+    return metrics.metrics(i).values(idx) / metrics.metrics(i).steps(idx);
+}
+
+void printMetrics(Metrics &trainMetrics, Metrics &validMetrics, Metrics *testMetrics)
+{
+    std::cout << "Train NLL: " << getLastMetricAvg(trainMetrics, Metric::NLL)
+              << "\tValid NLL: " << getLastMetricAvg(validMetrics, Metric::NLL);
+    if (testMetrics)
+    {
+        std::cout << "\tTest NLL: " << getLastMetricAvg(*testMetrics, Metric::NLL);
+    }
+    std::cout << std::endl;
+}
+
 void Spn::Train(Operation& trainOp, Operation* evalOp /*= NULL*/)
 {
     BOOST_ASSERT_MSG(!m_nodeList.empty() && m_root,
@@ -91,24 +116,38 @@ void Spn::Train(Operation& trainOp, Operation* evalOp /*= NULL*/)
     if (!dataHandler)
         return;
     
-    data::Dataset* trainSet = dataHandler->GetDataset(model::DatasetInfo_Data::TRAIN_SET);
-    data::Dataset* evalSet = dataHandler->GetDataset(model::DatasetInfo_Data::EVAL_SET);
-
+    data::Dataset* trainSet, *evalSet, *testSet;
+    trainSet = dataHandler->GetDataset(model::DatasetInfo::TRAIN_SET);
+    evalSet = dataHandler->GetDataset(model::DatasetInfo::EVAL_SET);
+    testSet = dataHandler->GetDataset(model::DatasetInfo::TEST_SET);
+    
     // set batch size and training stop condition
+    // quite tricky here: set batchSize of 
+    // evalSet and testSet to be twice of those of training set
+    // because the trick in training SPN we used.
+    // See TrainOneBatch() to see the trick.
     trainSet->SetBatchSize(trainOp.batch_size());
+    if (evalSet)
+        evalSet->SetBatchSize(2*trainOp.batch_size());
+    if (testSet)
+        testSet->SetBatchSize(2*trainOp.batch_size());
 	Operation_StopCondition stopCond = trainOp.stop_condition();
 	if (stopCond.all_processed())
 	{
 		stopCond.set_steps(trainSet->GetNumBatches());
     }
     
-    
+    Metrics trainMetrics, evalMetrics, testMetrics;
+    ModelData currentModelData;
     math::pimatrix* currentBatch;
     int iTrainStep = 0;
-    boost::filesystem::path cpDir(trainOp.checkpoint_directory());
+    boost::filesystem::path cpDir(trainOp.checkpoint_directory()), cpFullPath;
     boost::format fmtCpFile("%1%_%2%_%3%.bin");
     
-    for (; stopCondition(stopCond, iTrainStep); ++iTrainStep)
+    bool bSelectModel = m_modelData.hyper_params().select_model_criterion() == Hyperparams::CRITERION_NLL;
+    float bestValidScore = math::pimatrix::HugeValue();
+    
+    for (iTrainStep = 0; stopCondition(stopCond, iTrainStep); ++iTrainStep)
     {
         // load data, this is for asynchronous data loading
         trainSet->EndLoadNextBatch();
@@ -116,26 +155,96 @@ void Spn::Train(Operation& trainOp, Operation* evalOp /*= NULL*/)
         trainSet->BeginLoadNextBatch();
         
         // train current batch
-        TrainOneBatch(trainOp, currentBatch, iTrainStep);
+        std::cout << "Step: " << iTrainStep << "\r";
+        trainMetrics.Clear();
+        TrainOneBatch(trainOp, currentBatch, iTrainStep, &trainMetrics);
         
+        // evaluation
         if (evalCondition(trainOp.eval_after(), iTrainStep) && evalOp)
         {
-            // evaluation
+            std::cout << "Evaluating...\r";
+            evalMetrics.Clear();
+            Evaluate(*evalOp, evalSet, evalMetrics);
+            
+            if (testSet)
+            {
+                testMetrics.Clear();
+                Evaluate(*evalOp, testSet, testMetrics);
+                appendStats(m_modelData.mutable_test_metrics(), testMetrics, iTrainStep);
+            }
+            appendStats(m_modelData.mutable_valid_metrics(), evalMetrics, iTrainStep);
+            appendStats(m_modelData.mutable_train_metrics(), trainMetrics, iTrainStep);
+
+            printMetrics(trainMetrics, evalMetrics, testSet ? &testMetrics : NULL);
+            
+            float evalNll = getLastMetricAvg(evalMetrics, Metric::NLL);
+            if (bSelectModel && evalNll < bestValidScore)
+            {
+                bestValidScore = evalNll;
+                m_modelData.mutable_valid_metric_best()->CopyFrom(evalMetrics);
+                m_modelData.mutable_train_metric_es()->CopyFrom(trainMetrics);
+                if (testSet)
+                    m_modelData.mutable_test_metric_es()->CopyFrom(testMetrics);
+
+                ToModelData(currentModelData);
+                fmtCpFile % GetName() % trainOp.name() % "BEST";
+                cpFullPath = cpDir / boost::filesystem::path(fmtCpFile.str());
+                util::Util::WriteProto(cpFullPath.generic_string(), &currentModelData);
+                std::cout << "Write best model: " << cpFullPath.generic_string() << std::endl;
+            }
         }
+        
+        // check point
         if (checkpointCondition(trainOp.checkpoint_after(), iTrainStep))
         {
+            ToModelData(currentModelData);
             fmtCpFile % GetName() % trainOp.name() % iTrainStep;
-            boost::filesystem::path cpFile(fmtCpFile.str());
-            boost::filesystem::path cpFullPath = cpDir / cpFile;
-            ToFile(cpFullPath.generic_string());           
+            cpFullPath = cpDir / boost::filesystem::path(fmtCpFile.str());
+            util::Util::WriteProto(cpFullPath.generic_string(), &currentModelData);
+            
+            std::cout << "Write checkpoint: " << cpFullPath.generic_string() << std::endl;
+            
+            fmtCpFile % GetName() % trainOp.name() % "LAST";
+            cpFullPath = cpDir / boost::filesystem::path(fmtCpFile.str());
+            util::Util::WriteProto(cpFullPath.generic_string(), &currentModelData);
         }
     }
     Prune();
 }
 
-void Spn::Evaluate(Operation& evalOp, data::Dataset* evalDataset)
+void Spn::Evaluate(Operation& evalOp, data::Dataset* evalDataset
+        , Metrics &evalStats)
 {
-    // TODO: Metric (performance stats), compute probability in log-domain?
+    Operation_StopCondition stopCond = evalOp.stop_condition();
+	if (stopCond.all_processed())
+	{
+		stopCond.set_steps(evalDataset->GetNumBatches());
+    }
+    
+    int iStep;
+    math::pimatrix* currentBatch;
+    math::pimatrix jointProb, tmp;
+    Metrics evalBatches;
+    
+    for (iStep = 0; stopCondition(stopCond, iStep); ++iStep)
+    {
+        // load data, this is for asynchronous data loading
+        evalDataset->EndLoadNextBatch();
+        currentBatch = evalDataset->GetCurrentBatch();
+        evalDataset->BeginLoadNextBatch();
+        
+            
+        jointProb = Forward(currentBatch);
+
+        BOOST_ASSERT_MSG(jointProb.size1() == currentBatch->size1()
+                && jointProb.size2() == m_root->GetDimension()
+                , "Invalid dimension of the joint probability");
+        
+        jointProb.element_log(true);
+        jointProb.sum(1, tmp);
+        util::Util::AccumulateMetric(evalBatches, Metric::NLL,
+                currentBatch->size1(), tmp(0, 0));
+    }
 }
 
 /*****************************************************************************/
@@ -168,7 +277,8 @@ bool Spn::Validate()
 /**************************************************************************/
 
 void Spn::TrainOneBatch(Operation& trainOp
-                    , math::pimatrix* batch, int iTrainStep)
+                    , math::pimatrix* batch, int iTrainStep
+                    , Metrics *metrics)
 {
     std::vector<Node*>::iterator it;
     size_t nSamples = batch->size1();
@@ -189,6 +299,7 @@ void Spn::TrainOneBatch(Operation& trainOp
     }
     
     // get the error (actually the probability at the root)
+    math::pimatrix m_error;
     m_error = Forward(&twoBatch);
     
     // then we negate the error of half of the "batch"
@@ -218,6 +329,17 @@ void Spn::TrainOneBatch(Operation& trainOp
     {
         (*it)->UpdateParams(iTrainStep, trainOp.batch_size());
     }
+
+    // get log-likelihood
+    if (metrics)
+    {
+        math::pimatrix m(nSamples, 1), tmp;
+        m.copyRows(m_error, 0, nSamples, 0);
+        m.element_log(true);
+        m.sum(1, tmp);
+        
+        util::Util::AccumulateMetric(*metrics, Metric::NLL, nSamples, tmp(0, 0));
+    }
 }
 
 void Spn::Prune()
@@ -240,13 +362,37 @@ bool Spn::checkpointCondition(int checkpoint_after, int iStep)
     return ((iStep % checkpoint_after) == 0);
 }
 
-/**************************************************************************/
-
-template <NodeData_NodeType t>
-bool filterNode(Node *n)
+void Spn::appendStats(Metrics* metrics, Metrics &newMetrics, int iTrainStep)
 {
-    return n->GetNodeType() == t;
+    for (int j = newMetrics.metrics_size() - 1; j >= 0; --j)
+    {
+        Metric *mNew;
+        const Metric &m = newMetrics.metrics(j);
+        int i = -1;
+        for (i = metrics->metrics_size() - 1; i >= 0; --i)
+        {
+            if (metrics->metrics(i).type() == m.type())
+            {
+                break;
+            }
+        }
+        if (i < 0)
+        {
+            mNew = metrics->add_metrics();
+            mNew->set_type(m.type());
+        }
+        else
+        {
+            mNew = metrics->mutable_metrics(i);
+        }
+        int idx = m.steps_size() - 1;
+        mNew->add_steps(iTrainStep);
+        mNew->add_values(m.values(idx) / m.steps(idx));
+    }
+
 }
+
+/**************************************************************************/
 
 Spn* Spn::FromProto(const ModelData& modelData)
 {

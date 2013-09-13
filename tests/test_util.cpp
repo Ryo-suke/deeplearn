@@ -86,7 +86,7 @@ void testBoostMatrix()
     m.shuffleRows(gen);
     std::cout << "After shuffleRows(gen): " << std::endl << m << std::endl;
     
-    math::pimatrix mBig(200, 200);
+    math::pimatrix mBig(200, 200, 10);
     std::cout << "ToString(): " << m.ToString().size() << std::endl
               << " ToBinaryString(): " << m.ToBinaryString().size() << std::endl;
 }
@@ -96,7 +96,7 @@ void testBoostMatrix()
 
 void generateData(int rowCount, std::string sFile)
 {
-    math::pimatrix m(rowCount, 4);
+    math::pimatrix m(rowCount, 4, 0);
     for (size_t i = 0; i < rowCount; ++i)
     {
         m.set(i, 0, ((float)i)/rowCount);
@@ -140,6 +140,24 @@ void testProtobufMerge()
 
 /*****************************************************************************/
 
+void Foo(std::vector<model::Metric> &v)
+{
+    model::Metric m;
+    m.set_type(model::Metric::CLASSIFICATION_ERROR);
+    m.add_steps(1);
+    m.add_values(0.2);
+    v.push_back(m);
+}
+
+void testCpp()
+{
+    std::vector<model::Metric> v;
+    Foo(v);
+    std::cout << (*v.begin()).Utf8DebugString() << std::endl;
+}
+
+/*****************************************************************************/
+
 int main(int argc, char** argv)
 {
     std::cout << "%SUITE_STARTING% test_util" << std::endl;
@@ -158,6 +176,7 @@ int main(int argc, char** argv)
     std::cout << "%TEST_FINISHED% time=0 testProtobufMerge (test_util)" << std::endl;
     
     //generateData();
+    testCpp();
     
     std::cout << "%SUITE_FINISHED% time=0" << std::endl;
 

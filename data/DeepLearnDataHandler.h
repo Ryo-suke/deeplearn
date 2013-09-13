@@ -19,16 +19,16 @@ namespace data
 class DeepLearnDataHandler : public DataHandler
 {
     
-    std::map<model::DatasetInfo_Data_DataType, Dataset*> m_datasets;
+    std::map<model::DatasetInfo_DataType, Dataset*> m_datasets;
     std::string m_sName;
     
 public:
-    DeepLearnDataHandler(const model::DatasetInfo& datasetInfo
+    DeepLearnDataHandler(const model::DatabaseInfo& databaseInfo
         , bool randomize, int randomSeed, bool verbose);
 
     virtual ~DeepLearnDataHandler();
     
-    virtual Dataset* GetDataset(model::DatasetInfo_Data_DataType type);
+    virtual Dataset* GetDataset(model::DatasetInfo_DataType type);
     
     virtual std::string GetDatasetName();
     

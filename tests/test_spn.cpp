@@ -60,9 +60,9 @@ void testSpn()
 
 void testDataHandler()
 {
-    model::DatasetInfo datasetInfo;
+    model::DatabaseInfo databaseInfo;
     std::string sProtoFile("./tests/data1/data1.pbtxt");
-    if(!util::Util::LoadProto(sProtoFile, &datasetInfo))
+    if(!util::Util::LoadProto(sProtoFile, &databaseInfo))
     {
         std::cout << "%TEST_FAILED% time=0 testname=testDataHandler (test_model) message=protobuf import failed" << std::endl;
         return;
@@ -70,8 +70,8 @@ void testDataHandler()
   
     data::DataHandler *handler1, *handler2;
     
-    handler1 = data::DataHandler::GetDataHandler(datasetInfo, false, 42, true);
-    handler2 = data::DataHandler::GetDataHandler(datasetInfo, true, 42, true);
+    handler1 = data::DataHandler::GetDataHandler(databaseInfo, false, 42, true);
+    handler2 = data::DataHandler::GetDataHandler(databaseInfo, true, 42, true);
     
     if(!handler1 || !handler2)
     {
@@ -79,9 +79,9 @@ void testDataHandler()
     }
     
     // default batch size = 100
-    std::cout << handler1->GetDataset(model::DatasetInfo_Data::TRAIN_SET)->GetNumBatches() << std::endl;
-    std::cout << handler1->GetDataset(model::DatasetInfo_Data::TEST_SET)->GetNumBatches() << std::endl;
-    std::cout << handler1->GetDataset(model::DatasetInfo_Data::EVAL_SET)->GetNumBatches() << std::endl;
+    std::cout << handler1->GetDataset(model::DatasetInfo::TRAIN_SET)->GetNumBatches() << std::endl;
+    std::cout << handler1->GetDataset(model::DatasetInfo::TEST_SET)->GetNumBatches() << std::endl;
+    std::cout << handler1->GetDataset(model::DatasetInfo::EVAL_SET)->GetNumBatches() << std::endl;
     
     delete handler1;
     delete handler2;
@@ -102,18 +102,18 @@ void testSpnForward()
     }
     
     // get dataset
-    model::DatasetInfo datasetInfo;
+    model::DatabaseInfo databaseInfo;
     std::string sProtoFile("./tests/data1/data1.pbtxt");
     
-    if (!util::Util::LoadProto(sProtoFile, &datasetInfo))
+    if (!util::Util::LoadProto(sProtoFile, &databaseInfo))
     {
         std::cout << "%TEST_FAILED% time=0 testname=testSpnForward (test_model) message=protobuf import failed" << std::endl;
         return;
     }
   
     data::DataHandler *handler;
-    handler = data::DataHandler::GetDataHandler(datasetInfo, true, 42, true);
-    data::Dataset* trainSet = handler->GetDataset(model::DatasetInfo_Data::TRAIN_SET);
+    handler = data::DataHandler::GetDataHandler(databaseInfo, true, 42, true);
+    data::Dataset* trainSet = handler->GetDataset(model::DatasetInfo::TRAIN_SET);
     
     trainSet->SetBatchSize(100);
     for (int i = trainSet->GetNumBatches() - 1; i >= 0; --i)
@@ -136,6 +136,52 @@ void testSpnForward()
 
 /*****************************************************************************/
 
+void trainSimpleSpn()
+{
+    std::string sModelFile = "/home/hoaivu_pham/NetBeansProjects/deeplearn/tests/data1/spn_simple.pbtxt";
+    std::string sTrainOpFile = "/home/hoaivu_pham/NetBeansProjects/deeplearn/tests/data1/train.pbtxt";
+    std::string sEvalOpFile = "/home/hoaivu_pham/NetBeansProjects/deeplearn/tests/data1/eval.pbtxt";
+    
+    model::ModelData modelData;
+    model::Operation trainOp, evalOp;
+    
+    if(!util::Util::LoadProto(sModelFile, &modelData))
+    {
+        std::cout << "%TEST_FAILED% time=0 testname=trainSimpleSpn (test_model) message=model proto import failed"
+                  << std::endl;
+        return;
+    }
+    if(!util::Util::LoadProto(sTrainOpFile, &trainOp))
+    {
+        std::cout << "%TEST_FAILED% time=0 testname=trainSimpleSpn (test_model) message=trainOp proto import failed"
+                  << std::endl;
+        return;
+    }
+    if(!util::Util::LoadProto(sEvalOpFile, &evalOp))
+    {
+        std::cout << "%TEST_FAILED% time=0 testname=trainSimpleSpn (test_model) message=evalOp proto import failed"
+                  << std::endl;
+        return;
+    }
+    
+    model::Model* model = model::Model::FromModelData(modelData);
+    if (!model)
+    {
+        std::cout << "%TEST_FAILED% time=0 testname=trainSimpleSpn (test_model) message=model creation failed"
+                  << std::endl;
+        return;
+    }
+    if (!model->Validate())
+    {
+        std::cout << "%TEST_FAILED% time=0 testname=trainSimpleSpn (test_model) message=model validation failed: no backprop order found"
+                  << std::endl;
+        return;
+    }
+    model->Train(trainOp, &evalOp);
+}
+
+/*****************************************************************************/
+
 int main(int argc, char** argv)
 {
     GOOGLE_PROTOBUF_VERIFY_VERSION;
@@ -154,6 +200,10 @@ int main(int argc, char** argv)
     std::cout << "%TEST_STARTED% testSpnForward (test_model)" << std::endl;
     testSpnForward();
     std::cout << "%TEST_FINISHED% time=0 testSpnForward (test_model)" << std::endl;
+    
+    std::cout << "%TEST_STARTED% trainSimpleSpn (test_model)" << std::endl;
+    trainSimpleSpn();
+    std::cout << "%TEST_FINISHED% time=0 trainSimpleSpn (test_model)" << std::endl;
     
     std::cout << "%SUITE_FINISHED% time=0" << std::endl;
 

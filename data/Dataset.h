@@ -24,14 +24,14 @@ class Dataset : boost::noncopyable
     math::pimatrix m_currentBatch;
     
 public:
-    Dataset(const model::DatasetInfo_Data& dataInfo
+    Dataset(const model::DatasetInfo& dataInfo
             , size_t capacity
             , bool randomize = false
             , int randomSeed = 42, bool verbose = false);
     
     virtual ~Dataset();
     
-    virtual void Append(const model::DatasetInfo_Data& dataInfo);
+    virtual void Append(const model::DatasetInfo& dataInfo);
     
     virtual math::pimatrix* GetCurrentBatch();
     virtual void BeginLoadNextBatch();

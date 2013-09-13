@@ -1,17 +1,41 @@
 package model;
 
-message Hyperparams {
-  optional float base_learningrate = 1 [default=0.01];
-  enum Decay {
-    NONE = 0;
-    INVERSE_T = 1;
-    EXPONENTIAL = 2;
+message Metric {
+  enum MetricType {
+    NLL = 1;        // Negative log-likelihood
+    CLASSIFICATION_ERROR = 2;
   }
-  optional Decay learningrate_decay = 2 [default=NONE];
+
+  required MetricType type = 1 [default=NLL];
+  repeated int32 steps = 2;
+  repeated float values = 3;
+}
+
+message Metrics {
+  // a list of metrics, of different types of metric
+  repeated Metric metrics = 1;
+}
+
+message Hyperparams {
+  enum Decay {
+    DECAY_NONE = 0;
+    DECAY_INVERSE_T = 1;
+    DECAY_EXPONENTIAL = 2;
+  }
+  enum BestModelCriterion {
+    CRITERION_NONE = 0;
+    CRITERION_NLL = 1;               // Negative Log-likehood, for SPN (generative models?)
+    CRITERION_ERROR = 2;              // whatever kind of error... (depending on model type)
+  }
+  
+  optional float base_learningrate = 1 [default=0.01];
+  optional Decay learningrate_decay = 2 [default=DECAY_NONE];
   optional int32 learningrate_decay_half_life = 3 [default=1000];
   optional float initial_momentum = 4 [default=0.0];
   optional float final_momentum = 5 [default=0.0];
   optional int32 momentum_change_steps = 6 [default=10];
+
+  optional BestModelCriterion select_model_criterion = 7 [default=CRITERION_NONE];
 }
 
 message NodeData {
@@ -49,13 +73,20 @@ message ModelData {
   enum ModelType {
     SPN = 0;
   }
-
   required string name = 1;
   required ModelType model_type = 2;
   optional model.SpnData spn_data = 3;
   optional Hyperparams hyper_params = 4;
   repeated NodeData nodes = 5;
   repeated EdgeData edges = 6;
+  optional Metrics train_metrics = 7;
+  optional Metrics valid_metrics = 8;
+  optional Metrics test_metrics = 9;
+
+  // early-stopping results (at the configuration gives best validation metrics)
+  optional Metrics valid_metric_best = 10;
+  optional Metrics train_metric_es = 11;
+  optional Metrics test_metric_es = 12;
 }
 
 message Operation {
@@ -76,7 +107,7 @@ message Operation {
     optional int32 steps = 2 [default=10000];
   }
   required string name = 1 [default="operation"];
-  required Optimizer optimizer = 2 [default=GRADIENT_DESCENT];
+  optional Optimizer optimizer = 2 [default=GRADIENT_DESCENT];
   optional StopCondition stop_condition = 3;
   optional OperationType operation_type = 4 [default=TRAIN];
   optional int32 batch_size = 5 [default=100];
@@ -90,8 +121,6 @@ message Operation {
 }
 
 message DatasetInfo {
-  required string name = 1;
-  message Data {
     enum DataType {
       TRAIN_SET = 0;
       EVAL_SET = 1;
@@ -102,8 +131,12 @@ message DatasetInfo {
     required int32 size = 3;        // number of instances
     required int32 dimensions = 4;
     optional int32 type_size = 5 [default=4];   // size of atomic value (in bytes)
-  }
-  repeated Data data = 2;
+}
+
+message DatabaseInfo {
+  required string name = 1;
+
+  repeated DatasetInfo data = 2;
   optional string data_handler = 3 [default="deeplearn"];
   optional float main_memory = 4 [default=2];       // in Gigabytes
   optional float gpu_memory = 5 [default=1.5];        // in Gigabytes

@@ -15,7 +15,7 @@
 namespace data
 {
 
-Dataset::Dataset(const model::DatasetInfo_Data& dataInfo
+Dataset::Dataset(const model::DatasetInfo& dataInfo
         , size_t capacity
         , bool randomize /*= false*/
         , int randomSeed /*= 42*/
@@ -43,7 +43,7 @@ Dataset::~Dataset()
 
 /******************************************************************************/
 
-void Dataset::Append(const model::DatasetInfo_Data& dataInfo)
+void Dataset::Append(const model::DatasetInfo& dataInfo)
 {
     std::vector<std::string> files;
     

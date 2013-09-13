@@ -20,7 +20,6 @@ class Spn : public Model
     // views on the underlying list of nodes (in Model)
     std::vector<Node*> m_inputNodes, m_hiddenNodes, m_queryNodes;
     Node* m_root;
-    math::pimatrix m_error;
     
 public:
     Spn();
@@ -29,18 +28,27 @@ public:
     math::pimatrix Forward(math::pimatrix* batch);
     void Backward();
     void Train(Operation& trainOp, Operation* evalOp = NULL);
-    virtual void Evaluate(Operation& evalOp, data::Dataset* evalDataset);
+    virtual void Evaluate(Operation& evalOp, data::Dataset* evalDataset
+        , model::Metrics &evalStats);
 
     virtual bool Validate();
     
 private:
+    
     void TrainOneBatch(Operation& trainOp
-                    , math::pimatrix* batch, int iTrainStep);
+                    , math::pimatrix* batch, int iTrainStep
+                    , Metrics *metrics);
+    
     void Prune();
     
     bool stopCondition(const Operation_StopCondition& cond, int iStep);
     bool evalCondition(int eval_after, int iStep);
     bool checkpointCondition(int checkpoint_after, int iStep);
+    
+    /*
+     * Append newMetric (after taking average) to metrics
+     */
+    void appendStats(Metrics* metrics, Metrics &newMetrics, int iTrainStep);
     
 public:
     static Spn* FromProto(const ModelData& modelData);

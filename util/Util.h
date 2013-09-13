@@ -25,12 +25,21 @@ public:
     
     static bool LoadProto(const std::string& sFile, google::protobuf::Message* mess);
 
+    static void WriteProto(const std::string& sFile, google::protobuf::Message* mess);
+    
     static data::DataHandler* LoadDataHandler(const std::string& sDataProtoFile
         , bool randomize = false, int random_seed = 42, bool verbose = false);
     
     static void GetLearningRateAndMomentum(int step
                 , const model::Hyperparams& hyperParams
                 , float& learningRate, float& momentum);
+    
+    /*
+     * Accumulate the newVal and sampleCount into the Metric stored in metrics.
+     */
+    static void AccumulateMetric(
+        model::Metrics& metrics
+        , model::Metric_MetricType t, int sampleCount, float newVal );
 };
 
 }

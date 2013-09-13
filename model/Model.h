@@ -49,7 +49,8 @@ public:
     /*
      * evalDataset will be used. Information about dataset in evalOp will be ignored.
      */
-    virtual void Evaluate(Operation& evalOp, data::Dataset* evalDataset) = 0;
+    virtual void Evaluate(Operation& evalOp, data::Dataset* evalDataset
+                , Metrics &evalStats) = 0;
     
     
     /*
@@ -62,8 +63,6 @@ public:
     virtual void PrintBackpropOrder(std::ostream& s);
     
     virtual void ToModelData(ModelData& modelData);
-    
-    virtual void ToFile(std::string sFilePath);
     
 public:
     static Model* FromModelData(const ModelData& modelData);

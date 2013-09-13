@@ -33,6 +33,8 @@ public:
     
     virtual ~pimatrix();
     
+    static float HugeValue();
+    
     /*****************************************************************/
     
     void setValue(float v);
@@ -64,6 +66,13 @@ public:
 
     //void mult_add(pimatrix& m1, pimatrix& m2);
     
+    /*
+     * dim = 0: sum all elements
+     * dim = 1: sum along first dimension, result will be 1 x size2()
+     * dim = 2: sum along 2nd dimension, result will be size1() x 1
+     */
+    void sum(int dim, pimatrix& result);
+    
     /*****************************************************************/
     
     /*
@@ -82,6 +91,8 @@ public:
     
     void element_negate(size_t startRow, size_t rowCount
                         , size_t startCol, size_t colCount);
+    
+    void element_log(bool bNegativeLog = false);
     
     /*****************************************************************/
     
