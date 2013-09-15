@@ -15,24 +15,13 @@
 namespace data
 {
 
-Dataset::Dataset(const model::DatasetInfo& dataInfo
-        , size_t capacity
+Dataset::Dataset(size_t capacity
         , bool randomize /*= false*/
         , int randomSeed /*= 42*/
         , bool verbose /*= false*/)
 : m_batchSize(DEFAULT_BATCH_SIZE)
 {
-    std::vector<std::string> files;
-    Disk *disk;
-    
-    disk = new Disk(verbose);
-    loadFileNames(dataInfo.file_pattern(), files);
-    disk->Append(files, dataInfo.size(), dataInfo.dimensions());
-    
-    // only support 4-byte atomic types at the moment...
-    BOOST_ASSERT_MSG(dataInfo.type_size() == 4
-            , "Only 4-byte atomic types are supported");
-    m_cache = new Cache(disk, capacity
+    m_cache = new Cache(new Disk(verbose), capacity
             , 4, randomize, randomSeed, verbose);
 }
 
@@ -43,14 +32,14 @@ Dataset::~Dataset()
 
 /******************************************************************************/
 
-void Dataset::Append(const model::DatasetInfo& dataInfo)
+void Dataset::Append(const model::DatasetInfo& dataInfo, const std::string &sPathPrefix)
 {
     std::vector<std::string> files;
     
     // only support 4-byte atomic types at the moment...
     BOOST_ASSERT_MSG(dataInfo.type_size() == 4
-            , "Only 4-byte atomic types are supported");
-    loadFileNames(dataInfo.file_pattern(), files);
+        , "Only 4-byte atomic types are supported");
+    loadFileNames(dataInfo.file_pattern(), files, sPathPrefix);
     m_cache->Append(files, dataInfo.size(), dataInfo.dimensions());
 }
 
@@ -89,16 +78,27 @@ int Dataset::GetNumBatches()
 /***************************************************************************/
 
 void Dataset::loadFileNames(const std::string sFilePattern
-    , std::vector<std::string>& filesOut)
+    , std::vector<std::string>& filesOut, const std::string& sPathPrefix)
 {
-    filesOut.clear();
-    
     namespace bf = boost::filesystem;
 
+    filesOut.clear();
+    
     bf::path pathPattern(sFilePattern);
-    std::string filePath = pathPattern.parent_path().generic_string();;
 
+    if (sPathPrefix.size() > 0)
+    {
+        pathPattern = bf::path(sPathPrefix) / pathPattern;
+    }
+
+    std::string filePath = pathPattern.parent_path().generic_string();
     boost::regex pattern(pathPattern.leaf().generic_string());
+    
+    if(!bf::exists(filePath))
+    {
+        std::cout << "Invalid file pattern: " << sFilePattern << std::endl;
+        return;
+    }
 
     for (bf::directory_iterator iter(filePath), end; iter != end; ++iter)
     {
@@ -109,6 +109,12 @@ void Dataset::loadFileNames(const std::string sFilePattern
         }   
     }
     std::sort(filesOut.begin(), filesOut.end());
+
+    if (filesOut.size() == 0)
+    {
+        std::cout << "Could not find any file satisfied the pattern: "
+                  << sFilePattern << std::endl;
+    }
 }
 
 }

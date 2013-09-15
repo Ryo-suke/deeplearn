@@ -57,9 +57,10 @@ void testLoadFiles()
 void testBoostMatrix()
 {
     std::string sMat("[3,2]((1.2,2),(-3.4,-2.39E-5),(-3.14E-1, 0.0))");
-    std::string sFile("./tmpMatrix.m");
+    std::string sFile("../tmpMatrix.m");
     
-    math::pimatrix m(sMat);
+    math::pimatrix m;
+    m.FromDebugString(sMat);
     m.save(sFile);
     
     math::pimatrix m2;
@@ -86,9 +87,22 @@ void testBoostMatrix()
     m.shuffleRows(gen);
     std::cout << "After shuffleRows(gen): " << std::endl << m << std::endl;
     
+    std::cout << "m.ToString(): " << m.ToString() << std::endl;
+
     math::pimatrix mBig(200, 200, 10);
-    std::cout << "ToString(): " << m.ToString().size() << std::endl
-              << " ToBinaryString(): " << m.ToBinaryString().size() << std::endl;
+    std::cout << "ToString(): " << mBig.ToString().size() << std::endl
+              << " ToDebugString(): " << mBig.ToDebugString().size() << std::endl;
+
+    std::string sBigMat = mBig.ToString();
+    math::pimatrix mBig2;
+    mBig2.FromString(sBigMat);
+    for (size_t i = 0; i < mBig2.size1(); ++i)
+    {
+        for (size_t j = 0; j < mBig2.size2(); ++j)
+        {
+            BOOST_ASSERT_MSG(mBig2(i,j) == 10, "ToString() is incorrect.");
+        }
+    }
 }
 
 /*****************************************************************************/
@@ -105,13 +119,24 @@ void generateData(int rowCount, std::string sFile)
         m.set(i, 3, 1.0f - ((float)i)/rowCount);
     }
     m.save(sFile);
+
+    math::pimatrix m2;
+    m2.load(sFile);
+    for (size_t i = 0; i < m.size1(); ++i)
+    {
+        for (size_t j = 0; j < m.size2(); ++j)
+        {
+            BOOST_ASSERT_MSG(m(i,j) == m2(i,j), "generateData() is incorrect.");
+        }
+    }
 }
 
 void generateData()
 {
-    generateData(600, "./tests/data1/m1.m");
-    generateData(200, "./tests/data1/m2.m");
-    generateData(200, "./tests/data1/m3.m");
+    generateData(600, "../tests/data1/m1.m");
+    generateData(200, "../tests/data1/m2.m");
+    generateData(200, "../tests/data1/m3.m");
+    std::cout << "Generating data done." << std::endl;
 }
 
 /*****************************************************************************/
@@ -164,7 +189,7 @@ int main(int argc, char** argv)
     std::cout << "%SUITE_STARTED%" << std::endl;
 
     std::cout << "%TEST_STARTED% testLoadFiles (test_util)" << std::endl;
-    testLoadFiles();
+    //testLoadFiles();
     std::cout << "%TEST_FINISHED% time=0 testLoadFiles (test_util)" << std::endl;
 
     std::cout << "%TEST_STARTED% testBoostMatrix (test_util)" << std::endl;
@@ -175,10 +200,11 @@ int main(int argc, char** argv)
     testProtobufMerge();
     std::cout << "%TEST_FINISHED% time=0 testProtobufMerge (test_util)" << std::endl;
     
-    //generateData();
-    testCpp();
+    generateData();
+    //testCpp();
     
     std::cout << "%SUITE_FINISHED% time=0" << std::endl;
+    std::cin.get();
 
     return (EXIT_SUCCESS);
 }

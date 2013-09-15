@@ -5,9 +5,6 @@
  * Created on September 9, 2013, 3:17 PM
  */
 
-#include "pimatrix.h"
-#include "deeplearn.pb.h"
-
 #include <boost/assert.hpp>
 #include <boost/numeric/ublas/io.hpp>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
@@ -20,6 +17,10 @@
 #include <fstream>
 #include <algorithm>
 
+#include "pimatrix.h"
+#include "deeplearn.pb.h"
+#include "Util.h"
+
 namespace bu = boost::numeric::ublas;
 
 typedef boost::uniform_int<> distribution_type;
@@ -27,6 +28,9 @@ typedef boost::variate_generator<boost::minstd_rand&, distribution_type> gen_typ
 
 #define PIMATRIX_TINY (float)1E-10
 #define PIMATRIX_HUGE (float)1E+10
+
+#define INT_SIZE 4
+#define HEADER_SIZE 12
 
 namespace math
 {
@@ -38,16 +42,6 @@ pimatrix::pimatrix()
 pimatrix::pimatrix(size_t m, size_t n, float initVal /*= 0*/)
 : m_matrix (m, n, initVal)
 {
-}
-
-pimatrix::pimatrix(const std::string& str)
-{
-    std::stringstream ss(str);
-    bu::matrix<float> tmp;
-
-    ss.seekg(0);
-    ss >> tmp;
-    m_matrix = tmp;
 }
 
 pimatrix& pimatrix::operator=(const pimatrix &rhs)
@@ -222,7 +216,7 @@ void pimatrix::sum(int dim, pimatrix& result)
         case 0:
             result.resize(1, 1);
             result.set(0, 0, std::accumulate(
-                m_matrix.data().begin(), m_matrix.data().end(), 0));
+                m_matrix.data().begin(), m_matrix.data().end(), 0.0f));
             break;
         case 1:
         {
@@ -230,7 +224,7 @@ void pimatrix::sum(int dim, pimatrix& result)
             {
                 result.resize(1, 1);
                 result.set(0, 0, std::accumulate(
-                    m_matrix.data().begin(), m_matrix.data().end(), 0));
+                    m_matrix.data().begin(), m_matrix.data().end(), 0.0f));
             }
             else
             {
@@ -362,51 +356,156 @@ std::ostream& operator<< (std::ostream &out, pimatrix &m)
 
 std::istream& operator>> (std::istream &in, pimatrix &m)
 {
-    boost::numeric::ublas::matrix<float> tmp;
-    in >> tmp;
-    m.m_matrix = tmp;
+    in >> m.m_matrix;
     return in;
 }
 
 void pimatrix::save(std::string sFileName)
 {
-    std::ofstream ofs(sFileName.c_str());
-    boost::archive::binary_oarchive oa(ofs);
-    oa << m_matrix;
+    char *bytes;
+    size_t sz;
+
+    std::ofstream ofs(sFileName.c_str()
+        , std::ios_base::out | std::ios_base::binary);
+
+    ofs.seekp(0);
+    sz = ToArray(bytes);
+    ofs.write(bytes, sz);
     ofs.flush();
     ofs.close();
-    
+    delete[] bytes;
 }
 
-void pimatrix::load(std::string sFileName)
+bool pimatrix::load(std::string sFileName)
 {
-    std::ifstream ifs(sFileName.c_str());
-    boost::archive::binary_iarchive ia(ifs);
-    ia >> m_matrix;
+    std::ifstream ifs(sFileName.c_str()
+        , std::ios_base::in | std::ios_base::binary);
+    ifs.seekg(0);
+    bool bRet = FromStream(ifs);
     ifs.close();
+    return bRet;
 }
     
 std::string pimatrix::ToString()
+{
+    char *bytes;
+    size_t sz;
+
+    sz = ToArray(bytes);
+    std::string sRet(bytes, sz);
+    delete[] bytes;
+    return sRet;
+}
+
+bool pimatrix::FromString(const std::string& sMat)
+{
+    char *bytes = (char*)sMat.data();
+    size_t sz, sz1, sz2;
+
+    if (sMat.size() < HEADER_SIZE)
+        return false;
+
+    sz = util::Util::ReadInt(bytes);
+    sz1 = util::Util::ReadInt(bytes + INT_SIZE);
+    sz2 = util::Util::ReadInt(bytes + 2*INT_SIZE);
+
+    sz -= HEADER_SIZE;
+    if(sz != sMat.size() - HEADER_SIZE || sz != sz1 * sz2 * INT_SIZE)
+        return false;
+
+    m_matrix.resize(sz1, sz2);
+    bytes += HEADER_SIZE;
+    for (size_t i = 0; i < sz1; ++i)
+    {
+        for (size_t j = 0; j < sz2; ++j)
+        {
+            m_matrix(i, j) = util::Util::ReadFloat(bytes);
+            bytes += INT_SIZE;
+        }
+    }
+    return true;
+}
+
+std::string pimatrix::ToDebugString()
 {
     std::stringstream ss;
     ss << m_matrix;
     return ss.str();
 }
 
-std::string pimatrix::ToBinaryString()
+void pimatrix::FromDebugString(const std::string& sMat)
 {
-    std::stringstream oss;
-    boost::archive::binary_oarchive oa(oss);
-        
-    oa << m_matrix;
-    return oss.str();
+    std::stringstream ss(sMat);
+    ss.seekg(0);
+    ss >> m_matrix;
+}
+/****************************************************************************/
+
+size_t pimatrix::ToArray(char* &bytes)
+{
+    BOOST_ASSERT_MSG(sizeof(float) == INT_SIZE,
+        "Unportable with this platform.");
+
+    int sz = size1()*size2()*INT_SIZE + HEADER_SIZE;
+    bytes = new char[sz];
+    util::Util::WriteInt(sz, bytes);
+    util::Util::WriteSize(size1(), bytes + INT_SIZE);
+    util::Util::WriteSize(size2(), bytes + 2*INT_SIZE);
+    char *arr = bytes + 3*INT_SIZE;
+
+    for (size_t i = 0; i < size1(); ++i)
+    {
+        for (size_t j = 0; j < size2(); ++j)
+        {
+            util::Util::WriteFloat(m_matrix(i, j), arr);
+            arr += INT_SIZE;
+        }
+    }
+    return sz;
 }
 
-void pimatrix::FromBinaryString(const std::string& s)
+bool pimatrix::FromStream(std::istream& stream)
 {
-    std::stringstream iss(s);
-    boost::archive::binary_iarchive ia(iss);
-    ia >> m_matrix;
+    char header[HEADER_SIZE], *matrixData;
+    stream.read(header, HEADER_SIZE);
+
+    int sz = util::Util::ReadInt(header);
+    size_t sz1 = util::Util::ReadSize(header + INT_SIZE);
+    size_t sz2 = util::Util::ReadSize(header + 2*INT_SIZE);
+    
+    if (sz <= HEADER_SIZE)
+        return false;
+
+    sz -= HEADER_SIZE;
+    if(sz != sz1 * sz2 * INT_SIZE)
+        return false;
+
+    matrixData = new char[sz];
+    std::streamsize readCount = 0;
+    while(readCount < sz)
+    {
+        stream.read(matrixData + readCount, sz-readCount);
+        readCount += stream.gcount();
+        if (stream.gcount() == 0)
+            break;
+    }
+
+    if (readCount == sz)
+    {
+        m_matrix.resize(sz1, sz2);
+        char *arr = matrixData;
+        for (size_t i = 0; i < sz1; ++i)
+        {
+            for (size_t j = 0; j < sz2; ++j)
+            {
+                m_matrix(i, j) = util::Util::ReadFloat(arr);
+                arr += INT_SIZE;
+            }
+        }
+    }
+    
+    delete[] matrixData;
+    return (readCount == sz);
 }
     
 }

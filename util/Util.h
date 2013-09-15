@@ -40,6 +40,27 @@ public:
     static void AccumulateMetric(
         model::Metrics& metrics
         , model::Metric_MetricType t, int sampleCount, float newVal );
+
+
+    /**************************************************************************/
+
+    static void WriteBytes(char* bytes, int len, char *dest);
+
+    static void WriteInt(int val,  char* arr);
+
+    static void WriteSize(size_t val, char* arr);
+
+    static void WriteFloat(float val, char* arr);
+
+    static void ReadBytes(char* bytes, int len, char *dest);
+
+    static int ReadInt(char* arr);
+
+    static size_t ReadSize(char *arr);
+
+    static float ReadFloat(char *arr);
+    
+    static bool is_big_endian();
 };
 
 }

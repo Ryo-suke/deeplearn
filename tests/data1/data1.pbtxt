@@ -6,21 +6,24 @@ data_handler: "deeplearn"
 
 data {
   type: TRAIN_SET
-  file_pattern: "/home/hoaivu_pham/NetBeansProjects/deeplearn/tests/data1/m1.m"
+  file_pattern: "m1.m"
   size: 600
   dimensions: 4
 }
 
 data {
   type: EVAL_SET
-  file_pattern: "/home/hoaivu_pham/NetBeansProjects/deeplearn/tests/data1/m2.m"
+  file_pattern: "m2.m"
   size: 200
   dimensions: 4
 }
 
 data {
   type: TEST_SET
-  file_pattern: "/home/hoaivu_pham/NetBeansProjects/deeplearn/tests/data1/m3.m"
+  file_pattern: "m3.m"
   size: 200
   dimensions: 4
 }
+
+#path_prefix: "/home/hoaivu_pham/NetBeansProjects/deeplearn/tests/data1/"
+path_prefix: "D:/WIN/Documents/projects/github/deeplearn/tests/data1"

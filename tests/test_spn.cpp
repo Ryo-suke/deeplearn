@@ -11,13 +11,25 @@
 #include <streambuf>
 #include "spnet/Spn.h"
 #include "deeplearn.pb.h"
-#include "util/Util.h"
+#include "Util.h"
 #include <DataHandler.h>
 #include <Util.h>
 
 /*
  * Simple C++ Test Suite
  */
+
+#ifdef _MSC_VER
+#define DATA_PROTOBUF   "../tests/data1/data1.pbtxt"
+#define MODEL_FILE      "../tests/data1/spn_simple.pbtxt"
+#define TRAIN_OP_FILE   "../tests/data1/train.pbtxt"
+#define EVAL_OP_FILE    "../tests/data1/eval.pbtxt"
+#else
+#define DATA_PROTOBUF "./tests/data1/data1.pbtxt"
+#define MODEL_FILE      "./tests/data1/spn_simple.pbtxt"
+#define TRAIN_OP_FILE   "./tests/data1/train.pbtxt"
+#define EVAL_OP_FILE    "./tests/data1/eval.pbtxt"
+#endif
 
 model::Spn* createSimpleSpn()
 {
@@ -61,8 +73,9 @@ void testSpn()
 void testDataHandler()
 {
     model::DatabaseInfo databaseInfo;
-    std::string sProtoFile("./tests/data1/data1.pbtxt");
-    if(!util::Util::LoadProto(sProtoFile, &databaseInfo))
+    std::string sProtoFile(DATA_PROTOBUF);
+
+        if(!util::Util::LoadProto(sProtoFile, &databaseInfo))
     {
         std::cout << "%TEST_FAILED% time=0 testname=testDataHandler (test_model) message=protobuf import failed" << std::endl;
         return;
@@ -103,7 +116,7 @@ void testSpnForward()
     
     // get dataset
     model::DatabaseInfo databaseInfo;
-    std::string sProtoFile("./tests/data1/data1.pbtxt");
+    std::string sProtoFile(DATA_PROTOBUF);
     
     if (!util::Util::LoadProto(sProtoFile, &databaseInfo))
     {
@@ -112,7 +125,7 @@ void testSpnForward()
     }
   
     data::DataHandler *handler;
-    handler = data::DataHandler::GetDataHandler(databaseInfo, true, 42, true);
+    handler = data::DataHandler::GetDataHandler(databaseInfo, false, 42, true);
     data::Dataset* trainSet = handler->GetDataset(model::DatasetInfo::TRAIN_SET);
     
     trainSet->SetBatchSize(100);
@@ -120,13 +133,21 @@ void testSpnForward()
     {
         trainSet->EndLoadNextBatch();
         math::pimatrix *batch = trainSet->GetCurrentBatch();
+        trainSet->BeginLoadNextBatch();
+
         math::pimatrix err = spn->Forward(batch);
         for (size_t i = 0; i < batch->size1(); ++i)
         {
             float t = batch->operator()(i, 0) * batch->operator()(i, 2)
                     + batch->operator()(i, 1) * batch->operator()(i, 3);
-            if (err(i, 0) != t)
+            if (std::abs(err(i, 0) - t) > 1E-7)
+            {
                 std::cout << "%TEST_FAILED% time=0 testname=testSpnForward (test_model) message=forward computation failed" << std::endl;
+                std::cout << batch->operator()(i, 0) << " " << batch->operator()(i, 1) << " " 
+                          << batch->operator()(i, 2) << " " << batch->operator()(i, 3) << std::endl;
+                std::cout << err(i, 0) << " " << t << " " << t - err(i, 0) << std::endl;
+                return;
+            }
         }
     }
     
@@ -138,10 +159,7 @@ void testSpnForward()
 
 void trainSimpleSpn()
 {
-    std::string sModelFile = "/home/hoaivu_pham/NetBeansProjects/deeplearn/tests/data1/spn_simple.pbtxt";
-    std::string sTrainOpFile = "/home/hoaivu_pham/NetBeansProjects/deeplearn/tests/data1/train.pbtxt";
-    std::string sEvalOpFile = "/home/hoaivu_pham/NetBeansProjects/deeplearn/tests/data1/eval.pbtxt";
-    
+    std::string sModelFile(MODEL_FILE), sTrainOpFile(TRAIN_OP_FILE), sEvalOpFile(EVAL_OP_FILE);
     model::ModelData modelData;
     model::Operation trainOp, evalOp;
     
@@ -209,6 +227,7 @@ int main(int argc, char** argv)
 
     google::protobuf::ShutdownProtobufLibrary();
         
+    std::cin.get();
     return (EXIT_SUCCESS);
 }
 

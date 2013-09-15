@@ -21,17 +21,16 @@ class Dataset : boost::noncopyable
 {
     Cache *m_cache;
     size_t m_batchSize;
-    math::pimatrix m_currentBatch;
-    
+    math::pimatrix m_currentBatch;    
+
 public:
-    Dataset(const model::DatasetInfo& dataInfo
-            , size_t capacity
+    Dataset(size_t capacity
             , bool randomize = false
             , int randomSeed = 42, bool verbose = false);
     
     virtual ~Dataset();
     
-    virtual void Append(const model::DatasetInfo& dataInfo);
+    virtual void Append(const model::DatasetInfo& dataInfo, const std::string &sPathPrefix);
     
     virtual math::pimatrix* GetCurrentBatch();
     virtual void BeginLoadNextBatch();
@@ -45,7 +44,7 @@ public:
         
 protected:
     void loadFileNames(const std::string sFilePattern
-    , std::vector<std::string>& filesOut);
+    , std::vector<std::string>& filesOut, const std::string &sPathPrefix);
 };
 
 }

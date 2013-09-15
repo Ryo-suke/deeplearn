@@ -55,7 +55,10 @@ void Edge::Backward(math::pimatrix& derivatives)
     
     BOOST_ASSERT_MSG(derivatives.size2() == m_node2->GetDimension(),
             "Derivatives should have size (batch_size x m_node2->GetDimension())");
-    m_oldDerivatives = m_derivatives;
+    if (m_derivatives.size1() > 0 && m_derivatives.size2() > 0)
+    {
+        m_oldDerivatives = m_derivatives;
+    }
     m_derivatives = m_node1->GetActivations();
     m_derivatives.mult(derivatives, 1);
     
@@ -94,7 +97,7 @@ void Edge::MergeEdgeData(const EdgeData& edgeData)
     
     if (m_edgeData.has_weight())
     {
-        m_weight.FromBinaryString(m_edgeData.weight());
+        m_weight.FromString(m_edgeData.weight());
                 
         BOOST_ASSERT_MSG(m_weight.size1() == m_node1->GetDimension()
                 && m_weight.size2() == m_node2->GetDimension(),
@@ -115,7 +118,7 @@ void Edge::ToEdgeData(EdgeData& edgeData)
     edgeData.MergeFrom(m_edgeData);
     edgeData.set_node1(m_node1->GetName());
     edgeData.set_node2(m_node2->GetName());
-    edgeData.set_weight(m_weight.ToBinaryString());
+    edgeData.set_weight(m_weight.ToString());
 }
 
 }

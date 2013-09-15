@@ -25,7 +25,7 @@ namespace util
     int getFileHandle(const std::string& sFile)
     {
         FILE* f;
-        if (fopen_s(&f, sFile.c_str(), "r") == 0)
+        if (fopen_s(&f, sFile.c_str(), "r") != 0)
             return -1;
 
         return _fileno(f);
@@ -148,6 +148,98 @@ void Util::AccumulateMetric(
         mOld->set_values(idx, mOld->values(idx) + newVal);
     }
     
+}
+
+/**************************************************************************/
+
+void Util::WriteBytes(char* bytes, int len, char *dest)
+{
+    int i;
+    if (is_big_endian())
+    {
+        for(i = 0; i < len; ++i)
+            dest[i] = bytes[i];
+    }
+    else
+    {
+        for(i = 0; i < len; ++i)
+            dest[i] = bytes[len-1-i];
+    }
+}
+
+void Util::WriteInt(int val,  char* arr)
+{
+    //for(int i = 0; i < 4; ++i)
+    //    arr[i] = (val >> (8*i)) & 0xFF;
+    char *ptr = (char*) (& val);
+    WriteBytes(ptr, 4, arr);
+}
+
+void Util::WriteSize(size_t val, char* arr)
+{
+    //for(int i = 0; i < 4; ++i)
+    //    arr[i] = (val >> (8*i)) & 0xFF;
+    char *ptr = (char*) (& val);
+    WriteBytes(ptr, 4, arr);
+}
+
+void Util::WriteFloat(float val, char* arr)
+{
+    char *ptr = (char*) (& val);
+    WriteBytes(ptr, 4, arr);
+}
+
+int Util::ReadInt(char* arr)
+{
+    int iRet = 0;
+    //for (int i = 0; i < 4; ++i)
+    //    iRet |= ((int)arr[i] << (8*i));
+    char *ptr = (char*) (& iRet) ;
+    ReadBytes(ptr, 4, arr);
+    return iRet;
+}
+
+size_t Util::ReadSize(char *arr)
+{
+    size_t iRet = 0;
+    //for (int i = 0; i < 4; ++i)
+    //    iRet |= ((size_t)arr[i] << (8*i));
+    char *ptr = (char*) (& iRet) ;
+    ReadBytes(ptr, 4, arr);
+    return iRet;
+}
+
+float Util::ReadFloat(char *arr)
+{
+    float fRet = 0;
+    char *ptr = (char*) (& fRet) ;
+    ReadBytes(ptr, 4, arr);
+    return fRet;
+}
+
+void Util::ReadBytes(char* bytes, int len, char *dest)
+{
+    int i;
+    if (is_big_endian())
+    {
+        for(i = 0; i < len; ++i)
+            bytes[i] = dest[i];
+    }
+    else
+    {
+        for(i = 0; i < len; ++i)
+            bytes[i] = dest[len-1-i];
+    }
+}
+
+bool Util::is_big_endian()
+{
+    union {
+        uint32_t i;
+        char c[4];
+    } bint = {0x01020304};
+
+    return bint.c[0] == 1; 
 }
 
 }

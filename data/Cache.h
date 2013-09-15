@@ -26,7 +26,6 @@ class Cache : boost::noncopyable
     math::pimatrix m_data;
     size_t m_currentRow;                // current row in m_data
     boost::minstd_rand m_rndGenerator;
-    size_t m_maxRowCount;            // computed base on the allocated capacity
     
 public:
     /*

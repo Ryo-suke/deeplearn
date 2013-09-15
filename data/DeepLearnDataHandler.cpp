@@ -24,7 +24,7 @@ DeepLearnDataHandler::DeepLearnDataHandler(const model::DatabaseInfo& databaseIn
     memoryRatios[model::DatasetInfo::TEST_SET] = 0.2f;
     
     // datasetInfo.main_memory() is in GB
-    float memorySize = databaseInfo.main_memory() * 1E9;
+    float memorySize = databaseInfo.main_memory() * (float)1E9;
     
     for(int i = databaseInfo.data_size() - 1; i >= 0; --i)
     {
@@ -34,14 +34,11 @@ DeepLearnDataHandler::DeepLearnDataHandler(const model::DatabaseInfo& databaseIn
         if (m_datasets.count(dataType) == 0)
         {
             m_datasets[dataType] = 
-                    new Dataset(dataset
-                    , (size_t)std::floor(memoryRatios[dataType] * memorySize)
-                    , randomize, randomSeed, verbose);
+                    new Dataset(
+                        (size_t)std::floor(memoryRatios[dataType] * memorySize)
+                        , randomize, randomSeed, verbose);
         }
-        else
-        {
-            m_datasets[dataType]->Append(dataset);
-        }
+        m_datasets[dataType]->Append(dataset, databaseInfo.path_prefix());
     }
 }
 

@@ -29,8 +29,6 @@ public:
     
     pimatrix(size_t m, size_t n, float initVal = 0);
     
-    pimatrix(const std::string& str);
-    
     virtual ~pimatrix();
     
     static float HugeValue();
@@ -123,23 +121,26 @@ public:
     
     void save(std::string sFileName);
     
-    void load(std::string sFileName);
+    bool load(std::string sFileName);
     
     std::string ToString();
 
+    bool FromString(const std::string& sMat);
+
     /*
-     * Serialize the matrix into a byte array and wrap it into a string
-     * This is for the sake of protobuf
+     * Serialize the matrix into a human-friendly format
      */
-    std::string ToBinaryString();
+    std::string ToDebugString();
     
-    /*
-     * Deserialize the matrix from a string made from a byte array
-     * (which is normally procedured by ToBinaryString())
-     */
-    void FromBinaryString(const std::string& s);
-    
+    void FromDebugString(const std::string& sMat);
+
     /*************************************************************************/
+private:
+    
+    size_t ToArray(char* &bytes);
+
+    bool FromStream(std::istream& stream);
+
 };
 
 }

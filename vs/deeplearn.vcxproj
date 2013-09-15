@@ -85,6 +85,7 @@
     <ClCompile Include="..\model\spnet\Spn.cpp" />
     <ClCompile Include="..\model\spnet\SpnGraph.cpp" />
     <ClCompile Include="..\model\spnet\SumNode.cpp" />
+    <ClCompile Include="..\tests\test_spn.cpp" />
     <ClCompile Include="..\util\Util.cpp" />
   </ItemGroup>
   <ItemGroup>

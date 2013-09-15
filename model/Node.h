@@ -147,7 +147,7 @@ public:
         m_nodeData.MergeFrom(nodeData);
         if (nodeData.has_bias())
         {
-            m_bias.FromBinaryString(m_nodeData.bias());
+            m_bias.FromString(m_nodeData.bias());
         }
     }
     
@@ -162,7 +162,7 @@ public:
     virtual void ToNodeData(NodeData& nodeData)
     {
         nodeData.MergeFrom(m_nodeData);
-        nodeData.set_bias(m_bias.ToBinaryString());
+        nodeData.set_bias(m_bias.ToString());
     }
     
     /*

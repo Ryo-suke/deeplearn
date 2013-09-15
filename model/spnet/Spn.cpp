@@ -121,6 +121,13 @@ void Spn::Train(Operation& trainOp, Operation* evalOp /*= NULL*/)
     evalSet = dataHandler->GetDataset(model::DatasetInfo::EVAL_SET);
     testSet = dataHandler->GetDataset(model::DatasetInfo::TEST_SET);
     
+    if (trainSet->GetNumBatches() == 0)
+    {
+        std::cout << "Empty training set. Training is not doable." << std::endl;
+        delete dataHandler;
+        return;
+    }
+
     // set batch size and training stop condition
     // quite tricky here: set batchSize of 
     // evalSet and testSet to be twice of those of training set
@@ -144,6 +151,17 @@ void Spn::Train(Operation& trainOp, Operation* evalOp /*= NULL*/)
     boost::filesystem::path cpDir(trainOp.checkpoint_directory()), cpFullPath;
     boost::format fmtCpFile("%1%_%2%_%3%.bin");
     
+    if (!boost::filesystem::exists(cpDir))
+    {
+        if(!boost::filesystem::create_directories(cpDir))
+        {
+            std::cout << "Couldn't create the checkpoint directory: "
+                      << cpDir.generic_string() << std::endl;
+            delete dataHandler;
+            return;
+        }
+    }
+
     bool bSelectModel = m_modelData.hyper_params().select_model_criterion() == Hyperparams::CRITERION_NLL;
     float bestValidScore = math::pimatrix::HugeValue();
     
@@ -210,6 +228,7 @@ void Spn::Train(Operation& trainOp, Operation* evalOp /*= NULL*/)
         }
     }
     Prune();
+    delete dataHandler;
 }
 
 void Spn::Evaluate(Operation& evalOp, data::Dataset* evalDataset
@@ -324,7 +343,7 @@ void Spn::TrainOneBatch(Operation& trainOp
     }
     
     // update parameters for nodes. Normally this is not 
-    // neccessary for SPN where nodes do not have biases.
+    // necessary for SPN where nodes do not have biases.
     for(it = m_nodes.begin(); it != m_nodes.end(); ++it)
     {
         (*it)->UpdateParams(iTrainStep, trainOp.batch_size());
@@ -462,9 +481,10 @@ Spn* Spn::FromProto(const ModelData& modelData)
 bool Spn::LoadSpnInits(const SpnData& spnData
                 , std::vector<Node*>& nodes, std::vector<Edge*>& edges)
 {
-    math::pimatrix nodeList(spnData.node_list());
-    math::pimatrix adjMatrix(spnData.adjacency_matrix());
-    math::pimatrix inputIndices(spnData.input_indices());
+    math::pimatrix nodeList, adjMatrix, inputIndices;
+    nodeList.FromDebugString(spnData.node_list());
+    adjMatrix.FromDebugString(spnData.adjacency_matrix());
+    inputIndices.FromDebugString(spnData.input_indices());
     
     if (nodeList.size1() != 1 
             || nodeList.size2() < 1

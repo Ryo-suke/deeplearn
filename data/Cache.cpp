@@ -20,9 +20,6 @@ Cache::Cache(Disk* dataProvider, size_t capacity
 , m_rndGenerator(randomSeed)
 {
     BOOST_ASSERT_MSG(dataProvider, "Disk can not be null.");
-    
-    size_t dim = m_dataProvider->GetDimension();
-    m_maxRowCount = capacity / (dim * m_typeSize);
     AllocateMemory();
 }
 
@@ -76,8 +73,14 @@ void Cache::Append(std::vector<std::string>& files, size_t size, size_t dimensio
 void Cache::AllocateMemory()
 {
     size_t numRow = m_dataProvider->GetSize();
-    numRow = (numRow < m_maxRowCount ? numRow : m_maxRowCount);
-    m_data.resize(numRow, m_dataProvider->GetDimension());
+    size_t dim = m_dataProvider->GetDimension();
+
+    if (numRow == 0 || dim == 0)
+        return;
+        
+    size_t maxRowCount = m_capacity / (dim * m_typeSize);
+    numRow = (numRow < maxRowCount ? numRow : maxRowCount);
+    m_data.resize(numRow, dim);
     m_currentRow = numRow;
 }
 
