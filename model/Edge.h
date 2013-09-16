@@ -47,12 +47,19 @@ public:
     {
         return m_node2;
     }
+    
+    const math::pimatrix& GetWeight()
+    {
+        return m_weight;
+    }
 
     virtual math::pimatrix Forward();
     
     virtual void Backward(math::pimatrix& derivatives);
     
     virtual void UpdateParams(int iStep, int batchSize);
+    
+    virtual void NormalizeWeights(const math::pimatrix& matSum);
     
     /*************************************************************************/
     

@@ -25,5 +25,5 @@ data {
   dimensions: 4
 }
 
-#path_prefix: "/home/hoaivu_pham/NetBeansProjects/deeplearn/tests/data1/"
-path_prefix: "D:/WIN/Documents/projects/github/deeplearn/tests/data1"
+path_prefix: "/home/hoaivu_pham/NetBeansProjects/deeplearn/tests/data1/"
+#path_prefix: "D:/WIN/Documents/projects/github/deeplearn/tests/data1"

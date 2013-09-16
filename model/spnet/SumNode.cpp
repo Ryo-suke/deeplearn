@@ -23,9 +23,9 @@ SumNode::~SumNode()
 void SumNode::Forward()
 {
     // weighted sum
-    std::vector<Edge*>::iterator it = m_incomingEdges.begin();
+    std::vector<Edge*>::iterator it;
     int i = 0;
-    for (; it != m_incomingEdges.end(); ++it)
+    for (it = m_incomingEdges.begin(); it != m_incomingEdges.end(); ++it)
     {
         BOOST_ASSERT((*it)->GetNode2() == this);
         
@@ -39,12 +39,37 @@ void SumNode::Forward()
 
 void SumNode::Backward()
 {
-    std::vector<Edge*>::iterator it = m_incomingEdges.begin();
+    std::vector<Edge*>::iterator it;
     
-    for (; it != m_incomingEdges.end(); ++it)
+    for (it = m_incomingEdges.begin(); it != m_incomingEdges.end(); ++it)
     {
         (*it)->Backward(m_derivatives);
     }
+}
+
+void SumNode::NormalizeIncomingEdges()
+{
+    std::vector<Edge*>::iterator it;
+    int i = 0;
+    math::pimatrix weightSum;
+    
+    // sum
+    for (it = m_incomingEdges.begin(); it != m_incomingEdges.end(); ++it)
+    {
+        BOOST_ASSERT((*it)->GetNode2() == this);
+        if (i == 0)
+            weightSum = (*it)->GetWeight();
+        else
+            weightSum += (*it)->GetWeight();
+        i++;
+    }
+    
+    // normalize
+    for (it = m_incomingEdges.begin(); it != m_incomingEdges.end(); ++it)
+    {
+        (*it)->NormalizeWeights(weightSum);
+    }
+    
 }
 
 }

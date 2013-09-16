@@ -8,12 +8,13 @@ stop_condition {
 
 operation_type: TRAIN
 batch_size: 100
-#data_proto: "/home/hoaivu_pham/NetBeansProjects/deeplearn/tests/data1/data1.pbtxt"
-data_proto: "D:/WIN/Documents/Projects/github/deeplearn/tests/data1/data1.pbtxt"
+data_proto: "/home/hoaivu_pham/NetBeansProjects/deeplearn/tests/data1/data1.pbtxt"
+#data_proto: "D:/WIN/Documents/Projects/github/deeplearn/tests/data1/data1.pbtxt"
 eval_after: 6
 checkpoint_after: 12
-#checkpoint_directory: "/home/hoaivu_pham/NetBeansProjects/deeplearn/tests/data1/cp_simple"
-checkpoint_directory: "D:/WIN/Documents/Projects/github/deeplearn/tests/data1/cp_simple"
+checkpoint_directory: "/home/hoaivu_pham/NetBeansProjects/deeplearn/tests/data1/cp_simple"
+#checkpoint_directory: "D:/WIN/Documents/Projects/github/deeplearn/tests/data1/cp_simple"
 randomize: true
 random_seed: 42
 verbose: true
+normalize_each_train_step: true

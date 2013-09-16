@@ -6,6 +6,7 @@
  */
 
 #include "Disk.h"
+#include "deeplearn.pb.h"
 #include <boost/filesystem.hpp>
 #include <boost/regex.hpp>
 
@@ -47,7 +48,8 @@ void Disk::Get(size_t sampleCount, math::pimatrix& matRet)
             {
                 // only load next file if we have more than 1 file
                 // or this is the first file ever read.
-                loadFile(m_files.at(m_iReadingFile), m_currentFile);
+                loadFile(m_files.at(m_iReadingFile), m_currentFile
+                        , m_fileFormat.at(m_iReadingFile));
                 m_iReadingFile = (m_iReadingFile + 1) % m_files.size();
             }
             m_currentRow = 0;
@@ -63,7 +65,9 @@ void Disk::Get(size_t sampleCount, math::pimatrix& matRet)
     }
 }
 
-void Disk::Append(std::vector<std::string>& files, size_t size, size_t dimension)
+void Disk::Append(std::vector<std::string>& files
+    , size_t size, size_t dimension
+    , model::DatasetInfo_DataFormat dataFormat)
 {
     if (m_iDimension == 0 && m_dataSize == 0)
     {
@@ -77,19 +81,34 @@ void Disk::Append(std::vector<std::string>& files, size_t size, size_t dimension
     
     for (std::vector<std::string>::iterator it = files.begin(); 
             it != files.end(); it++)
+    {
         m_files.push_back((*it));
+        m_fileFormat.push_back(dataFormat);
+    }
     m_dataSize += size;
 }
 /****************************************************************************/
 
-void Disk::loadFile(std::string sFile, math::pimatrix& matRet)
+void Disk::loadFile(std::string sFile, math::pimatrix& matRet
+        , model::DatasetInfo_DataFormat dataFormat)
 {
+    bool bRet;
     if (m_verbose)
     {
         std::cout << "Reading from disk: " << sFile << std::endl;
     }
-    matRet.load(sFile);
-    BOOST_ASSERT_MSG(matRet.size2() == m_iDimension, "Invalid data file.");
+    switch(dataFormat)
+    {
+        case model::DatasetInfo::BOOST_MATRIX:
+            bRet = matRet.load(sFile);
+            break;
+        case model::DatasetInfo::CSV:
+            bRet = matRet.loadCsv(sFile);
+            break;
+    }
+    
+    BOOST_ASSERT_MSG(bRet && matRet.size2() == m_iDimension
+            , "Invalid data file.");
 }
 
 }

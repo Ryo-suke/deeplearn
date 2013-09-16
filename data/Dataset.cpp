@@ -39,8 +39,14 @@ void Dataset::Append(const model::DatasetInfo& dataInfo, const std::string &sPat
     // only support 4-byte atomic types at the moment...
     BOOST_ASSERT_MSG(dataInfo.type_size() == 4
         , "Only 4-byte atomic types are supported");
+    
     loadFileNames(dataInfo.file_pattern(), files, sPathPrefix);
-    m_cache->Append(files, dataInfo.size(), dataInfo.dimensions());
+    
+    if (files.size() > 0)
+    {
+        m_cache->Append(files, dataInfo.size()
+            , dataInfo.dimensions(), dataInfo.data_format());
+    }
 }
 
 math::pimatrix* Dataset::GetCurrentBatch()

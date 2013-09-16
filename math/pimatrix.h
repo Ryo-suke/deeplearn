@@ -40,7 +40,8 @@ public:
     /*
      * Set a slice of the matrix to the given value
      */
-    void setValue(float v, size_t startCol, size_t colCount, size_t startRow, size_t rowCount);
+    void setValue(float v, size_t startRow, size_t rowCount
+                    , size_t startCol, size_t colCount);
     
     void copyRows(pimatrix& source, size_t startRowSrc
                 , size_t rowCount, size_t startRowDest);
@@ -78,9 +79,9 @@ public:
      */
     void element_inverse();
 
-    void element_mult(pimatrix& m);
+    void element_mult(const pimatrix& m);
     
-    void element_div(pimatrix& m);
+    void element_div(const pimatrix& m);
     
     /*
      * this += beta * m
@@ -122,6 +123,10 @@ public:
     void save(std::string sFileName);
     
     bool load(std::string sFileName);
+    
+    bool loadCsv(const std::string& sCsvFilePath);
+    
+    /*************************************************************************/
     
     std::string ToString();
 

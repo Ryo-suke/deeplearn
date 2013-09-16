@@ -151,6 +151,7 @@ void Util::AccumulateMetric(
 }
 
 /**************************************************************************/
+#define INT_SIZE 4
 
 void Util::WriteBytes(char* bytes, int len, char *dest)
 {
@@ -167,53 +168,43 @@ void Util::WriteBytes(char* bytes, int len, char *dest)
     }
 }
 
-void Util::WriteInt(int val,  char* arr)
-{
-    //for(int i = 0; i < 4; ++i)
-    //    arr[i] = (val >> (8*i)) & 0xFF;
-    char *ptr = (char*) (& val);
-    WriteBytes(ptr, 4, arr);
-}
-
 void Util::WriteSize(size_t val, char* arr)
 {
-    //for(int i = 0; i < 4; ++i)
-    //    arr[i] = (val >> (8*i)) & 0xFF;
     char *ptr = (char*) (& val);
-    WriteBytes(ptr, 4, arr);
+    if (sizeof(size_t) != INT_SIZE && is_big_endian())
+    {
+        ptr += (sizeof(size_t) - INT_SIZE);
+    }
+    WriteBytes(ptr, INT_SIZE, arr);
 }
 
 void Util::WriteFloat(float val, char* arr)
 {
+    BOOST_ASSERT_MSG(sizeof(float) == INT_SIZE,
+            "Unportable because sizeof(float) != 4");
     char *ptr = (char*) (& val);
-    WriteBytes(ptr, 4, arr);
-}
-
-int Util::ReadInt(char* arr)
-{
-    int iRet = 0;
-    //for (int i = 0; i < 4; ++i)
-    //    iRet |= ((int)arr[i] << (8*i));
-    char *ptr = (char*) (& iRet) ;
-    ReadBytes(ptr, 4, arr);
-    return iRet;
+    WriteBytes(ptr, INT_SIZE, arr);
 }
 
 size_t Util::ReadSize(char *arr)
 {
     size_t iRet = 0;
-    //for (int i = 0; i < 4; ++i)
-    //    iRet |= ((size_t)arr[i] << (8*i));
     char *ptr = (char*) (& iRet) ;
-    ReadBytes(ptr, 4, arr);
+    if (sizeof(size_t) != INT_SIZE && is_big_endian())
+    {
+        ptr += (sizeof(size_t) - INT_SIZE);
+    }
+    ReadBytes(ptr, INT_SIZE, arr);
     return iRet;
 }
 
 float Util::ReadFloat(char *arr)
 {
+    BOOST_ASSERT_MSG(sizeof(float) == INT_SIZE,
+            "Unportable because sizeof(float) != 4");
     float fRet = 0;
     char *ptr = (char*) (& fRet) ;
-    ReadBytes(ptr, 4, arr);
+    ReadBytes(ptr, INT_SIZE, arr);
     return fRet;
 }
 
@@ -240,6 +231,30 @@ bool Util::is_big_endian()
     } bint = {0x01020304};
 
     return bint.c[0] == 1; 
+}
+
+/***************************************************************************/
+
+void Util::combination(int* c, int n, int p, int x)
+{
+    /** [combination c n p x]
+     * get the [x]th lexicographically ordered set of [p] elements in [n]
+     * output is in [c], and should be sizeof(int)*[p] */
+    // http://stackoverflow.com/questions/561/using-combinations-of-sets-as-test-data#794
+    int i,r,k = 0;
+    for(i=0;i<p-1;i++)
+    {
+        c[i] = (i != 0) ? c[i-1] : 0;
+        do
+        {
+            c[i]++;
+            r = (int)boost::math::binomial_coefficient<float>(n-c[i],p-(i+1));
+            k = k + r;
+        } 
+        while(k < x);
+        k = k - r;
+    }
+    c[p-1] = c[p-2] + x - k;
 }
 
 }

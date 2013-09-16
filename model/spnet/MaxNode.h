@@ -24,6 +24,8 @@ public:
 
     virtual void Backward();
     
+    virtual void NormalizeIncomingEdges();
+    
 private:
 
 };

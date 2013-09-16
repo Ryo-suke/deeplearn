@@ -50,15 +50,35 @@ private:
      */
     void appendStats(Metrics* metrics, Metrics &newMetrics, int iTrainStep);
     
+    void normalizeWeights();
+    
 public:
     static Spn* FromProto(const ModelData& modelData);
 
 private:
-    static bool LoadSpnInits(const SpnData& spnData
+    static bool LoadSpnInit(const SpnData& spnData
                 , std::vector<Node*>& nodes, std::vector<Edge*>& edges);
+    static bool LoadSpnLayerInit(const SpnData& spnData
+                , std::vector<Node*>& nodes, std::vector<Edge*>& edges);
+    static bool LoadSpnListInit(const SpnData& spnData
+                , std::vector<Node*>& nodes, std::vector<Edge*>& edges);
+    
     static bool LoadSpnStructure(const ModelData& modelData
                 , std::vector<Node*>& nodes, std::vector<Edge*>& edges);
+    
     static Node* CreateNewNode(const NodeData& nodeData);
+    
+    static bool CreateLayer(const SpnLayerInit& layerInit
+                , std::vector<Node*>& lowerLayer
+                , std::vector<Node*>& newNodes, std::vector<Edge*>& newEdges);
+    static bool CreateInputLayer(const SpnLayerInit& layerInit
+                , std::vector<Node*>& newNodes, std::vector<Edge*>& newEdges);
+    static bool CreateSumMaxLayer(const SpnLayerInit& layerInit
+                , std::vector<Node*>& lowerLayer
+                , std::vector<Node*>& newNodes, std::vector<Edge*>& newEdges);
+    static bool CreateProductLayer(const SpnLayerInit& layerInit
+                , std::vector<Node*>& lowerLayer
+                , std::vector<Node*>& newNodes, std::vector<Edge*>& newEdges);
 };
 
 }

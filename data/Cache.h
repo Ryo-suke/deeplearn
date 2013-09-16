@@ -41,7 +41,9 @@ public:
 
     virtual size_t GetSize();
     
-    virtual void Append(std::vector<std::string>& files, size_t size, size_t dimension);
+    virtual void Append(std::vector<std::string>& files
+        , size_t size, size_t dimension
+        , model::DatasetInfo_DataFormat dataFormat);
     
 protected:
     virtual void AllocateMemory();

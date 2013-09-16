@@ -62,9 +62,11 @@ size_t Cache::GetSize()
     return m_dataProvider->GetSize();
 }
 
-void Cache::Append(std::vector<std::string>& files, size_t size, size_t dimension)
+void Cache::Append(std::vector<std::string>& files
+    , size_t size, size_t dimension
+    , model::DatasetInfo_DataFormat dataFormat)
 {
-    m_dataProvider->Append(files, size, dimension);
+    m_dataProvider->Append(files, size, dimension, dataFormat);
     AllocateMemory();
 }
 

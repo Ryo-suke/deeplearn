@@ -63,10 +63,31 @@ message EdgeData {
   optional Hyperparams hyper_params = 5;
 }
 
+message SpnLayerInit {
+  required string name = 1;
+  optional NodeData.NodeType type = 2;
+
+  // for sum/max/input layers: 
+  // each node has connections with all of its children
+  optional int32 size = 3;
+
+  // the maximum number of combinations of child nodes for product layers
+  // should be small (2 or 3), or you will run into combinatoric problem.
+  optional int32 product_combinations = 4 [default=3];
+
+  // list of indices of input nodes. length should be equal to size.
+  optional string input_indices = 5;
+  // list of node types, should only be used when the nodes have different types
+  optional string node_list = 6;
+}
+
 message SpnData {
   optional string node_list = 1;        // a boost::matrix of values of NodeType
   optional string adjacency_matrix = 2; // boost::matrix
   optional string input_indices = 3;    // boost::matrix of integers
+
+  // in the bottom-up order!
+  repeated SpnLayerInit layers = 4;
 }
 
 message ModelData {
@@ -118,6 +139,7 @@ message Operation {
   optional bool randomize = 10 [default=false];
   optional int32 random_seed = 11 [default=42];
   optional bool verbose = 12 [default=true];
+  optional bool normalize_each_train_step = 13 [default=true];
 }
 
 message DatasetInfo {
@@ -126,11 +148,16 @@ message DatasetInfo {
       EVAL_SET = 1;
       TEST_SET = 2;
     }
+    enum DataFormat {
+        BOOST_MATRIX = 0;
+        CSV = 1;
+    }
     required DataType type = 1;
     required string file_pattern = 2;
     required int32 size = 3;        // number of instances
     required int32 dimensions = 4;
     optional int32 type_size = 5 [default=4];   // size of atomic value (in bytes)
+    optional DataFormat data_format = 6 [default=BOOST_MATRIX];
 }
 
 message DatabaseInfo {

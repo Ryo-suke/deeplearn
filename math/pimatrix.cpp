@@ -12,6 +12,7 @@
 #include <boost/archive/binary_oarchive.hpp>
 #include <boost/archive/binary_iarchive.hpp>
 #include <boost/random/variate_generator.hpp>
+#include <boost/algorithm/string.hpp>
 #include <sstream>
 #include <iostream>
 #include <fstream>
@@ -75,8 +76,8 @@ void pimatrix::setValue(float v)
 /*
  * Set all columns to the parameter
  */
-void pimatrix::setValue(float v, size_t startCol, size_t colCount
-                               , size_t startRow, size_t rowCount)
+void pimatrix::setValue(float v, size_t startRow, size_t rowCount
+                    , size_t startCol, size_t colCount)
 {
     BOOST_ASSERT_MSG(m_matrix.size1() >= startRow + rowCount
                   && m_matrix.size2() >= startCol + colCount,
@@ -267,12 +268,12 @@ void pimatrix::element_inverse()
                m_matrix.data().begin(), op_inverse);
 }
 
-void pimatrix::element_mult(pimatrix& m)
+void pimatrix::element_mult(const pimatrix& m)
 {
     m_matrix = bu::element_prod(m_matrix, m.m_matrix);
 }
     
-void pimatrix::element_div(pimatrix& m)
+void pimatrix::element_div(const pimatrix& m)
 {
     bu::matrix<float> tmp = m.m_matrix;
     std::transform(tmp.data().begin(), tmp.data().end(),
@@ -385,7 +386,66 @@ bool pimatrix::load(std::string sFileName)
     ifs.close();
     return bRet;
 }
+
+template<class T>
+T op_string2number(std::string x)
+{
+    std::stringstream ss(x);
+    T f;
+    ss >> f;
+    return f;
+}
+bool pimatrix::loadCsv(const std::string& sCsvFilePath)
+{
+    std::ifstream f(sCsvFilePath.c_str(), std::ios_base::in);
+    size_t sz1, sz2;
+    std::string sLine;
+    std::vector<std::string> vLine;
+    std::vector<std::vector<float> > arrFile;
+    std::vector<float> arrLine;
     
+    sz1 = sz2 = 0;
+    while (std::getline(f, sLine))
+    {
+        if(sLine.length() == 0)
+            continue;
+        
+        ++sz1;
+        vLine.clear();
+        boost::split(vLine, sLine, boost::is_any_of(","));
+        if (sz2 == 0)
+        {
+            sz2 = vLine.size();
+        }
+        else if (sz2 != vLine.size())
+        {
+            std::cout << "Invalid CSV file: " << sCsvFilePath
+                      << " at line " << sz1 << std::endl;
+            f.close();
+            return false;
+        }
+        arrLine.resize(sz2, 0);
+        std::transform(vLine.begin(), vLine.end()
+            , arrLine.begin(), op_string2number<float>);
+        arrFile.push_back(arrLine);
+    }
+    f.close();
+    
+    m_matrix.resize(sz1, sz2);
+    for (size_t i = 0; i < sz1; ++i)
+    {
+        const std::vector<float> aLine = arrFile.at(i);
+        for(size_t j = 0; j < sz2; ++j)
+        {
+            m_matrix(i, j) = aLine.at(j);
+        }
+    }
+    
+    return true;
+}
+
+/*************************************************************************/
+
 std::string pimatrix::ToString()
 {
     char *bytes;
@@ -405,9 +465,9 @@ bool pimatrix::FromString(const std::string& sMat)
     if (sMat.size() < HEADER_SIZE)
         return false;
 
-    sz = util::Util::ReadInt(bytes);
-    sz1 = util::Util::ReadInt(bytes + INT_SIZE);
-    sz2 = util::Util::ReadInt(bytes + 2*INT_SIZE);
+    sz = util::Util::ReadSize(bytes);
+    sz1 = util::Util::ReadSize(bytes + INT_SIZE);
+    sz2 = util::Util::ReadSize(bytes + 2*INT_SIZE);
 
     sz -= HEADER_SIZE;
     if(sz != sMat.size() - HEADER_SIZE || sz != sz1 * sz2 * INT_SIZE)
@@ -446,9 +506,9 @@ size_t pimatrix::ToArray(char* &bytes)
     BOOST_ASSERT_MSG(sizeof(float) == INT_SIZE,
         "Unportable with this platform.");
 
-    int sz = size1()*size2()*INT_SIZE + HEADER_SIZE;
+    size_t sz = size1()*size2()*INT_SIZE + HEADER_SIZE;
     bytes = new char[sz];
-    util::Util::WriteInt(sz, bytes);
+    util::Util::WriteSize(sz, bytes);
     util::Util::WriteSize(size1(), bytes + INT_SIZE);
     util::Util::WriteSize(size2(), bytes + 2*INT_SIZE);
     char *arr = bytes + 3*INT_SIZE;
@@ -469,7 +529,7 @@ bool pimatrix::FromStream(std::istream& stream)
     char header[HEADER_SIZE], *matrixData;
     stream.read(header, HEADER_SIZE);
 
-    int sz = util::Util::ReadInt(header);
+    size_t sz = util::Util::ReadSize(header);
     size_t sz1 = util::Util::ReadSize(header + INT_SIZE);
     size_t sz2 = util::Util::ReadSize(header + 2*INT_SIZE);
     
@@ -481,7 +541,7 @@ bool pimatrix::FromStream(std::istream& stream)
         return false;
 
     matrixData = new char[sz];
-    std::streamsize readCount = 0;
+    size_t readCount = 0;
     while(readCount < sz)
     {
         stream.read(matrixData + readCount, sz-readCount);

@@ -77,6 +77,8 @@ public:
         // which contain biases.
     }
     
+    virtual void NormalizeIncomingEdges() = 0;
+    
     /*************************************************************************/
     
     virtual void AddIncomingEdge(Edge* e)

@@ -51,4 +51,9 @@ void MaxNode::Backward()
     */
 }
 
+void MaxNode::NormalizeIncomingEdges()
+{
+    // doing nothing
+}
+
 }

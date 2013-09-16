@@ -59,4 +59,8 @@ void ProductNode::Backward()
     }
 }
 
+void ProductNode::NormalizeIncomingEdges()
+{
+    // doing nothing
+}
 }

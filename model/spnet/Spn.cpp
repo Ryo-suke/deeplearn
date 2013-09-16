@@ -12,6 +12,8 @@
 #include <boost/bind.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/format.hpp>
+#include <boost/math/special_functions/binomial.hpp>
+
 #include <spnet/Spn.h>
 #include <pimatrix.h>
 #include "InputNode.h"
@@ -151,6 +153,7 @@ void Spn::Train(Operation& trainOp, Operation* evalOp /*= NULL*/)
     boost::filesystem::path cpDir(trainOp.checkpoint_directory()), cpFullPath;
     boost::format fmtCpFile("%1%_%2%_%3%.bin");
     
+    // create checkpoint directory
     if (!boost::filesystem::exists(cpDir))
     {
         if(!boost::filesystem::create_directories(cpDir))
@@ -162,8 +165,12 @@ void Spn::Train(Operation& trainOp, Operation* evalOp /*= NULL*/)
         }
     }
 
+    // select model
     bool bSelectModel = m_modelData.hyper_params().select_model_criterion() == Hyperparams::CRITERION_NLL;
     float bestValidScore = math::pimatrix::HugeValue();
+    
+    // normalize before training
+    normalizeWeights();
     
     for (iTrainStep = 0; stopCondition(stopCond, iTrainStep); ++iTrainStep)
     {
@@ -176,6 +183,10 @@ void Spn::Train(Operation& trainOp, Operation* evalOp /*= NULL*/)
         std::cout << "Step: " << iTrainStep << "\r";
         trainMetrics.Clear();
         TrainOneBatch(trainOp, currentBatch, iTrainStep, &trainMetrics);
+        
+        // normalize if required.
+        if (trainOp.normalize_each_train_step())
+            normalizeWeights();
         
         // evaluation
         if (evalCondition(trainOp.eval_after(), iTrainStep) && evalOp)
@@ -228,6 +239,8 @@ void Spn::Train(Operation& trainOp, Operation* evalOp /*= NULL*/)
         }
     }
     Prune();
+    normalizeWeights();
+    
     delete dataHandler;
 }
 
@@ -243,7 +256,6 @@ void Spn::Evaluate(Operation& evalOp, data::Dataset* evalDataset
     int iStep;
     math::pimatrix* currentBatch;
     math::pimatrix jointProb, tmp;
-    Metrics evalBatches;
     
     for (iStep = 0; stopCondition(stopCond, iStep); ++iStep)
     {
@@ -261,7 +273,7 @@ void Spn::Evaluate(Operation& evalOp, data::Dataset* evalDataset
         
         jointProb.element_log(true);
         jointProb.sum(1, tmp);
-        util::Util::AccumulateMetric(evalBatches, Metric::NLL,
+        util::Util::AccumulateMetric(evalStats, Metric::NLL,
                 currentBatch->size1(), tmp(0, 0));
     }
 }
@@ -318,19 +330,21 @@ void Spn::TrainOneBatch(Operation& trainOp
     }
     
     // get the error (actually the probability at the root)
-    math::pimatrix m_error;
-    m_error = Forward(&twoBatch);
+    math::pimatrix mJointProb, mError;
+    
+    mJointProb = Forward(&twoBatch);
+    BOOST_ASSERT(mJointProb.size1() == 2*nSamples && mJointProb.size2() == 1);
     
     // then we negate the error of half of the "batch"
-    BOOST_ASSERT(m_error.size1() == 2*nSamples && m_error.size2() == 1);
-    m_error.element_inverse();
-    m_error.element_negate(nSamples, nSamples, 0, 1);
+    mError = mJointProb;
+    mError.element_inverse();
+    mError.element_negate(nSamples, nSamples, 0, 1);
     
     for(it = m_nodeList.begin(); it != m_nodeList.end(); ++it)
     {
         (*it)->InitializeDerivative();
     }
-    m_root->AccumDerivatives(m_error);
+    m_root->AccumDerivatives(mError);
     
     // and do backward.
     Backward();
@@ -353,7 +367,7 @@ void Spn::TrainOneBatch(Operation& trainOp
     if (metrics)
     {
         math::pimatrix m(nSamples, 1), tmp;
-        m.copyRows(m_error, 0, nSamples, 0);
+        m.copyRows(mJointProb, 0, nSamples, 0);
         m.element_log(true);
         m.sum(1, tmp);
         
@@ -411,6 +425,15 @@ void Spn::appendStats(Metrics* metrics, Metrics &newMetrics, int iTrainStep)
 
 }
 
+void Spn::normalizeWeights()
+{
+    std::vector<Node*>::iterator it;
+    for (it = m_nodeList.begin(); it != m_nodeList.end(); ++it)
+    {
+        (*it)->NormalizeIncomingEdges();
+    }
+}
+
 /**************************************************************************/
 
 Spn* Spn::FromProto(const ModelData& modelData)
@@ -423,7 +446,7 @@ Spn* Spn::FromProto(const ModelData& modelData)
     
     if (modelData.has_spn_data())
     {
-        if(!Spn::LoadSpnInits(modelData.spn_data(), nodes, edges))
+        if(!Spn::LoadSpnInit(modelData.spn_data(), nodes, edges))
             return NULL;
     }
     
@@ -450,6 +473,8 @@ Spn* Spn::FromProto(const ModelData& modelData)
                 break;
             case NodeData::QUERY:
                 queryNodes.push_back(*it);
+                break;
+            default:
                 break;
         }
         
@@ -478,10 +503,71 @@ Spn* Spn::FromProto(const ModelData& modelData)
 }
 
 
-bool Spn::LoadSpnInits(const SpnData& spnData
+bool Spn::LoadSpnInit(const SpnData& spnData
+                , std::vector<Node*>& nodes, std::vector<Edge*>& edges)
+{
+    bool bListInit = spnData.has_adjacency_matrix() 
+                    && spnData.has_input_indices() && spnData.has_node_list();
+    bool bLayerwiseInit = spnData.layers_size() > 0;
+    
+    if (!bListInit && !bLayerwiseInit)
+        return true;
+    
+    if (bLayerwiseInit)
+    {
+        if (bListInit)
+        {
+            std::cout << "Multiple ways to initialize SPN. Only take layers data"
+                      << std::endl;
+        }
+        return LoadSpnLayerInit(spnData, nodes, edges);
+    }
+    return Spn::LoadSpnListInit(spnData, nodes, edges);
+}
+
+
+bool Spn::LoadSpnLayerInit(const SpnData& spnData
+                , std::vector<Node*>& nodes, std::vector<Edge*>& edges)
+{
+    BOOST_ASSERT(spnData.layers_size() > 0);
+    
+    if (spnData.layers(0).type() != NodeData::INPUT)
+    {
+        std::cout << "The first layer must be INPUT. Got "
+                  << spnData.layers(0).type() << std::endl;
+        return false;
+    }
+    
+    std::vector<Node*> newNodes, lastLayer;
+    std::vector<Edge*> newEdges;
+    
+    for(int i = 0; i < spnData.layers_size(); ++i)
+    {
+        const SpnLayerInit& layerInit = spnData.layers(i);
+        
+        newNodes.clear();
+        newEdges.clear();
+        if (!CreateLayer(layerInit, lastLayer, newNodes, newEdges))
+        {
+            Spn::deleteList(nodes);
+            Spn::deleteList(edges);
+            nodes.clear();
+            edges.clear();
+            return false;
+        }
+        nodes.insert(nodes.end(), newNodes.begin(), newNodes.end());
+        edges.insert(edges.end(), newEdges.begin(), newEdges.end());
+        lastLayer.clear();
+        lastLayer.insert(lastLayer.end(), newNodes.begin(), newNodes.end());
+    }
+    return true;
+}
+
+bool Spn::LoadSpnListInit(const SpnData& spnData
                 , std::vector<Node*>& nodes, std::vector<Edge*>& edges)
 {
     math::pimatrix nodeList, adjMatrix, inputIndices;
+    
     nodeList.FromDebugString(spnData.node_list());
     adjMatrix.FromDebugString(spnData.adjacency_matrix());
     inputIndices.FromDebugString(spnData.input_indices());
@@ -537,6 +623,7 @@ bool Spn::LoadSpnInits(const SpnData& spnData
         
         // create the node
         tmpNode = CreateNewNode(nodeData);
+        
         if (!tmpNode)
         {
             Model::deleteList(nodes);
@@ -688,6 +775,195 @@ Node* Spn::CreateNewNode(const NodeData& nodeData)
                     << nodeData.type() << std::endl;
     }
     return tmpNode;
+}
+
+/****************************************************************************/
+// Create layers
+
+bool Spn::CreateLayer(const SpnLayerInit& layerInit
+            , std::vector<Node*>& lowerLayer
+            , std::vector<Node*>& newNodes, std::vector<Edge*>& newEdges)
+{
+    switch(layerInit.type())
+    {
+        case NodeData::INPUT:
+            return Spn::CreateInputLayer(layerInit, newNodes, newEdges);
+        case NodeData::SUM:
+            return Spn::CreateSumMaxLayer(layerInit, lowerLayer, newNodes, newEdges);
+        case NodeData::PRODUCT:
+            return Spn::CreateProductLayer(layerInit, lowerLayer, newNodes, newEdges);
+        case NodeData::HIDDEN:
+        case NodeData::QUERY:
+        default:
+            std::cout << "Layer type: " << layerInit.type()
+                    << " not implemented" << std::endl;
+            return false;
+    }
+}
+
+bool Spn::CreateInputLayer(const SpnLayerInit& layerInit
+            , std::vector<Node*>& newNodes, std::vector<Edge*>& newEdges)
+{
+    if (!layerInit.has_size() || !layerInit.has_input_indices())
+    {
+        std::cout << "Input layer should have size and input_indices specified"
+                  << ". Layer name = " << layerInit.name() << std::endl;
+        return false;
+    }
+    
+    math::pimatrix nodeList(0, 0), inputIndices;
+    
+    inputIndices.FromDebugString(layerInit.input_indices());
+    if (inputIndices.size1() != 1 || inputIndices.size2() != (size_t)layerInit.size())
+    {
+        std::cout << "input_indices must have size (1 x n), where n is the size of "
+                  << "the layer. Layer name = " << layerInit.name() << std::endl;
+        return false;
+    }
+    
+    if (layerInit.has_node_list())
+    {
+        nodeList.FromDebugString(layerInit.node_list());
+        if (nodeList.size1() != 1 || nodeList.size2() != (size_t)layerInit.size())
+        {
+            std::cout << "node_list must have size (1 x n), where n is the size of "
+                      << "the layer. Layer name = " << layerInit.name() << std::endl;
+            return false;
+        }
+    }
+    
+    NodeData nodeData;
+    
+    // every node in SPN has dimension of 1
+    nodeData.set_dimension(1);
+    boost::format fmtNodeName("%1%_%2%");
+    
+    // create nodes
+    for (int i = 0; i < layerInit.size(); ++i)
+    {
+        // name
+        fmtNodeName % layerInit.name() % i;
+        nodeData.set_name(fmtNodeName.str());
+
+        // type
+        int iType = (layerInit.has_node_list() ? (int)nodeList(0, i) : layerInit.type());
+        
+        if (!NodeData_NodeType_IsValid(iType))
+        {
+            Model::deleteList(newNodes);
+            newNodes.clear();
+            std::cout << "ERR\tInvalid node type: " << iType << std::endl;
+            return false;
+        }
+        nodeData.set_type((NodeData_NodeType)iType);
+        
+        // input start index
+        int inputIdx = (int)inputIndices(0, i);
+        if (inputIdx < 0)
+        {
+            Model::deleteList(newNodes);
+            newNodes.clear();
+            std::cout << "ERR\tInvalid input index: " << inputIdx
+                      << " at location " << i << " in input_indices." 
+                      << "Layer name = " << layerInit.name() << std::endl;
+            return false;
+        }
+        nodeData.set_input_start_index(inputIdx);
+        
+        // create the node
+        Node* newNode = CreateNewNode(nodeData);
+        BOOST_ASSERT(newNode);
+        newNodes.push_back(newNode);
+    }
+    return true;
+}
+
+bool Spn::CreateSumMaxLayer(const SpnLayerInit& layerInit
+            , std::vector<Node*>& lowerLayer
+            , std::vector<Node*>& newNodes, std::vector<Edge*>& newEdges)
+{
+    BOOST_ASSERT(layerInit.type() == NodeData::SUM
+                || layerInit.type() == NodeData::MAX);
+    
+    if (!layerInit.has_size())
+    {
+        std::cout << "Sum/max layer must have size specified. Layer name = "
+                  << layerInit.name() << std::endl;
+        return false;
+    }
+    
+    NodeData nodeData;
+    boost::format fmtNodeName("%1%_%2%");
+    std::vector<Node*>::iterator it;
+    
+    nodeData.set_dimension(1);
+    nodeData.set_type(layerInit.type());
+    
+    for (int i = 0; i < layerInit.size(); ++i)
+    {
+        // fully connected to lower layer
+        fmtNodeName % layerInit.name() % i;
+        nodeData.set_name(fmtNodeName.str());
+        Node* newNode = CreateNewNode(nodeData);
+        BOOST_ASSERT(newNode);
+        newNodes.push_back(newNode);
+        
+        // edges
+        for (it = lowerLayer.begin(); it != lowerLayer.end(); ++it)
+        {
+            newEdges.push_back(new Edge((*it), newNode, true));
+        }
+    }
+    return true;
+}
+
+bool Spn::CreateProductLayer(const SpnLayerInit& layerInit
+          , std::vector<Node*>& lowerLayer
+            , std::vector<Node*>& newNodes, std::vector<Edge*>& newEdges)
+{
+    BOOST_ASSERT(layerInit.type() == NodeData::PRODUCT);
+    
+    if (!layerInit.has_product_combinations() 
+            && layerInit.product_combinations() >= 1
+            && layerInit.product_combinations() <= 3)
+    {
+        std::cout << "Product layer must have product_combinations specified."
+                  << "Layer name = " << layerInit.name() << std::endl;
+        return false;
+    }
+    
+    NodeData nodeData;
+    boost::format fmtNodeName("%1%_%2%");
+    int iNodeCount = 0;
+    Node* newNode;
+    
+    nodeData.set_dimension(1);
+    nodeData.set_type(layerInit.type());
+    int *children = new int[layerInit.product_combinations()];
+    
+    for (int p = 1; p <= layerInit.product_combinations(); ++p)
+    {
+        int numComs = boost::math::binomial_coefficient<float>(lowerLayer.size(), p);
+        for (int j = 1; j <= numComs; ++j)
+        {
+            fmtNodeName % layerInit.name() % iNodeCount;
+            nodeData.set_name(fmtNodeName.str());
+            iNodeCount++;
+            
+            newNode = CreateNewNode(nodeData);
+            BOOST_ASSERT(newNode);
+            newNodes.push_back(newNode);
+            
+            util::Util::combination(children, lowerLayer.size(), p, j);
+            for (int k = 0; k < p; ++k)
+            {
+                newEdges.push_back(
+                        new Edge(lowerLayer.at(children[k] - 1), newNode, true));
+            }
+        }
+    }
+    delete[] children;
+    return true;
 }
 
 }

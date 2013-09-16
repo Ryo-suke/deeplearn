@@ -89,6 +89,11 @@ void Edge::UpdateParams(int iStep, int batchSize)
     m_weight.element_add(delta_w, -learningRate/batchSize);
 }
 
+void Edge::NormalizeWeights(const math::pimatrix& matSum)
+{
+    m_weight.element_div(matSum);
+}
+
 /*****************************************************************************/
 
 void Edge::MergeEdgeData(const EdgeData& edgeData)

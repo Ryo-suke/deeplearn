@@ -42,6 +42,11 @@ public:
         // doing nothing
     }
     
+    virtual void NormalizeIncomingEdges()
+    {
+        // doing nothing
+    }
+    
     /***********************************************************************/
     
     /*

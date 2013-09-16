@@ -39,6 +39,7 @@ class Metrics;
 class Hyperparams;
 class NodeData;
 class EdgeData;
+class SpnLayerInit;
 class SpnData;
 class ModelData;
 class Operation;
@@ -207,6 +208,25 @@ inline bool DatasetInfo_DataType_Parse(
     const ::std::string& name, DatasetInfo_DataType* value) {
   return ::google::protobuf::internal::ParseNamedEnum<DatasetInfo_DataType>(
     DatasetInfo_DataType_descriptor(), name, value);
+}
+enum DatasetInfo_DataFormat {
+  DatasetInfo_DataFormat_BOOST_MATRIX = 0,
+  DatasetInfo_DataFormat_CSV = 1
+};
+bool DatasetInfo_DataFormat_IsValid(int value);
+const DatasetInfo_DataFormat DatasetInfo_DataFormat_DataFormat_MIN = DatasetInfo_DataFormat_BOOST_MATRIX;
+const DatasetInfo_DataFormat DatasetInfo_DataFormat_DataFormat_MAX = DatasetInfo_DataFormat_CSV;
+const int DatasetInfo_DataFormat_DataFormat_ARRAYSIZE = DatasetInfo_DataFormat_DataFormat_MAX + 1;
+
+const ::google::protobuf::EnumDescriptor* DatasetInfo_DataFormat_descriptor();
+inline const ::std::string& DatasetInfo_DataFormat_Name(DatasetInfo_DataFormat value) {
+  return ::google::protobuf::internal::NameOfEnum(
+    DatasetInfo_DataFormat_descriptor(), value);
+}
+inline bool DatasetInfo_DataFormat_Parse(
+    const ::std::string& name, DatasetInfo_DataFormat* value) {
+  return ::google::protobuf::internal::ParseNamedEnum<DatasetInfo_DataFormat>(
+    DatasetInfo_DataFormat_descriptor(), name, value);
 }
 // ===================================================================
 
@@ -930,6 +950,153 @@ class EdgeData : public ::google::protobuf::Message {
 };
 // -------------------------------------------------------------------
 
+class SpnLayerInit : public ::google::protobuf::Message {
+ public:
+  SpnLayerInit();
+  virtual ~SpnLayerInit();
+
+  SpnLayerInit(const SpnLayerInit& from);
+
+  inline SpnLayerInit& operator=(const SpnLayerInit& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const SpnLayerInit& default_instance();
+
+  void Swap(SpnLayerInit* other);
+
+  // implements Message ----------------------------------------------
+
+  SpnLayerInit* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const SpnLayerInit& from);
+  void MergeFrom(const SpnLayerInit& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required string name = 1;
+  inline bool has_name() const;
+  inline void clear_name();
+  static const int kNameFieldNumber = 1;
+  inline const ::std::string& name() const;
+  inline void set_name(const ::std::string& value);
+  inline void set_name(const char* value);
+  inline void set_name(const char* value, size_t size);
+  inline ::std::string* mutable_name();
+  inline ::std::string* release_name();
+  inline void set_allocated_name(::std::string* name);
+
+  // optional .model.NodeData.NodeType type = 2;
+  inline bool has_type() const;
+  inline void clear_type();
+  static const int kTypeFieldNumber = 2;
+  inline ::model::NodeData_NodeType type() const;
+  inline void set_type(::model::NodeData_NodeType value);
+
+  // optional int32 size = 3;
+  inline bool has_size() const;
+  inline void clear_size();
+  static const int kSizeFieldNumber = 3;
+  inline ::google::protobuf::int32 size() const;
+  inline void set_size(::google::protobuf::int32 value);
+
+  // optional int32 product_combinations = 4 [default = 3];
+  inline bool has_product_combinations() const;
+  inline void clear_product_combinations();
+  static const int kProductCombinationsFieldNumber = 4;
+  inline ::google::protobuf::int32 product_combinations() const;
+  inline void set_product_combinations(::google::protobuf::int32 value);
+
+  // optional string input_indices = 5;
+  inline bool has_input_indices() const;
+  inline void clear_input_indices();
+  static const int kInputIndicesFieldNumber = 5;
+  inline const ::std::string& input_indices() const;
+  inline void set_input_indices(const ::std::string& value);
+  inline void set_input_indices(const char* value);
+  inline void set_input_indices(const char* value, size_t size);
+  inline ::std::string* mutable_input_indices();
+  inline ::std::string* release_input_indices();
+  inline void set_allocated_input_indices(::std::string* input_indices);
+
+  // optional string node_list = 6;
+  inline bool has_node_list() const;
+  inline void clear_node_list();
+  static const int kNodeListFieldNumber = 6;
+  inline const ::std::string& node_list() const;
+  inline void set_node_list(const ::std::string& value);
+  inline void set_node_list(const char* value);
+  inline void set_node_list(const char* value, size_t size);
+  inline ::std::string* mutable_node_list();
+  inline ::std::string* release_node_list();
+  inline void set_allocated_node_list(::std::string* node_list);
+
+  // @@protoc_insertion_point(class_scope:model.SpnLayerInit)
+ private:
+  inline void set_has_name();
+  inline void clear_has_name();
+  inline void set_has_type();
+  inline void clear_has_type();
+  inline void set_has_size();
+  inline void clear_has_size();
+  inline void set_has_product_combinations();
+  inline void clear_has_product_combinations();
+  inline void set_has_input_indices();
+  inline void clear_has_input_indices();
+  inline void set_has_node_list();
+  inline void clear_has_node_list();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::std::string* name_;
+  int type_;
+  ::google::protobuf::int32 size_;
+  ::std::string* input_indices_;
+  ::std::string* node_list_;
+  ::google::protobuf::int32 product_combinations_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(6 + 31) / 32];
+
+  friend void  protobuf_AddDesc_deeplearn_2eproto();
+  friend void protobuf_AssignDesc_deeplearn_2eproto();
+  friend void protobuf_ShutdownFile_deeplearn_2eproto();
+
+  void InitAsDefaultInstance();
+  static SpnLayerInit* default_instance_;
+};
+// -------------------------------------------------------------------
+
 class SpnData : public ::google::protobuf::Message {
  public:
   SpnData();
@@ -1020,6 +1187,18 @@ class SpnData : public ::google::protobuf::Message {
   inline ::std::string* release_input_indices();
   inline void set_allocated_input_indices(::std::string* input_indices);
 
+  // repeated .model.SpnLayerInit layers = 4;
+  inline int layers_size() const;
+  inline void clear_layers();
+  static const int kLayersFieldNumber = 4;
+  inline const ::model::SpnLayerInit& layers(int index) const;
+  inline ::model::SpnLayerInit* mutable_layers(int index);
+  inline ::model::SpnLayerInit* add_layers();
+  inline const ::google::protobuf::RepeatedPtrField< ::model::SpnLayerInit >&
+      layers() const;
+  inline ::google::protobuf::RepeatedPtrField< ::model::SpnLayerInit >*
+      mutable_layers();
+
   // @@protoc_insertion_point(class_scope:model.SpnData)
  private:
   inline void set_has_node_list();
@@ -1034,9 +1213,10 @@ class SpnData : public ::google::protobuf::Message {
   ::std::string* node_list_;
   ::std::string* adjacency_matrix_;
   ::std::string* input_indices_;
+  ::google::protobuf::RepeatedPtrField< ::model::SpnLayerInit > layers_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(4 + 31) / 32];
 
   friend void  protobuf_AddDesc_deeplearn_2eproto();
   friend void protobuf_AssignDesc_deeplearn_2eproto();
@@ -1590,6 +1770,13 @@ class Operation : public ::google::protobuf::Message {
   inline bool verbose() const;
   inline void set_verbose(bool value);
 
+  // optional bool normalize_each_train_step = 13 [default = true];
+  inline bool has_normalize_each_train_step() const;
+  inline void clear_normalize_each_train_step();
+  static const int kNormalizeEachTrainStepFieldNumber = 13;
+  inline bool normalize_each_train_step() const;
+  inline void set_normalize_each_train_step(bool value);
+
   // @@protoc_insertion_point(class_scope:model.Operation)
  private:
   inline void set_has_name();
@@ -1616,6 +1803,8 @@ class Operation : public ::google::protobuf::Message {
   inline void clear_has_random_seed();
   inline void set_has_verbose();
   inline void clear_has_verbose();
+  inline void set_has_normalize_each_train_step();
+  inline void clear_has_normalize_each_train_step();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -1632,9 +1821,10 @@ class Operation : public ::google::protobuf::Message {
   ::google::protobuf::int32 random_seed_;
   bool randomize_;
   bool verbose_;
+  bool normalize_each_train_step_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(12 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(13 + 31) / 32];
 
   friend void  protobuf_AddDesc_deeplearn_2eproto();
   friend void protobuf_AssignDesc_deeplearn_2eproto();
@@ -1722,6 +1912,30 @@ class DatasetInfo : public ::google::protobuf::Message {
     return DatasetInfo_DataType_Parse(name, value);
   }
 
+  typedef DatasetInfo_DataFormat DataFormat;
+  static const DataFormat BOOST_MATRIX = DatasetInfo_DataFormat_BOOST_MATRIX;
+  static const DataFormat CSV = DatasetInfo_DataFormat_CSV;
+  static inline bool DataFormat_IsValid(int value) {
+    return DatasetInfo_DataFormat_IsValid(value);
+  }
+  static const DataFormat DataFormat_MIN =
+    DatasetInfo_DataFormat_DataFormat_MIN;
+  static const DataFormat DataFormat_MAX =
+    DatasetInfo_DataFormat_DataFormat_MAX;
+  static const int DataFormat_ARRAYSIZE =
+    DatasetInfo_DataFormat_DataFormat_ARRAYSIZE;
+  static inline const ::google::protobuf::EnumDescriptor*
+  DataFormat_descriptor() {
+    return DatasetInfo_DataFormat_descriptor();
+  }
+  static inline const ::std::string& DataFormat_Name(DataFormat value) {
+    return DatasetInfo_DataFormat_Name(value);
+  }
+  static inline bool DataFormat_Parse(const ::std::string& name,
+      DataFormat* value) {
+    return DatasetInfo_DataFormat_Parse(name, value);
+  }
+
   // accessors -------------------------------------------------------
 
   // required .model.DatasetInfo.DataType type = 1;
@@ -1764,6 +1978,13 @@ class DatasetInfo : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 type_size() const;
   inline void set_type_size(::google::protobuf::int32 value);
 
+  // optional .model.DatasetInfo.DataFormat data_format = 6 [default = BOOST_MATRIX];
+  inline bool has_data_format() const;
+  inline void clear_data_format();
+  static const int kDataFormatFieldNumber = 6;
+  inline ::model::DatasetInfo_DataFormat data_format() const;
+  inline void set_data_format(::model::DatasetInfo_DataFormat value);
+
   // @@protoc_insertion_point(class_scope:model.DatasetInfo)
  private:
   inline void set_has_type();
@@ -1776,6 +1997,8 @@ class DatasetInfo : public ::google::protobuf::Message {
   inline void clear_has_dimensions();
   inline void set_has_type_size();
   inline void clear_has_type_size();
+  inline void set_has_data_format();
+  inline void clear_has_data_format();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -1784,9 +2007,10 @@ class DatasetInfo : public ::google::protobuf::Message {
   ::google::protobuf::int32 size_;
   ::google::protobuf::int32 dimensions_;
   ::google::protobuf::int32 type_size_;
+  int data_format_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(5 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(6 + 31) / 32];
 
   friend void  protobuf_AddDesc_deeplearn_2eproto();
   friend void protobuf_AssignDesc_deeplearn_2eproto();
@@ -2740,6 +2964,287 @@ inline void EdgeData::set_allocated_hyper_params(::model::Hyperparams* hyper_par
 
 // -------------------------------------------------------------------
 
+// SpnLayerInit
+
+// required string name = 1;
+inline bool SpnLayerInit::has_name() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void SpnLayerInit::set_has_name() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void SpnLayerInit::clear_has_name() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void SpnLayerInit::clear_name() {
+  if (name_ != &::google::protobuf::internal::kEmptyString) {
+    name_->clear();
+  }
+  clear_has_name();
+}
+inline const ::std::string& SpnLayerInit::name() const {
+  return *name_;
+}
+inline void SpnLayerInit::set_name(const ::std::string& value) {
+  set_has_name();
+  if (name_ == &::google::protobuf::internal::kEmptyString) {
+    name_ = new ::std::string;
+  }
+  name_->assign(value);
+}
+inline void SpnLayerInit::set_name(const char* value) {
+  set_has_name();
+  if (name_ == &::google::protobuf::internal::kEmptyString) {
+    name_ = new ::std::string;
+  }
+  name_->assign(value);
+}
+inline void SpnLayerInit::set_name(const char* value, size_t size) {
+  set_has_name();
+  if (name_ == &::google::protobuf::internal::kEmptyString) {
+    name_ = new ::std::string;
+  }
+  name_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* SpnLayerInit::mutable_name() {
+  set_has_name();
+  if (name_ == &::google::protobuf::internal::kEmptyString) {
+    name_ = new ::std::string;
+  }
+  return name_;
+}
+inline ::std::string* SpnLayerInit::release_name() {
+  clear_has_name();
+  if (name_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = name_;
+    name_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void SpnLayerInit::set_allocated_name(::std::string* name) {
+  if (name_ != &::google::protobuf::internal::kEmptyString) {
+    delete name_;
+  }
+  if (name) {
+    set_has_name();
+    name_ = name;
+  } else {
+    clear_has_name();
+    name_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// optional .model.NodeData.NodeType type = 2;
+inline bool SpnLayerInit::has_type() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void SpnLayerInit::set_has_type() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void SpnLayerInit::clear_has_type() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void SpnLayerInit::clear_type() {
+  type_ = 0;
+  clear_has_type();
+}
+inline ::model::NodeData_NodeType SpnLayerInit::type() const {
+  return static_cast< ::model::NodeData_NodeType >(type_);
+}
+inline void SpnLayerInit::set_type(::model::NodeData_NodeType value) {
+  assert(::model::NodeData_NodeType_IsValid(value));
+  set_has_type();
+  type_ = value;
+}
+
+// optional int32 size = 3;
+inline bool SpnLayerInit::has_size() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void SpnLayerInit::set_has_size() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void SpnLayerInit::clear_has_size() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void SpnLayerInit::clear_size() {
+  size_ = 0;
+  clear_has_size();
+}
+inline ::google::protobuf::int32 SpnLayerInit::size() const {
+  return size_;
+}
+inline void SpnLayerInit::set_size(::google::protobuf::int32 value) {
+  set_has_size();
+  size_ = value;
+}
+
+// optional int32 product_combinations = 4 [default = 3];
+inline bool SpnLayerInit::has_product_combinations() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void SpnLayerInit::set_has_product_combinations() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void SpnLayerInit::clear_has_product_combinations() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void SpnLayerInit::clear_product_combinations() {
+  product_combinations_ = 3;
+  clear_has_product_combinations();
+}
+inline ::google::protobuf::int32 SpnLayerInit::product_combinations() const {
+  return product_combinations_;
+}
+inline void SpnLayerInit::set_product_combinations(::google::protobuf::int32 value) {
+  set_has_product_combinations();
+  product_combinations_ = value;
+}
+
+// optional string input_indices = 5;
+inline bool SpnLayerInit::has_input_indices() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void SpnLayerInit::set_has_input_indices() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void SpnLayerInit::clear_has_input_indices() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void SpnLayerInit::clear_input_indices() {
+  if (input_indices_ != &::google::protobuf::internal::kEmptyString) {
+    input_indices_->clear();
+  }
+  clear_has_input_indices();
+}
+inline const ::std::string& SpnLayerInit::input_indices() const {
+  return *input_indices_;
+}
+inline void SpnLayerInit::set_input_indices(const ::std::string& value) {
+  set_has_input_indices();
+  if (input_indices_ == &::google::protobuf::internal::kEmptyString) {
+    input_indices_ = new ::std::string;
+  }
+  input_indices_->assign(value);
+}
+inline void SpnLayerInit::set_input_indices(const char* value) {
+  set_has_input_indices();
+  if (input_indices_ == &::google::protobuf::internal::kEmptyString) {
+    input_indices_ = new ::std::string;
+  }
+  input_indices_->assign(value);
+}
+inline void SpnLayerInit::set_input_indices(const char* value, size_t size) {
+  set_has_input_indices();
+  if (input_indices_ == &::google::protobuf::internal::kEmptyString) {
+    input_indices_ = new ::std::string;
+  }
+  input_indices_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* SpnLayerInit::mutable_input_indices() {
+  set_has_input_indices();
+  if (input_indices_ == &::google::protobuf::internal::kEmptyString) {
+    input_indices_ = new ::std::string;
+  }
+  return input_indices_;
+}
+inline ::std::string* SpnLayerInit::release_input_indices() {
+  clear_has_input_indices();
+  if (input_indices_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = input_indices_;
+    input_indices_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void SpnLayerInit::set_allocated_input_indices(::std::string* input_indices) {
+  if (input_indices_ != &::google::protobuf::internal::kEmptyString) {
+    delete input_indices_;
+  }
+  if (input_indices) {
+    set_has_input_indices();
+    input_indices_ = input_indices;
+  } else {
+    clear_has_input_indices();
+    input_indices_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// optional string node_list = 6;
+inline bool SpnLayerInit::has_node_list() const {
+  return (_has_bits_[0] & 0x00000020u) != 0;
+}
+inline void SpnLayerInit::set_has_node_list() {
+  _has_bits_[0] |= 0x00000020u;
+}
+inline void SpnLayerInit::clear_has_node_list() {
+  _has_bits_[0] &= ~0x00000020u;
+}
+inline void SpnLayerInit::clear_node_list() {
+  if (node_list_ != &::google::protobuf::internal::kEmptyString) {
+    node_list_->clear();
+  }
+  clear_has_node_list();
+}
+inline const ::std::string& SpnLayerInit::node_list() const {
+  return *node_list_;
+}
+inline void SpnLayerInit::set_node_list(const ::std::string& value) {
+  set_has_node_list();
+  if (node_list_ == &::google::protobuf::internal::kEmptyString) {
+    node_list_ = new ::std::string;
+  }
+  node_list_->assign(value);
+}
+inline void SpnLayerInit::set_node_list(const char* value) {
+  set_has_node_list();
+  if (node_list_ == &::google::protobuf::internal::kEmptyString) {
+    node_list_ = new ::std::string;
+  }
+  node_list_->assign(value);
+}
+inline void SpnLayerInit::set_node_list(const char* value, size_t size) {
+  set_has_node_list();
+  if (node_list_ == &::google::protobuf::internal::kEmptyString) {
+    node_list_ = new ::std::string;
+  }
+  node_list_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* SpnLayerInit::mutable_node_list() {
+  set_has_node_list();
+  if (node_list_ == &::google::protobuf::internal::kEmptyString) {
+    node_list_ = new ::std::string;
+  }
+  return node_list_;
+}
+inline ::std::string* SpnLayerInit::release_node_list() {
+  clear_has_node_list();
+  if (node_list_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = node_list_;
+    node_list_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void SpnLayerInit::set_allocated_node_list(::std::string* node_list) {
+  if (node_list_ != &::google::protobuf::internal::kEmptyString) {
+    delete node_list_;
+  }
+  if (node_list) {
+    set_has_node_list();
+    node_list_ = node_list;
+  } else {
+    clear_has_node_list();
+    node_list_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// -------------------------------------------------------------------
+
 // SpnData
 
 // optional string node_list = 1;
@@ -2950,6 +3455,31 @@ inline void SpnData::set_allocated_input_indices(::std::string* input_indices) {
     clear_has_input_indices();
     input_indices_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   }
+}
+
+// repeated .model.SpnLayerInit layers = 4;
+inline int SpnData::layers_size() const {
+  return layers_.size();
+}
+inline void SpnData::clear_layers() {
+  layers_.Clear();
+}
+inline const ::model::SpnLayerInit& SpnData::layers(int index) const {
+  return layers_.Get(index);
+}
+inline ::model::SpnLayerInit* SpnData::mutable_layers(int index) {
+  return layers_.Mutable(index);
+}
+inline ::model::SpnLayerInit* SpnData::add_layers() {
+  return layers_.Add();
+}
+inline const ::google::protobuf::RepeatedPtrField< ::model::SpnLayerInit >&
+SpnData::layers() const {
+  return layers_;
+}
+inline ::google::protobuf::RepeatedPtrField< ::model::SpnLayerInit >*
+SpnData::mutable_layers() {
+  return &layers_;
 }
 
 // -------------------------------------------------------------------
@@ -3881,6 +4411,28 @@ inline void Operation::set_verbose(bool value) {
   verbose_ = value;
 }
 
+// optional bool normalize_each_train_step = 13 [default = true];
+inline bool Operation::has_normalize_each_train_step() const {
+  return (_has_bits_[0] & 0x00001000u) != 0;
+}
+inline void Operation::set_has_normalize_each_train_step() {
+  _has_bits_[0] |= 0x00001000u;
+}
+inline void Operation::clear_has_normalize_each_train_step() {
+  _has_bits_[0] &= ~0x00001000u;
+}
+inline void Operation::clear_normalize_each_train_step() {
+  normalize_each_train_step_ = true;
+  clear_has_normalize_each_train_step();
+}
+inline bool Operation::normalize_each_train_step() const {
+  return normalize_each_train_step_;
+}
+inline void Operation::set_normalize_each_train_step(bool value) {
+  set_has_normalize_each_train_step();
+  normalize_each_train_step_ = value;
+}
+
 // -------------------------------------------------------------------
 
 // DatasetInfo
@@ -4042,6 +4594,29 @@ inline ::google::protobuf::int32 DatasetInfo::type_size() const {
 inline void DatasetInfo::set_type_size(::google::protobuf::int32 value) {
   set_has_type_size();
   type_size_ = value;
+}
+
+// optional .model.DatasetInfo.DataFormat data_format = 6 [default = BOOST_MATRIX];
+inline bool DatasetInfo::has_data_format() const {
+  return (_has_bits_[0] & 0x00000020u) != 0;
+}
+inline void DatasetInfo::set_has_data_format() {
+  _has_bits_[0] |= 0x00000020u;
+}
+inline void DatasetInfo::clear_has_data_format() {
+  _has_bits_[0] &= ~0x00000020u;
+}
+inline void DatasetInfo::clear_data_format() {
+  data_format_ = 0;
+  clear_has_data_format();
+}
+inline ::model::DatasetInfo_DataFormat DatasetInfo::data_format() const {
+  return static_cast< ::model::DatasetInfo_DataFormat >(data_format_);
+}
+inline void DatasetInfo::set_data_format(::model::DatasetInfo_DataFormat value) {
+  assert(::model::DatasetInfo_DataFormat_IsValid(value));
+  set_has_data_format();
+  data_format_ = value;
 }
 
 // -------------------------------------------------------------------
@@ -4367,6 +4942,10 @@ inline const EnumDescriptor* GetEnumDescriptor< ::model::Operation_OperationType
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::model::DatasetInfo_DataType>() {
   return ::model::DatasetInfo_DataType_descriptor();
+}
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::model::DatasetInfo_DataFormat>() {
+  return ::model::DatasetInfo_DataFormat_descriptor();
 }
 
 }  // namespace google

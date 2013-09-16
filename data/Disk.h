@@ -11,6 +11,7 @@
 #include <boost/noncopyable.hpp>
 #include <string>
 #include <pimatrix.h>
+#include <deeplearn.pb.h>
 
 namespace data
 {
@@ -19,6 +20,7 @@ class Disk : boost::noncopyable
 {
 protected:
     std::vector<std::string> m_files;
+    std::vector<model::DatasetInfo_DataFormat> m_fileFormat;
     math::pimatrix m_currentFile;
     size_t m_currentRow;
     size_t m_iReadingFile;
@@ -34,7 +36,9 @@ public:
 
     virtual void Get(size_t sampleCount, math::pimatrix& matRet);
 
-    virtual void Append(std::vector<std::string>& files, size_t size, size_t dimension);
+    virtual void Append(std::vector<std::string>& files
+                , size_t size, size_t dimension
+                , model::DatasetInfo_DataFormat dataFormat);
         
     size_t GetDimension()
     {
@@ -51,7 +55,8 @@ public:
         
 protected:
     
-    virtual void loadFile(std::string sFile, math::pimatrix& matRet);
+    virtual void loadFile(std::string sFile, math::pimatrix& matRet
+                        , model::DatasetInfo_DataFormat dataFormat);
     
 };
 

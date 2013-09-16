@@ -58,6 +58,7 @@ TESTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}/tests
 # Test Files
 TESTFILES= \
 	${TESTDIR}/TestFiles/f1 \
+	${TESTDIR}/TestFiles/f3 \
 	${TESTDIR}/TestFiles/f2
 
 # C Compiler Flags
@@ -178,6 +179,10 @@ ${TESTDIR}/TestFiles/f1: ${TESTDIR}/_ext/389674410/test_spn.o ${OBJECTFILES:%.o=
 	${MKDIR} -p ${TESTDIR}/TestFiles
 	${LINK.cc}   -o ${TESTDIR}/TestFiles/f1 $^ ${LDLIBSOPTIONS} 
 
+${TESTDIR}/TestFiles/f3: ${TESTDIR}/tests/test_train.o ${OBJECTFILES:%.o=%_nomain.o}
+	${MKDIR} -p ${TESTDIR}/TestFiles
+	${LINK.cc}   -o ${TESTDIR}/TestFiles/f3 $^ ${LDLIBSOPTIONS} 
+
 ${TESTDIR}/TestFiles/f2: ${TESTDIR}/_ext/389674410/test_util.o ${OBJECTFILES:%.o=%_nomain.o}
 	${MKDIR} -p ${TESTDIR}/TestFiles
 	${LINK.cc}   -o ${TESTDIR}/TestFiles/f2 $^ ${LDLIBSOPTIONS} 
@@ -186,13 +191,19 @@ ${TESTDIR}/TestFiles/f2: ${TESTDIR}/_ext/389674410/test_util.o ${OBJECTFILES:%.o
 ${TESTDIR}/_ext/389674410/test_spn.o: /home/hoaivu_pham/NetBeansProjects/deeplearn/tests/test_spn.cpp 
 	${MKDIR} -p ${TESTDIR}/_ext/389674410
 	${RM} $@.d
-	$(COMPILE.cc) -g -Wall -I. -I. -I. -Imath -Imodel -Idata -Iutil -I/home/hoaivu_pham/lib/boost_1_54_0/include -MMD -MP -MF $@.d -o ${TESTDIR}/_ext/389674410/test_spn.o /home/hoaivu_pham/NetBeansProjects/deeplearn/tests/test_spn.cpp
+	$(COMPILE.cc) -g -Wall -I. -I. -I. -I. -I. -Imath -Imodel -Idata -Iutil -I/home/hoaivu_pham/lib/boost_1_54_0/include -MMD -MP -MF $@.d -o ${TESTDIR}/_ext/389674410/test_spn.o /home/hoaivu_pham/NetBeansProjects/deeplearn/tests/test_spn.cpp
+
+
+${TESTDIR}/tests/test_train.o: tests/test_train.cpp 
+	${MKDIR} -p ${TESTDIR}/tests
+	${RM} $@.d
+	$(COMPILE.cc) -g -Wall -I. -I. -Imath -Imodel -Idata -Iutil -I/home/hoaivu_pham/lib/boost_1_54_0/include -MMD -MP -MF $@.d -o ${TESTDIR}/tests/test_train.o tests/test_train.cpp
 
 
 ${TESTDIR}/_ext/389674410/test_util.o: /home/hoaivu_pham/NetBeansProjects/deeplearn/tests/test_util.cpp 
 	${MKDIR} -p ${TESTDIR}/_ext/389674410
 	${RM} $@.d
-	$(COMPILE.cc) -g -Wall -I. -I. -I. -Imath -Imodel -Idata -Iutil -I/home/hoaivu_pham/lib/boost_1_54_0/include -MMD -MP -MF $@.d -o ${TESTDIR}/_ext/389674410/test_util.o /home/hoaivu_pham/NetBeansProjects/deeplearn/tests/test_util.cpp
+	$(COMPILE.cc) -g -Wall -I. -I. -I. -I. -I. -Imath -Imodel -Idata -Iutil -I/home/hoaivu_pham/lib/boost_1_54_0/include -MMD -MP -MF $@.d -o ${TESTDIR}/_ext/389674410/test_util.o /home/hoaivu_pham/NetBeansProjects/deeplearn/tests/test_util.cpp
 
 
 ${OBJECTDIR}/_ext/1121429291/Dataset_nomain.o: ${OBJECTDIR}/_ext/1121429291/Dataset.o /home/hoaivu_pham/NetBeansProjects/deeplearn/data/Dataset.cpp 
@@ -421,6 +432,7 @@ ${OBJECTDIR}/_ext/382279727/MaxNode_nomain.o: ${OBJECTDIR}/_ext/382279727/MaxNod
 	@if [ "${TEST}" = "" ]; \
 	then  \
 	    ${TESTDIR}/TestFiles/f1 || true; \
+	    ${TESTDIR}/TestFiles/f3 || true; \
 	    ${TESTDIR}/TestFiles/f2 || true; \
 	else  \
 	    ./${TEST} || true; \
